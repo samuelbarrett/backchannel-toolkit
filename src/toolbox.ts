@@ -491,19 +491,16 @@ export const toolbox = {
             },
           },
         },
+      ],
+    },
+    {
+      kind: 'category',
+      name: 'Dialog',
+      categorystyle: 'list_category',
+      contents: [
         {
           kind: 'block',
-          type: 'add_text',
-          inputs: {
-            TEXT: {
-              shadow: {
-                type: 'text',
-                fields: {
-                  TEXT: 'abc',
-                },
-              },
-            },
-          },
+          type: 'dialog_line',
         },
       ],
     },

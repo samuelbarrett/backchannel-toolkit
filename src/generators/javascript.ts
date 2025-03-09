@@ -12,23 +12,16 @@ import * as Blockly from 'blockly/core';
 // This file has no side effects!
 export const forBlock = Object.create(null);
 
-forBlock['add_text'] = function (
+forBlock['dialog_line'] = function(
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {
-  const text = generator.valueToCode(block, 'TEXT', Order.NONE) || "''";
-  const addText = generator.provideFunction_(
-    'addText',
-    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(text) {
+  // TODO: change Order.ATOMIC to the correct operator precedence strength
+  const value_character = generator.valueToCode(block, 'character', Order.ATOMIC);
 
-  // Add text to the output area.
-  const outputDiv = document.getElementById('output');
-  const textEl = document.createElement('p');
-  textEl.innerText = text;
-  outputDiv.appendChild(textEl);
-}`,
-  );
-  // Generate the function call for this block.
-  const code = `${addText}(${text});\n`;
+  const statement_dialog = generator.statementToCode(block, 'dialog');
+
+  // TODO: Assemble javascript into the code variable.
+  const code = `hello my dialog generator placeholder: ${value_character} says ${statement_dialog}`;
   return code;
-};
+}
