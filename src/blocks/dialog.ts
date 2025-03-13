@@ -22,6 +22,27 @@ const dialogLine = {
   colour: 285
 };
 
+const dialogText = {
+  type: 'dialog_text',
+  tooltip: 'Describe something this character will say',
+  helpUrl: '',
+  message0: 'text description: %1 %2',
+  args0: [
+    {
+      type: 'field_input',
+      name: 'prompt',
+      text: 'What will they say?'
+    },
+    {
+      type: 'input_dummy',
+      name: 'text_description'
+    }
+  ],
+  previousStatement: null,
+  nextStatement: null,
+  colour: 60
+};
+
 export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
-    dialogLine,
+    dialogLine, dialogText
 ]);

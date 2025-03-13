@@ -25,3 +25,14 @@ forBlock['dialog_line'] = function(
   const code = `hello my dialog generator placeholder: ${value_character} says ${statement_dialog}`;
   return code;
 }
+
+forBlock['dialog_text'] = function(
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const text_prompt = block.getFieldValue('prompt');
+
+  // TODO: Assemble javascript into the code variable.
+  const code = `say hello to my little prompt ${text_prompt}`;
+  return code;
+}

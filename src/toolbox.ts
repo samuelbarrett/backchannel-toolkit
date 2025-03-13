@@ -502,6 +502,10 @@ export const toolbox = {
           kind: 'block',
           type: 'dialog_line',
         },
+        {
+          kind: 'block',
+          type: 'dialog_text',
+        }
       ],
     },
     {
