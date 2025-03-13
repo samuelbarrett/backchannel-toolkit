@@ -35,7 +35,8 @@ const runCode = () => {
 
   if (outputDiv) outputDiv.innerHTML = '';
 
-  eval(code);
+  // eval(code);
+  console.log("the code I will execute:\n" + code);
 };
 
 if (ws) {
