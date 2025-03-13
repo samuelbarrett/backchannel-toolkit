@@ -36,3 +36,16 @@ forBlock['dialog_text'] = function(
   const code = `say hello to my little prompt ${text_prompt}`;
   return code;
 }
+
+forBlock['character'] = function(
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const text_name = block.getFieldValue('name');
+  const text_characteristics = block.getFieldValue('characteristics');
+
+  // TODO: Assemble javascript into the code variable.
+  const code = `hello my character generator placeholder: ${text_name} has description: ${text_characteristics}`;
+  // TODO: Change Order.NONE to the correct operator precedence strength
+  return [code, Order.NONE];
+}

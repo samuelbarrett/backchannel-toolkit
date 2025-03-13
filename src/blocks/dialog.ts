@@ -43,6 +43,39 @@ const dialogText = {
   colour: 60
 };
 
+const character = {
+  type: "character",
+  tooltip: "Describes a recurring character for your dialog",
+  helpUrl: "",
+  message0: "Name:  %1 %2 ------------- Attributes ------------- %3 Description: %4 %5",
+  args0: [
+    {
+      type: "field_input",
+      name: "name",
+      text: "Enter name"
+    },
+    {
+      type: "input_dummy",
+      name: "name_field"
+    },
+    {
+      type: "input_dummy",
+      name: "attributes_label"
+    },
+    {
+      type: "field_input",
+      name: "characteristics",
+      text: "Describe this character"
+    },
+    {
+      type: "input_dummy",
+      name: "description"
+    }
+  ],
+  output: null,
+  colour: 300
+};
+
 export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
-    dialogLine, dialogText
+    dialogLine, dialogText, character
 ]);
