@@ -18,12 +18,11 @@ forBlock['dialog_line'] = function(
 ) {
   // TODO: change Order.ATOMIC to the correct operator precedence strength
   const value_character = generator.valueToCode(block, 'character', Order.ATOMIC);
-
   const statement_dialog = generator.statementToCode(block, 'dialog');
 
   // TODO: Assemble javascript into the code variable.
-  const code = `hello my dialog generator placeholder: ${value_character} says ${statement_dialog}`;
-  return code;
+  const code = `"${block.id}": { character: ${value_character}, dialog: ${statement_dialog} }`;
+  return JSON.stringify(code) + ', ';
 }
 
 forBlock['dialog_text'] = function(
@@ -32,9 +31,10 @@ forBlock['dialog_text'] = function(
 ) {
   const text_prompt = block.getFieldValue('prompt');
 
-  // TODO: Assemble javascript into the code variable.
-  const code = `say hello to my little prompt ${text_prompt}`;
-  return code;
+  const code = {
+    prompt: text_prompt,
+  };
+  return JSON.stringify(code);
 }
 
 forBlock['character'] = function(
@@ -44,8 +44,9 @@ forBlock['character'] = function(
   const text_name = block.getFieldValue('name');
   const text_characteristics = block.getFieldValue('characteristics');
 
-  // TODO: Assemble javascript into the code variable.
-  const code = `hello my character generator placeholder: ${text_name} has description: ${text_characteristics}`;
-  // TODO: Change Order.NONE to the correct operator precedence strength
-  return [code, Order.NONE];
+  const code = {
+    name: text_name,
+    characteristics: text_characteristics
+  };
+  return [JSON.stringify(code), Order.ATOMIC];
 }

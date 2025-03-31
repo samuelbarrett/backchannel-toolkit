@@ -19,7 +19,7 @@ const dialogLine = {
   ],
   previousStatement: null,
   nextStatement: null,
-  colour: 285
+  colour: 240
 };
 
 const dialogText = {
@@ -40,7 +40,7 @@ const dialogText = {
   ],
   previousStatement: null,
   nextStatement: null,
-  colour: 60
+  colour: 300
 };
 
 const character = {
@@ -73,7 +73,7 @@ const character = {
     }
   ],
   output: null,
-  colour: 300
+  colour: 120
 };
 
 export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([

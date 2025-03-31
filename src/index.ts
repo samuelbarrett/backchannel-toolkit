@@ -11,6 +11,7 @@ import {javascriptGenerator} from 'blockly/javascript';
 import {save, load} from './serialization';
 import {toolbox} from './toolbox';
 import './index.css';
+import ollama from 'ollama';
 
 // Register the blocks and generator with Blockly
 Blockly.common.defineBlocks(blocks);
@@ -30,12 +31,21 @@ const ws = Blockly.inject(blocklyDiv, {toolbox});
 // generated code from the workspace, and evals the code.
 // In a real application, you probably shouldn't use `eval`.
 const runCode = () => {
-  const code = javascriptGenerator.workspaceToCode(ws as Blockly.Workspace);
+  let code: any = javascriptGenerator.workspaceToCode(ws as Blockly.Workspace);
+  // make code a valid json object
+  code = code.slice(0, -2); // remove trailing comma required for JSON generation
+  console.log(code);
   if (codeDiv) codeDiv.textContent = code;
+  if (codeDiv) codeDiv.textContent = JSON.parse(code).character;
+  //let json = JSON.parse(code);
+  //console.log(json);
 
   if (outputDiv) outputDiv.innerHTML = '';
 
-  // eval(code);
+  // const response = ollama.chat({
+  //   model: 'llama3.2:1b',
+  //   messages: 
+  // });
   console.log("the code I will execute:\n" + code);
 };
 
