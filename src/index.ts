@@ -31,8 +31,31 @@ const ws = Blockly.inject(blocklyDiv, {toolbox});
 // In a real application, you probably shouldn't use `eval`.
 const runCode = () => {
   let code = javascriptGenerator.workspaceToCode(ws as Blockly.Workspace);
-
+  console.log("code is " + code);
+  const codeJson = JSON.parse(code);
+  sendParameters(codeJson);
 };
+
+const sendParameters = (codeJson: JSON) => {
+  fetch('http://localhost:62753/api/params', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(codeJson)
+  }).then(response => {
+    if (response.ok) {
+      console.log('Data sent successfully');
+      if (outputDiv) outputDiv.textContent = response.statusText + ": Sota up to date";
+    } else {
+      console.error('Error sending data');
+      if (outputDiv) outputDiv.textContent = response.statusText;
+    }
+  }).catch(error => {
+    console.error('Error:', error);
+    if (outputDiv) outputDiv.textContent = error.message;
+  });
+}
 
 if (ws) {
   // Load the initial state from storage and run the code.

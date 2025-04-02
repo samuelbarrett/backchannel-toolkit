@@ -16,11 +16,19 @@ forBlock['backchanneling'] = function(
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {
-  const value_delay = generator.valueToCode(block, 'delay', Order.ATOMIC);
-  const value_frequency = generator.valueToCode(block, 'frequency', Order.ATOMIC);
+  let value_delay = generator.valueToCode(block, 'delay', Order.ATOMIC);
+  let value_frequency = generator.valueToCode(block, 'frequency', Order.ATOMIC);
   const checkbox_verbal = block.getFieldValue('verbal') === 'TRUE' ? 'true' : 'false';
   const checkbox_nodding = block.getFieldValue('nodding') === 'TRUE' ? 'true' : 'false';
   
+  // default values
+  if (value_delay == "") {
+    value_delay = '0';
+  }
+  if (value_frequency == "") {
+    value_frequency = '100';
+  }
+
   const code = {
     verbal: checkbox_verbal,
     nodding: checkbox_nodding,
