@@ -12,7 +12,7 @@ import * as Blockly from 'blockly/core';
 // This file has no side effects!
 export const forBlock = Object.create(null);
 
-forBlock['backchannelBlock'] = function(
+forBlock['backchanneling'] = function(
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {

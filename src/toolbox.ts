@@ -13,40 +13,15 @@ listed here.
 */
 
 export const toolbox = {
-  kind: 'categoryToolbox',
-  contents: [
-    {
-      kind: 'category',
-      name: 'Backchanneling',
-      categorystyle: 'backchanneling_category',
-      contents: [
-        {
-          kind: 'block',
-          type: 'backchanneling',
-          fields: {
-            VERBAL: true,
-            NODDING: true,
-          },
-          inputs: {
-            DELAY: {
-              shadow: {
-                type: 'math_number',
-                fields: {
-                  NUM: 1000,
-                },
-              },
+    kind: 'flyoutToolbox',
+    contents: [
+        {  
+            kind: 'block',
+            type: 'backchanneling',
+            fields: {
+                verbal: true,
+                nodding: true,
             },
-            FREQUENCY: {
-              shadow: {
-                type: 'math_number',
-                fields: {
-                  NUM: 50,
-                },
-              },
-            },
-          },
         },
-      ]
-    },
-  ]
-}; 
+    ]
+};
