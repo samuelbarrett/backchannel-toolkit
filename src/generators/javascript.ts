@@ -12,41 +12,20 @@ import * as Blockly from 'blockly/core';
 // This file has no side effects!
 export const forBlock = Object.create(null);
 
-forBlock['dialog_line'] = function(
+forBlock['backchannelBlock'] = function(
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {
-  // TODO: change Order.ATOMIC to the correct operator precedence strength
-  const value_character = generator.valueToCode(block, 'character', Order.ATOMIC);
-  const statement_dialog = generator.statementToCode(block, 'dialog');
-
-  // TODO: Assemble javascript into the code variable.
-  const code = `"${block.id}": { character: ${value_character}, dialog: ${statement_dialog} }`;
-  return JSON.stringify(code) + ', ';
-}
-
-forBlock['dialog_text'] = function(
-  block: Blockly.Block,
-  generator: Blockly.CodeGenerator,
-) {
-  const text_prompt = block.getFieldValue('prompt');
-
+  const value_delay = generator.valueToCode(block, 'delay', Order.ATOMIC);
+  const value_frequency = generator.valueToCode(block, 'frequency', Order.ATOMIC);
+  const checkbox_verbal = block.getFieldValue('verbal') === 'TRUE' ? 'true' : 'false';
+  const checkbox_nodding = block.getFieldValue('nodding') === 'TRUE' ? 'true' : 'false';
+  
   const code = {
-    prompt: text_prompt,
+    verbal: checkbox_verbal,
+    nodding: checkbox_nodding,
+    delay: value_delay,
+    frequency: value_frequency
   };
   return JSON.stringify(code);
-}
-
-forBlock['character'] = function(
-  block: Blockly.Block,
-  generator: Blockly.CodeGenerator,
-) {
-  const text_name = block.getFieldValue('name');
-  const text_characteristics = block.getFieldValue('characteristics');
-
-  const code = {
-    name: text_name,
-    characteristics: text_characteristics
-  };
-  return [JSON.stringify(code), Order.ATOMIC];
 }

@@ -1,81 +1,48 @@
 import * as Blockly from 'blockly/core';
 
-const dialogLine = {
-  type: 'dialog_line',
-  tooltip: 'Define a line of dialog spoken by a character.',
-  helpUrl: '',
-  message0: 'Character: %1 Dialog: %2',
-  args0: [
+const backchannelBlock = {
+    "type": "backchanneling",
+    "tooltip": "Control panel for Sota's backchanneling behaviours",
+    "helpUrl": "",
+    "message0": "Backchanneling Parameters %1 Verbal %2 Nodding %3 %4 delay (0-1000 ms): %5 frequency (%) %6",
+    "args0": [
     {
-      type: 'input_value',
-      name: 'character',
-      check: 'Character'
+        "type": "input_dummy",
+        "name": "title"
     },
     {
-      type: 'input_statement',
-      name: 'dialog',
-      check: 'String'
+        "type": "field_checkbox",
+        "name": "verbal",
+        "checked": "TRUE"
+    },
+    {
+        "type": "field_checkbox",
+        "name": "nodding",
+        "checked": "TRUE"
+    },
+    {
+        "type": "input_dummy",
+        "name": "modalities",
+        "align": "RIGHT"
+    },
+    {
+        "type": "input_value",
+        "name": "delay",
+        "align": "RIGHT",
+        "check": "Number"
+    },
+    {
+        "type": "input_value",
+        "name": "frequency",
+        "align": "RIGHT",
+        "check": "Number"
     }
-  ],
-  previousStatement: null,
-  nextStatement: null,
-  colour: 240
-};
-
-const dialogText = {
-  type: 'dialog_text',
-  tooltip: 'Describe something this character will say',
-  helpUrl: '',
-  message0: 'text description: %1 %2',
-  args0: [
-    {
-      type: 'field_input',
-      name: 'prompt',
-      text: 'What will they say?'
-    },
-    {
-      type: 'input_dummy',
-      name: 'text_description'
-    }
-  ],
-  previousStatement: null,
-  nextStatement: null,
-  colour: 300
-};
-
-const character = {
-  type: "character",
-  tooltip: "Describes a recurring character for your dialog",
-  helpUrl: "",
-  message0: "Name:  %1 %2 ------------- Attributes ------------- %3 Description: %4 %5",
-  args0: [
-    {
-      type: "field_input",
-      name: "name",
-      text: "Enter name"
-    },
-    {
-      type: "input_dummy",
-      name: "name_field"
-    },
-    {
-      type: "input_dummy",
-      name: "attributes_label"
-    },
-    {
-      type: "field_input",
-      name: "characteristics",
-      text: "Describe this character"
-    },
-    {
-      type: "input_dummy",
-      name: "description"
-    }
-  ],
-  output: null,
-  colour: 120
-};
+    ],
+    "colour": 150,
+    "inputsInline": false
+}
+                       
 
 export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
-    dialogLine, dialogText, character
+    backchannelBlock,
 ]);
