@@ -25,14 +25,14 @@ code {
   display: flex;
   flex-direction: column;
   width: 400px;
-  flex: 0 0 400px;
+  flex: 0 0 20%;
   overflow: auto;
   margin: 1rem;
 }
 
 #generatedCode {
   height: 50%;
-  background-color: rgb(247, 240, 228);
+  background-color: rgb(255, 255, 255);
 }
 
 #output {
