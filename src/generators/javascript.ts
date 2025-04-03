@@ -20,6 +20,7 @@ forBlock['backchanneling'] = function(
   let value_frequency = generator.valueToCode(block, 'frequency', Order.ATOMIC);
   const checkbox_verbal = block.getFieldValue('verbal') === 'TRUE' ? 'true' : 'false';
   const checkbox_nodding = block.getFieldValue('nodding') === 'TRUE' ? 'true' : 'false';
+  console.log(value_delay);
   
   // default values
   if (value_delay == "") {
@@ -27,6 +28,14 @@ forBlock['backchanneling'] = function(
   }
   if (value_frequency == "") {
     value_frequency = '100';
+  } else {
+    try {
+      value_frequency = JSON.parse(value_frequency).slider.toString();
+      console.log("json of value_frequency is " + value_frequency);
+    } catch (error) {
+      console.error("Error parsing JSON: ", error);
+      value_frequency = '100';
+    }
   }
 
   const code = {
@@ -35,5 +44,20 @@ forBlock['backchanneling'] = function(
     delay: value_delay,
     frequency: value_frequency
   };
+  console.log(code);
   return JSON.stringify(code);
+}
+
+forBlock['field_slider'] = function(
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  let value_slider = block.getFieldValue('slider_value');
+  if (value_slider == "") {
+    value_slider = '50';
+  }
+  const code = {
+    slider: value_slider
+  };
+  return [JSON.stringify(code), Order.ATOMIC];
 }

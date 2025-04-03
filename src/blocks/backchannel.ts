@@ -1,4 +1,5 @@
 import * as Blockly from 'blockly/core';
+import '@blockly/field-slider';
 
 const backchannelBlock = {
     type: 'backchanneling',
@@ -41,8 +42,26 @@ const backchannelBlock = {
     colour: 150,
     inputsInline: false
 }
+
+const field_slider = {
+    type: 'field_slider',
+    message0: 'slider: %1',
+    args0: [
+        {
+            type: 'field_slider',
+            name: 'slider_value',
+            value: 50,
+            min: 0,
+            max: 100,
+            precision: 1
+        },
+    ],
+    output: 'Number',
+    colour: 270,
+    inputsInline: false
+};
                        
 
 export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
-    backchannelBlock,
+    backchannelBlock, field_slider
 ]);

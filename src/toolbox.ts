@@ -23,5 +23,18 @@ export const toolbox = {
                 nodding: true,
             },
         },
+        {
+            kind: 'block',
+            type: 'field_slider',
+            name: 'slider_value',
+            value: 50,
+        },
+        {
+            kind: 'block',
+            type: 'math_number',
+            fields: {
+                NUM: 123,
+            },
+        },
     ]
 };

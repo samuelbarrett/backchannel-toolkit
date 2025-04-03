@@ -26,6 +26,7 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
+    "@blockly/field-slider": "^7.0.12",
     "blockly": "^11.0.0"
   }
 }

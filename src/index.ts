@@ -31,6 +31,8 @@ const ws = Blockly.inject(blocklyDiv, {toolbox});
 // In a real application, you probably shouldn't use `eval`.
 const runCode = () => {
   let code = javascriptGenerator.workspaceToCode(ws as Blockly.Workspace);
+  //code = code.split(';')[0]; // we don't care about anything beyond the main backchanneling block
+  code = code.split('\n')[0];
   console.log("code is " + code);
   const codeJson = JSON.parse(code);
   sendParameters(codeJson);
@@ -46,14 +48,14 @@ const sendParameters = (codeJson: JSON) => {
   }).then(response => {
     if (response.ok) {
       console.log('Data sent successfully');
-      if (outputDiv) outputDiv.textContent = response.statusText + ": Sota up to date";
+      if (codeDiv) codeDiv.textContent = response.statusText + ": Sota up to date";
     } else {
       console.error('Error sending data');
-      if (outputDiv) outputDiv.textContent = response.statusText;
+      if (codeDiv) codeDiv.textContent = response.statusText;
     }
   }).catch(error => {
     console.error('Error:', error);
-    if (outputDiv) outputDiv.textContent = error.message;
+    if (codeDiv) codeDiv.textContent = error.message;
   });
 }
 
