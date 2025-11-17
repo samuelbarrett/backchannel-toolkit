@@ -44,7 +44,7 @@ forBlock['backchanneling'] = function(
     delay: value_delay,
     frequency: value_frequency
   };
-  console.log(code);
+  console.log("generated code is : " + code);
   return JSON.stringify(code);
 }
 

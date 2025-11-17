@@ -30,12 +30,15 @@ const ws = Blockly.inject(blocklyDiv, {toolbox});
 // generated code from the workspace, and evals the code.
 // In a real application, you probably shouldn't use `eval`.
 const runCode = () => {
-  let code = javascriptGenerator.workspaceToCode(ws as Blockly.Workspace);
+  //let code = javascriptGenerator.workspaceToCode(ws as Blockly.Workspace);
   //code = code.split(';')[0]; // we don't care about anything beyond the main backchanneling block
-  code = code.split('\n')[0];
-  console.log("code is " + code);
-  const codeJson = JSON.parse(code);
-  sendParameters(codeJson);
+  //code = code.split('\n')[0];
+  const blocks = ws.getAllBlocks(true).filter(block => block.type === 'backchanneling');
+  if (blocks.length > 0) {
+    let code = javascriptGenerator.blockToCode(blocks[0]);
+    console.log("code is " + code as string);
+    sendParameters(JSON.parse(code as string));
+  }
 };
 
 const sendParameters = (codeJson: JSON) => {
