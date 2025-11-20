@@ -12,52 +12,55 @@ import * as Blockly from 'blockly/core';
 // This file has no side effects!
 export const forBlock = Object.create(null);
 
-forBlock['backchanneling'] = function(
+// placeholder copied from block factory
+forBlock['robot_dialog'] = function(
   block: Blockly.Block,
-  generator: Blockly.CodeGenerator,
+  generator: Blockly.CodeGenerator, 
 ) {
-  let value_delay = generator.valueToCode(block, 'delay', Order.ATOMIC);
-  let value_frequency = generator.valueToCode(block, 'frequency', Order.ATOMIC);
-  const checkbox_verbal = block.getFieldValue('verbal') === 'TRUE' ? 'true' : 'false';
-  const checkbox_nodding = block.getFieldValue('nodding') === 'TRUE' ? 'true' : 'false';
-  console.log(value_delay);
-  
-  // default values
-  if (value_delay == "") {
-    value_delay = '0';
-  }
-  if (value_frequency == "") {
-    value_frequency = '100';
-  } else {
-    try {
-      value_frequency = JSON.parse(value_frequency).slider.toString();
-      console.log("json of value_frequency is " + value_frequency);
-    } catch (error) {
-      console.error("Error parsing JSON: ", error);
-      value_frequency = '100';
-    }
-  }
+  // TODO: change Order.ATOMIC to the correct operator precedence strength
+  const value_style = generator.valueToCode(block, 'style', Order.ATOMIC);
 
-  const code = {
-    verbal: checkbox_verbal,
-    nodding: checkbox_nodding,
-    delay: value_delay,
-    frequency: value_frequency
-  };
-  console.log("generated code is : " + code);
-  return JSON.stringify(code);
+  const statement_actions = generator.statementToCode(block, 'actions');
+
+  // TODO: Assemble javascript into the code variable.
+  const code = '...';
+  return code;
 }
 
-forBlock['field_slider'] = function(
+// placeholder copied from block factory
+forBlock['listen_keyword_block'] = function(
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {
-  let value_slider = block.getFieldValue('slider_value');
-  if (value_slider == "") {
-    value_slider = '50';
-  }
-  const code = {
-    slider: value_slider
-  };
-  return [JSON.stringify(code), Order.ATOMIC];
+  const dropdown_keyword = block.getFieldValue('keyword');
+
+  // TODO: change Order.ATOMIC to the correct operator precedence strength
+  const value_style = generator.valueToCode(block, 'style', Order.ATOMIC);
+
+  // TODO: Assemble javascript into the code variable.
+  const code = '...';
+  return code;
+}
+
+forBlock['listen_block'] = function(
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const value_style = generator.valueToCode(block, 'style', Order.ATOMIC);
+
+  const code = '...';
+  return code;
+}
+
+forBlock['say_block'] = function(
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const value_content = block.getFieldValue('content');
+  
+  // TODO: change Order.ATOMIC to the correct operator precedence strength 
+  const value_style = generator.valueToCode(block, 'style', Order.ATOMIC);
+  
+  const code = '...';
+  return code;
 }
