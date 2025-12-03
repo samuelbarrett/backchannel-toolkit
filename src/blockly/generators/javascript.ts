@@ -64,3 +64,13 @@ forBlock['say_block'] = function(
   const code = '...';
   return code;
 }
+
+forBlock['style_block'] = function(
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const dropdown_style_option = block.getFieldValue('style_option');
+  
+  const code = '...';
+  return [code, Order.NONE];
+}
