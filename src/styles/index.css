@@ -10,9 +10,28 @@ code {
 
 #pageContainer {
   display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: 100vw;
   height: 100vh;
+}
+
+#header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #eee;
+  background-color: #68946c;
+}
+
+#pageTitle {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+  font-family: 'Roboto', sans-serif;
+  color: #ffffff;
 }
 
 #blocklyDiv {
@@ -21,20 +40,11 @@ code {
   min-width: 600px;
 }
 
-#outputPane {
-  display: flex;
-  flex-direction: column;
-  width: 400px;
-  flex: 0 0 20%;
-  overflow: auto;
-  margin: 1rem;
-}
-
-#generatedCode {
-  height: 50%;
-  background-color: rgb(255, 255, 255);
-}
-
-#output {
-  height: 50%;
+.roboto-google-font {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
 }
