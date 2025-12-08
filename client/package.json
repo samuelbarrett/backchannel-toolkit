@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@blockly/field-slider": "^7.0.12",
+    "@ljharb/tsconfig": "^0.3.2",
     "blockly": "^11.0.0"
   }
 }
