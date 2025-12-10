@@ -1,0 +1,43 @@
+openapi: 3.0.3
+info:
+  title: Backchannel Toolkit API
+  version: 1.0.0
+  description: API for communication between Node.js client and Python backend
+servers:
+  - url: http://localhost:5000
+paths:
+  /status:
+    get:
+      summary: Get server status
+      responses:
+        '200':
+          description: Server status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Server is running
+  /command:
+    post:
+      summary: Send a command to the server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Command received
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  received_command:
+                    type: object
+                    additionalProperties: true
