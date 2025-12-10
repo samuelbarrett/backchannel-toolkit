@@ -10,7 +10,7 @@ This project consists of a client, server, and a robot application.
 | Component | Description |
 |---|---|
 | Client | NodeJS web-based application built with Google Blockly |
-| Server | Stateful Python server and APIs for  communicating between client and robot |
+| Server | Stateful Python server and APIs for communicating between client and robot |
 | Robot | Java application run on a VStone Sota (Edison edition) robot |
 
 ## Usage
