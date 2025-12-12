@@ -48,3 +48,10 @@ code {
   font-variation-settings:
     "wdth" 100;
 }
+
+#playButton {
+  float: right;
+  margin-top: 8px;
+  font-size: 1rem;
+  padding: 6px 16px;
+}
