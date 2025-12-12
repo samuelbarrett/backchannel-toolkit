@@ -3,9 +3,12 @@
  * Copyright 2023 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
-// some code in this file is originally from Google and modified for the purposes of this project
+// some code in this file is originally from Blockly
+// and modified for the purposes of this project
+// https://github.com/RaspberryPiFoundation/blockly-samples
 
 import * as Blockly from 'blockly/core';
+import { log } from '../../services/debug-log';
 
 // Export all the code generators for our custom blocks,
 // but don't register them with Blockly yet.
@@ -17,8 +20,9 @@ forBlock['robot_dialog'] = function(
   block: Blockly.Block,
   generator: Blockly.CodeGenerator, 
 ) {
-  console.log("generating code for robot dialog block");
-  
+  log("generating code for robot dialog block");
+  const code = `BlockCodeService.robotDialog();\n`;
+  return code;
 }
 
 // placeholder copied from block factory

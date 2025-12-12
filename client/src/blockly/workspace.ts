@@ -3,7 +3,9 @@
  * Copyright 2023 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
-// some code in this file is originally from Google and modified for the purposes of this project
+// some code in this file is originally from Blockly
+// and modified for the purposes of this project
+// https://github.com/RaspberryPiFoundation/blockly-samples
 
 /**
  * Blockly Workspace Module
@@ -18,6 +20,7 @@ import {forBlock} from './generators/generators';
 import {javascriptGenerator} from 'blockly/javascript';
 import {save, load} from '../services/serialization';
 import {toolbox} from './toolbox';
+import { log } from '../services/debug-log';
 
 let workspace: Blockly.WorkspaceSvg;
 
