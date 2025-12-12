@@ -3,7 +3,7 @@ export const sayBlockJson = [{
   "type": "say_block",
   "tooltip": "Makes the robot say the words typed into the text box.",
   "helpUrl": "",
-  "message0": "Say %1 %2 Style: %3",
+  "message0": "Say %1 %2 Style%3",
   "args0": [
     {
       "type": "field_input",
