@@ -17,6 +17,3 @@ def define_routes(app):
   def command():
       content = request.json
       return jsonify({"received_command": content}), 200
-
-if __name__ == "__main__":
-    start()
