@@ -1,8 +1,8 @@
 import asyncio
 import random
 
-from server.robot.events.RobotEvent import RobotEvent
-from server.robot.RobotTask import RobotTask
+from robot.behaviors.RobotEvent import RobotEvent
+from robot.behaviors.RobotTask import RobotTask
 
 class BehaviorScheduler:
   def __init__(self, robot):

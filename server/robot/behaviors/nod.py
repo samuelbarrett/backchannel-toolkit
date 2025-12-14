@@ -1,6 +1,6 @@
 import asyncio
 import random
-from server.robot.events.RobotEvent import RobotEvent
+from robot.behaviors.RobotEvent import RobotEvent
 
 # Example behavior coroutines
 async def nod_behavior(event_queue):
