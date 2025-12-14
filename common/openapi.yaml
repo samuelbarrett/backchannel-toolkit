@@ -5,6 +5,62 @@ info:
   description: API for communication between Node.js client and Python backend
 servers:
   - url: http://localhost:5000
+components:
+  schemas:
+    Style:
+      type: object
+      additionalProperties: false
+      properties:
+        nodding:
+          type: object
+          additionalProperties: false
+          properties:
+            enabled:
+              type: boolean
+              description: Whether to nod while speaking
+            frequency:
+              type: number
+              description: Frequency of nodding (nodding per second)
+            intensity:
+              type: number
+              description: Intensity of nodding
+            vertical:
+              type: boolean
+              description: Whether to nod vertically
+            horizontal:
+              type: boolean
+              description: Whether to nod horizontally
+        utterances:
+          type: object
+          additionalProperties: false
+          properties:
+            enabled:
+              type: boolean
+              description: Whether to use verbal utterances
+            utterance_frequency:
+              type: number
+              description: Frequency of utterances
+            utterance_volume:
+              type: number
+              description: Volume of utterances
+            utterance_list:
+              type: array
+              items:
+                type: string
+              description: List of utterances to use
+        gaze:
+          type: object
+          additionalProperties: false
+          properties:
+            enabled:
+              type: boolean
+              description: Whether to use gaze behavior
+            eye_contact:
+              type: number
+              description: Frequency of eye contact
+            shift_gaze:
+              type: number
+              description: Frequency of gaze shifts
 paths:
   /status:
     get:
@@ -20,15 +76,21 @@ paths:
                   status:
                     type: string
                     example: Server is running
-  /command:
+  /command/speak:
     post:
-      summary: Send a command to the server
+      summary: Send a speak command to the server
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              properties:
+                text:
+                  type: string
+                  description: This is what I, the robot, will say.
+                style:
+                  $ref: '#/components/schemas/Style'
               additionalProperties: true
       responses:
         '200':
@@ -39,5 +101,56 @@ paths:
                 type: object
                 properties:
                   received_command:
-                    type: object
-                    additionalProperties: true
+                    type: string
+                    example: Speak command received
+  /command/listenSilence:
+    post:
+      summary: Send a command for the robot to listen until it detects silence
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                style:
+                  $ref: '#/components/schemas/Style'
+              additionalProperties: true
+      responses:
+        '200':
+          description: Command received
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  received_command:
+                    type: string
+                    example: ListenUntilSilence command received
+  /command/listenKeyword:
+    post:
+      summary: Send a command for the robot to listen until it detects a keyword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                keyword:
+                  type: string
+                  description: The keyword to listen for
+                style:
+                  $ref: '#/components/schemas/Style'
+              additionalProperties: true
+      responses:
+        '200':
+          description: Command received
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  received_command:
+                    type: string
+                    example: ListenUntilKeyword command received
