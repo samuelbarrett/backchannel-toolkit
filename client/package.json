@@ -30,6 +30,7 @@
     "@blockly/field-slider": "^7.0.12",
     "@ljharb/tsconfig": "^0.3.2",
     "debug": "^4.4.3",
+    "dotenv": "^17.2.3",
     "openapi-fetch": "^0.15.0"
   }
 }
