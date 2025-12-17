@@ -1,69 +1,47 @@
 // handles calls to the backend API
 
 import type { paths } from './openapi-types';
+import createClient from 'openapi-fetch';
 
 type StatusResponse = paths['/status']['get']['responses']['200']['content']['application/json'];
-type CommandRequest = paths['/command']['post']['requestBody']['content']['application/json'];
-type CommandResponse = paths['/command']['post']['responses']['200']['content']['application/json'];
+type SpeakRequestBody = paths['/command/speak']['post']['requestBody']['content']['application/json'];
+type SpeakResponse = paths['/command/speak']['post']['responses']['200']['content']['application/json'];
+type listenSilenceRequestBody = paths['/command/listenSilence']['post']['requestBody']['content']['application/json'];
+type listenSilenceResponse = paths['/command/listenSilence']['post']['responses']['200']['content']['application/json'];
+type listenKeywordRequestBody = paths['/command/listenKeyword']['post']['requestBody']['content']['application/json'];
+type listenKeywordResponse = paths['/command/listenKeyword']['post']['responses']['200']['content']['application/json'];
 
-/**
- * query the server status
- * @returns StatusResponse object with the server status
- */
-export async function getStatus(): Promise<StatusResponse> {
-  try {
-    const response = await fetch('/status', {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' }
-    });
+const client = createClient<paths>({
+  baseUrl: process.env.API_BASE_URL,
+});
 
-    if (!response.ok) {
-      let body: any;
-      try {
-        body = await response.json();
-      } catch {
-        body = { message: response.statusText || 'Unknown error' };
-      }
-      throw new Error(`Error fetching /status: ${response.status} ${body.message}`);
+export const backendService = {
+  getStatus: async (): Promise<StatusResponse> => {
+    const {data, error} = await client.GET('/status');
+    if (error || !data) {
+      console.error('Error fetching status from backend:', error);
     }
-
-    const json = (await response.json()) as StatusResponse;
-    return json;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
-
-/**
- * post a command to the server
- * @param commandData object containing the command data
- */
-export async function postCommand(commandData: CommandRequest): Promise<CommandResponse> {
-  try {
-    const response = await fetch('/command', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(commandData)
-    });
-
-    if (!response.ok) {
-      let body: any;
-      try {
-        body = await response.json();
-      } catch {
-        body = { message: response.statusText || 'Unknown error' };
-      }
-      throw new Error(`Error posting to /command: ${response.status} ${body.message}`);
+    return data;
+  },
+  speak: async (body: SpeakRequestBody): Promise<SpeakResponse> => {
+    const {data, error} = await client.POST('/command/speak', {body});
+    if (error || !data) {
+      console.error('Error sending speak command to backend:', error);
     }
-
-    const json = (await response.json()) as CommandResponse;
-    return json;
-  } catch (error) {
-    console.log(error);
-    throw error;
+    return data;
+  },
+  listenSilence: async (body: listenSilenceRequestBody): Promise<listenSilenceResponse> => {
+    const {data, error} = await client.POST('/command/listenSilence', {body});
+    if (error || !data) {
+      console.error('Error sending listenSilence command to backend:', error);
+    }
+    return data;
+  },
+  listenKeyword: async (body: listenKeywordRequestBody): Promise<listenKeywordResponse> => {
+    const {data, error} = await client.POST('/command/listenKeyword', {body});
+    if (error || !data) {
+      console.error('Error sending listenKeyword command to backend:', error);
+    }
+    return data;
   }
-}
+};
