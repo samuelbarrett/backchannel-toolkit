@@ -24,4 +24,4 @@ This is a stub. Eventually, I'll have a nifty tool to spin everything up at once
 #### API
 The API follows an OpenAPI Schema which was used to create classes and models for each endpoint in the backend, and corresponding typescript types in the client, all done using a rule-based generator `openapi-generator`.
 
-The API documentation is generated HTML in `commmon/openapi-docs`. To view the API documentation, run `npm docs` which will serve the docs as a locally-hosted webpage.
+The API documentation is generated HTML in `commmon/openapi-docs`. To view the API documentation, run `npm run docs` which will serve the docs as a locally-hosted webpage.
