@@ -23,8 +23,10 @@ const config = {
   devServer: {
     static: 'dist',
     proxy: {
-      '/': 'http://localhost:3000',
-      changeOrigin: true,
+      '/status': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
     },
   },
   module: {
