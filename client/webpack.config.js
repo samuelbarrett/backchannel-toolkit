@@ -21,7 +21,11 @@ const config = {
   },
   // Enable webpack-dev-server to get hot refresh of the app.
   devServer: {
-    static: './build',
+    static: 'dist',
+    proxy: {
+      '/': 'http://localhost:3000',
+      changeOrigin: true,
+    },
   },
   module: {
     rules: [
