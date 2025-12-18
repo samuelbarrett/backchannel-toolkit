@@ -1,5 +1,14 @@
+const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const dotenv = require('dotenv');
+
+const env = dotenv.config.parsed || {};
+
+const envKeys = Object.keys(env).reduce((prev, next) => {
+  prev[`process.env.${next}`] = JSON.stringify(env[next]);
+  return prev;
+}, {});
 
 // Base config that applies to either development or production mode.
 const config = {
@@ -12,7 +21,11 @@ const config = {
   },
   // Enable webpack-dev-server to get hot refresh of the app.
   devServer: {
-    static: './build',
+    static: 'dist',
+    proxy: {
+      '/': 'http://localhost:3000',
+      changeOrigin: true,
+    },
   },
   module: {
     rules: [
@@ -38,6 +51,7 @@ const config = {
     new HtmlWebpackPlugin({
       template: 'src/index.html',
     }),
+    new webpack.DefinePlugin(envKeys),
   ],
 };
 

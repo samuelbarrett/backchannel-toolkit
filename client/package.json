@@ -5,10 +5,12 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:ts": "tsc --noEmit",
     "build": "webpack --mode production",
     "start": "webpack serve --open --mode development --env DEBUG=app:log",
-    "generate-types": "openapi-typescript ../common/openapi.yaml -o src/js/services/openapi-types.ts"
+    "server": "npx tsx src/services/api/api.ts",
+    "generate-types": "openapi-typescript ../common/openapi.yaml -o src/services/openapi-types.ts",
+    "docs": "npx serve ../common/openapi-docs"
   },
   "author": "Samuel Barrett",
   "license": "Apache-2.0",
@@ -20,7 +22,8 @@
     "source-map-loader": "^4.0.1",
     "style-loader": "^3.3.1",
     "ts-loader": "^9.4.2",
-    "typescript": "^5.0.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
     "webpack": "^5.76.0",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.11.1"
@@ -28,6 +31,10 @@
   "dependencies": {
     "@blockly/field-slider": "^7.0.12",
     "@ljharb/tsconfig": "^0.3.2",
+    "@types/express": "^4.17.25",
     "debug": "^4.4.3",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "openapi-fetch": "^0.15.0"
   }
 }

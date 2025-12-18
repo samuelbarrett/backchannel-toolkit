@@ -6,7 +6,9 @@
     "declarationMap": true,
     "module": "ES2015",
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "target": "ES2015",
-    "strict": true
+    "strict": true,
+    "noUncheckedIndexedAccess": true
   }
 }

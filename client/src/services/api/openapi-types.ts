@@ -43,7 +43,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/command": {
+    "/command/speak": {
         parameters: {
             query?: never;
             header?: never;
@@ -52,7 +52,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Send a command to the server */
+        /** Send a speak command to the server */
         post: {
             parameters: {
                 query?: never;
@@ -63,6 +63,10 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
+                        /** @description This is what I, the robot, will say. */
+                        text?: string;
+                        style?: components["schemas"]["Style"];
+                    } & {
                         [key: string]: unknown;
                     };
                 };
@@ -75,9 +79,104 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            received_command?: {
-                                [key: string]: unknown;
-                            };
+                            /** @example Speak command received */
+                            received_command?: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/command/listenSilence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send a command for the robot to listen until it detects silence */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        style?: components["schemas"]["Style"];
+                    } & {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            responses: {
+                /** @description Command received */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example ListenUntilSilence command received */
+                            received_command?: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/command/listenKeyword": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send a command for the robot to listen until it detects a keyword */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** @description The keyword to listen for */
+                        keyword?: string;
+                        style?: components["schemas"]["Style"];
+                    } & {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            responses: {
+                /** @description Command received */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example ListenUntilKeyword command received */
+                            received_command?: string;
                         };
                     };
                 };
@@ -92,7 +191,40 @@ export interface paths {
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: never;
+    schemas: {
+        Style: {
+            nodding?: {
+                /** @description Whether to nod while speaking */
+                enabled?: boolean;
+                /** @description Frequency of nodding (nodding per second) */
+                frequency?: number;
+                /** @description Intensity of nodding */
+                intensity?: number;
+                /** @description Whether to nod vertically */
+                vertical?: boolean;
+                /** @description Whether to nod horizontally */
+                horizontal?: boolean;
+            };
+            utterances?: {
+                /** @description Whether to use verbal utterances */
+                enabled?: boolean;
+                /** @description Frequency of utterances */
+                utterance_frequency?: number;
+                /** @description Volume of utterances */
+                utterance_volume?: number;
+                /** @description List of utterances to use */
+                utterance_list?: string[];
+            };
+            gaze?: {
+                /** @description Whether to use gaze behavior */
+                enabled?: boolean;
+                /** @description Frequency of eye contact */
+                eye_contact?: number;
+                /** @description Frequency of gaze shifts */
+                shift_gaze?: number;
+            };
+        };
+    };
     responses: never;
     parameters: never;
     requestBodies: never;

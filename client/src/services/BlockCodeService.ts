@@ -4,17 +4,17 @@
  * These functions are exposed globally in the window as the BlockCodeService object, making them callable by the generated code.
  */
 
-import * as api from './api/backend-service';
-import type { paths } from './api/openapi-types';
-
-type StatusResponse = paths['/status']['get']['responses']['200']['content']['application/json'];
-
 export const BlockCodeService = {
-  robotDialog: () => {
+  robotDialog: async () => {
     console.log('BlockCodeService.robotDialog called');
+    const response = await fetch('/status', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
   },
   say: (message: string) => {
     console.log('BlockCodeService.say called with message:', message);
+
   },
   listenForKeyword: (keyword: string) => {
     console.log('BlockCodeService.listenForKeyword called with keyword:', keyword);

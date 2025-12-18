@@ -37,7 +37,7 @@ export const initWorkspace = () => {
   if (!blocklyDiv) {
     throw new Error(`div with id 'blocklyDiv' not found`);
   }
-
+  console.log('Injecting Blockly workspace...');
   workspace = Blockly.inject(blocklyDiv, {toolbox});
 
   if (workspace) {
@@ -59,13 +59,25 @@ const addEventListeners = () => {
       }
     });
 
-    // TODO: add event listener for the run code button
+    const runButton = document.getElementById('playButton');
+    runButton?.addEventListener('click', () => {
+      console.log('Run button clicked');
+      runCode();
+    });
 };
 
 /**
  * evaluates the generated code from the blocks in the workspace.
  */
 const runCode = () => {
-  
+  const blocks: Blockly.Block[] = workspace.getAllBlocks(true).filter((block) => block.type === 'robot_dialog_block');
+  if (blocks.length > 0) {
+    const code = javascriptGenerator.workspaceToCode(workspace);
+    log('Generated code:\n' + code);
+    // eslint-disable-next-line no-eval
+    eval(code);
+  } else {
+    log('No robot dialog block found in workspace.');
+  }
 };
 

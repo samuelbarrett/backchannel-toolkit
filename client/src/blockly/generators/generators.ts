@@ -16,7 +16,7 @@ import { log } from '../../services/debug-log';
 export const forBlock = Object.create(null);
 
 // placeholder copied from block factory
-forBlock['robot_dialog'] = function(
+forBlock['robot_dialog_block'] = function(
   block: Blockly.Block,
   generator: Blockly.CodeGenerator, 
 ) {
