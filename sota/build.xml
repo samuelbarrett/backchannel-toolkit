@@ -96,32 +96,8 @@
 
         <target name="make_jars" depends="compile">
                 <antcall target="__make_jar">
-                        <param name="jar.class" value="Main" />
-                        <param name="jar.name" value="Main.jar" />
-                </antcall>
-                <antcall target="__make_jar">
-                        <param name="jar.class" value="samples.SotaUDPDemo" />
-                        <param name="jar.name" value="SotaUDPDemo.jar" />
-                </antcall>
-                <antcall target="__make_jar">
-                        <param name="jar.class" value="samples.SotaDemo" />
-                        <param name="jar.name" value="SotaDemo.jar" />
-                </antcall>
-                <antcall target="__make_jar">
-                        <param name="jar.class" value="samples.ReceiveUDPDemo" />
-                        <param name="jar.name" value="ReceiveUDPDemo.jar" />
-                </antcall>
-                <antcall target="__make_jar">
-                        <param name="jar.class" value="samples.SilenceDetectionDemo" />
-                        <param name="jar.name" value="SilenceDetectionDemo.jar" />
-                </antcall>
-                <antcall target="__make_jar">
                         <param name="jar.class" value="dialog.SotaDialog" />
                         <param name="jar.name" value="SotaDialog.jar" />
-                </antcall>
-                <antcall target="__make_jar_dialogserver">
-                        <param name="jar.class" value="dialog.DialogServer" />
-                        <param name="jar.name" value="DialogServer.jar" />
                 </antcall>
                 <antcall target="__make_jar">
                         <param name="jar.class" value="tools.AS3_1" />
