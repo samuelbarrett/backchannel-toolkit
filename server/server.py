@@ -1,6 +1,6 @@
 # main file for the server application
 
-import server.api.api as api
+import api.api as api
 
 def main():
   initialize_server()

@@ -1,4 +1,5 @@
 import express from 'express';
+import 'dotenv/config';
 import { backendService } from './BackendService';
 
 const app = express();
@@ -12,6 +13,6 @@ app.get('/status', async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log('Backend API server is running on http://localhost:3000');
+app.listen(process.env.NODE_PORT, () => {
+  console.log(`Backend API server is running on http://localhost:${process.env.NODE_PORT}`);
 });

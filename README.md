@@ -17,7 +17,16 @@ This project consists of a user-facing web client, Python backend, and a thin cl
 
 ### Running the code
 
-This is a stub. Eventually, I'll have a nifty tool to spin everything up at once... right?
+Make sure to install Node modules and Python packages as required, in their respective directories (i.e., `client/` for Node, and `server/` for Python).
+
+Run the following in separate terminals, and the Sota jar on the Sota robot.
+
+| Component | Command | Description |
+|---|---|---|
+| Frontend UI | `npm start` | Serves frontend webpack bundle |
+| NodeJS server | `npm run server` | Runs Node Express backend handling UI logic |
+| Python backend | `python3 -m server` | Runs Python backend server |
+| Sota client | `java -jar <nameofjar>.jar` | Runs Sota-side thin client |
 
 ### Development
 
