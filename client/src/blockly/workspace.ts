@@ -21,12 +21,14 @@ import {javascriptGenerator} from 'blockly/javascript';
 import {save, load} from '../services/serialization';
 import {toolbox} from './toolbox';
 import { log } from '../services/debug-log';
+import { FieldStyleOptions } from './fields/field_style_options';
 
 let workspace: Blockly.WorkspaceSvg;
 
 export const initWorkspace = () => {
-  // Register the blocks and generator with Blockly
+  // Register the blocks, fields, and generator with Blockly
   Blockly.common.defineBlocks(blocks);
+  Blockly.fieldRegistry.register('field_style_options', FieldStyleOptions);
   Object.assign(javascriptGenerator.forBlock, forBlock);
 
   // Set up UI elements and inject Blockly
