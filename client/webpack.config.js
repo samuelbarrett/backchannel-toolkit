@@ -18,10 +18,16 @@ const config = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
+    publicPath: '/',
   },
   // Enable webpack-dev-server to get hot refresh of the app.
   devServer: {
-    static: 'dist',
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    },
+    devMiddleware: {
+      publicPath: '/',
+    },
     proxy: {
       '/status': {
         target: 'http://localhost:3000',
@@ -40,6 +46,13 @@ const config = {
         // Load CSS files. They can be imported into JS files.
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: '[name][ext]',
+        }
       },
     ],
   },

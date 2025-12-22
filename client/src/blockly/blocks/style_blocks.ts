@@ -1,17 +1,16 @@
+/* @ts-ignore */
+import settingsIcon from '../../assets/sliders-solid-full.svg';
+
 export const happyStyleBlockJson = {
   "type": "style_happy_block",
   "tooltip": "",
   "helpUrl": "",
-  "message0": "Happy %1 %2",
+  "message0": "Happy %1",
   "args0": [
-    {
-      "type": "input_dummy",
-      "name": "title"
-    },
     {
       "type": "field_style_options",
       "name": "styleOptions",
-      "src": "../../assets/sliders-solid-full.svg",
+      "src": settingsIcon,
       "width": 24,
       "height": 24,
       "alt": "Style Options"
@@ -26,16 +25,12 @@ export const sadStyleBlockJson = {
   "type": "style_sad_block",
   "tooltip": "",
   "helpUrl": "",
-  "message0": "Sad %1 %2",
+  "message0": "Sad %1",
   "args0": [
-    {
-      "type": "input_dummy",
-      "name": "title"
-    },
     {
       "type": "field_style_options",
       "name": "styleOptions",
-      "src": "../../assets/sliders-solid-full.svg",
+      "src": settingsIcon,
       "width": 24,
       "height": 24,
       "alt": "Style Options"
@@ -50,16 +45,12 @@ export const excitedStyleBlockJson = {
   "type": "style_excited_block",
   "tooltip": "",
   "helpUrl": "",
-  "message0": "Excited %1 %2",
+  "message0": "Excited %1",
   "args0": [
-    {
-      "type": "input_dummy",
-      "name": "title"
-    },
     {
       "type": "field_style_options",
       "name": "styleOptions",
-      "src": "../../assets/sliders-solid-full.svg",
+      "src": settingsIcon,
       "width": 24,
       "height": 24,
       "alt": "Style Options"
@@ -74,16 +65,12 @@ export const boredStyleBlockJson = {
   "type": "style_bored_block",
   "tooltip": "",
   "helpUrl": "",
-  "message0": "Bored %1 %2",
+  "message0": "Bored %1",
   "args0": [
-    {
-      "type": "input_dummy",
-      "name": "title"
-    },
     {
       "type": "field_style_options",
       "name": "styleOptions",
-      "src": "../../assets/sliders-solid-full.svg",
+      "src": settingsIcon,
       "width": 24,
       "height": 24,
       "alt": "Style Options"
