@@ -48,7 +48,7 @@ const config = {
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        test: /\.(png|svg|jpg|jpeg|gif|ico)$/i,
         type: 'asset/resource',
         generator: {
           filename: '[name][ext]',
@@ -65,6 +65,7 @@ const config = {
     // created above added in a script tag.
     new HtmlWebpackPlugin({
       template: 'src/index.html',
+      favicon: './public/favicon.ico',
     }),
     new webpack.DefinePlugin(envKeys),
   ],
