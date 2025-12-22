@@ -10,12 +10,52 @@ export class FieldStyleOptions extends Blockly.FieldImage {
   constructor(src: string | typeof Blockly.Field.SKIP_SETUP, width: string | number, height: string | number, alt?: string, onClick?: (p1: Blockly.FieldImage) => void, flipRtl?: boolean, config?: Blockly.FieldImageConfig) {
     super(src, width, height, alt, onClick, flipRtl, config);
     this.SERIALIZABLE = true;
+    this.setOnClickHandler(this.onClick);
+    this.setTooltip("Click to modify this style");
   }
 
   public setStyle(style: Style) {
     this.style = style;
   }
 
+  /**
+   * Handler for click action
+   */
+  private onClick = (p1: Blockly.FieldImage) => {
+    this.showEditor_();
+  }
+
+  /**
+   * Override showEditor_ to show custom UI for editing style options
+   * @param event Optional mouse event that triggered the editor to open (we don't use this since we call it programmatically)
+   */
+  protected showEditor_(event?: Event) {
+    const editorDiv = this.dropdownCreate_();
+    Blockly.DropDownDiv.getContentDiv().appendChild(editorDiv);
+    Blockly.DropDownDiv.showPositionedByField(this, this.dropdownDispose_.bind(this));
+  }
+
+  /**
+   * Create the dropdown editor UI
+   * @return The HTML element for the dropdown editor
+   */
+  dropdownCreate_(): HTMLElement {
+    const editorDiv = document.createElement('editor-div');
+    editorDiv.textContent = "Style options editor goes here.";
+    return editorDiv;
+  }
+
+  /**
+   * Dispose of the dropdown editor
+   */
+  dropdownDispose_() {
+    // HTML cleanup is handled automaticcally, and we don't have any event listeners to clean up (yet)
+  }
+
+  /**
+   * Override fromJson
+   * @param options The JSON data defining the field.
+   */
   static fromJson(options: any) {
     const value = Blockly.utils.parsing.replaceMessageReferences(options.src);
     return new FieldStyleOptions(
