@@ -1,5 +1,7 @@
 import * as Blockly from 'blockly';
 import { Style } from 'src/models/style';
+import { createRoot } from 'react-dom/client';
+import StyleOptionsPane from '../../components/StyleOptionsPane';
 
 /**
  * Custom Blockly field for storing and editing the Style block's options
@@ -41,7 +43,8 @@ export class FieldStyleOptions extends Blockly.FieldImage {
    */
   dropdownCreate_(): HTMLElement {
     const editorDiv = document.createElement('editor-div');
-    editorDiv.textContent = "Style options editor goes here.";
+    const editorRoot = createRoot(editorDiv);
+    editorRoot.render(<StyleOptionsPane />)
     return editorDiv;
   }
 

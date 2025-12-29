@@ -12,7 +12,7 @@ const envKeys = Object.keys(env).reduce((prev, next) => {
 
 // Base config that applies to either development or production mode.
 const config = {
-  entry: './src/index.ts',
+  entry: './src/index.tsx',
   output: {
     // Compile the source files into a bundle.
     filename: 'bundle.js',

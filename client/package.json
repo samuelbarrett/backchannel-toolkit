@@ -16,6 +16,8 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/debug": "^4.1.12",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "css-loader": "^6.7.1",
     "html-webpack-plugin": "^5.5.0",
     "openapi-typescript": "^7.10.1",
@@ -35,6 +37,8 @@
     "debug": "^4.4.3",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "openapi-fetch": "^0.15.0"
+    "openapi-fetch": "^0.15.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
   }
 }
