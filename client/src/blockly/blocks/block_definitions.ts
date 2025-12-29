@@ -24,28 +24,32 @@ const allJson = [
 Blockly.Blocks['style_happy_block'] = {
   init: function() {
     this.jsonInit(happyStyleBlockJson);
-    this.setFieldValue(happy_style, "styleOptions");
+    const styleOptionsField = this.getField('styleOptions') as any;
+    styleOptionsField.setStyle(happy_style);
   }
 };
 
 Blockly.Blocks['style_sad_block'] = {
   init: function() {
     this.jsonInit(sadStyleBlockJson);
-    this.setFieldValue(sad_style, "styleOptions");
+    const styleOptionsField = this.getField('styleOptions') as any;
+    styleOptionsField.setStyle(sad_style);
   }
 };
 
 Blockly.Blocks['style_excited_block'] = {
   init: function() {
     this.jsonInit(excitedStyleBlockJson);
-    this.setFieldValue(excited_style, "styleOptions");
+    const styleOptionsField = this.getField('styleOptions') as any;
+    styleOptionsField.setStyle(excited_style);
   }
 };
 
 Blockly.Blocks['style_bored_block'] = {
   init: function() {
     this.jsonInit(boredStyleBlockJson);
-    this.setFieldValue(bored_style, "styleOptions");
+    const styleOptionsField = this.getField('styleOptions') as any;
+    styleOptionsField.setStyle(bored_style);
   }
 };
 

@@ -20,6 +20,10 @@ export class FieldStyleOptions extends Blockly.FieldImage {
     this.style = style;
   }
 
+  public getStyle(): Style | null {
+    return this.style;
+  }
+
   /**
    * Handler for click action
    */
@@ -44,7 +48,7 @@ export class FieldStyleOptions extends Blockly.FieldImage {
   dropdownCreate_(): HTMLElement {
     const editorDiv = document.createElement('editor-div');
     const editorRoot = createRoot(editorDiv);
-    editorRoot.render(<StyleOptionsPane />)
+    editorRoot.render(<StyleOptionsPane robotStyle={this.style!} />)
     return editorDiv;
   }
 
@@ -70,5 +74,20 @@ export class FieldStyleOptions extends Blockly.FieldImage {
       options.flipRtl,
       options
     );
+  }
+
+  /**
+   * Serialization methods
+   */
+  saveState(): any {
+    return {
+      'style': this.getStyle(),
+    };
+  }
+
+  loadState(state: any) {
+    if (!this.getStyle()) {
+      this.setStyle(state['style']);
+    }
   }
 }
