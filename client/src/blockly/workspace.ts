@@ -21,7 +21,7 @@ import {javascriptGenerator} from 'blockly/javascript';
 import {save, load} from '../services/serialization';
 import {toolbox} from './toolbox';
 import { log } from '../services/debug-log';
-import { FieldStyleOptions } from './fields/field_style_options';
+import { FieldStyleOptions } from './fields/FieldStyleOptions';
 
 let workspace: Blockly.WorkspaceSvg;
 

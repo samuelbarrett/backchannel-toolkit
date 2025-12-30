@@ -1,5 +1,5 @@
 import * as Blockly from 'blockly';
-import { Style } from 'src/models/style';
+import { Style } from '../../models/style';
 import { createRoot } from 'react-dom/client';
 import StyleOptionsPane from '../../components/StyleOptionsPane';
 
@@ -48,7 +48,30 @@ export class FieldStyleOptions extends Blockly.FieldImage {
   dropdownCreate_(): HTMLElement {
     const editorDiv = document.createElement('editor-div');
     const editorRoot = createRoot(editorDiv);
-    editorRoot.render(<StyleOptionsPane robotStyle={this.style!} />)
+
+    const render = (style: Style) => {
+      editorRoot.render(
+        <StyleOptionsPane 
+          robotStyle={style} 
+          onChange={(newStyle: Style) => {
+            this.setStyle(newStyle);
+            render(newStyle);
+          }}
+        />
+      );
+    }
+
+    if (this.style) {
+      render(this.style);
+    } else {
+      // fallback to a default placeholder if none is set
+      render(new Style(
+        false, 50, 50, false, false,
+        false, 50, 50,
+        [], false, 50, 50
+      ));
+    }
+
     return editorDiv;
   }
 
