@@ -1,9 +1,10 @@
-const webpack = require('webpack');
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const dotenv = require('dotenv');
+import webpack from 'webpack';
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import dotenv from 'dotenv';
 
 const env = dotenv.config.parsed || {};
+const __dirname = import.meta.dirname;
 
 const envKeys = Object.keys(env).reduce((prev, next) => {
   prev[`process.env.${next}`] = JSON.stringify(env[next]);
@@ -71,7 +72,7 @@ const config = {
   ],
 };
 
-module.exports = (env, argv) => {
+export default (env, argv) => {
   if (argv.mode === 'development') {
     // Set the output path to the `build` directory
     // so we don't clobber production builds.
@@ -85,7 +86,7 @@ module.exports = (env, argv) => {
     // Include the source maps for Blockly for easier debugging Blockly code.
     config.module.rules.push({
       test: /(blockly\/.*\.js)$/,
-      use: [require.resolve('source-map-loader')],
+      use: [import.meta.resolve('source-map-loader')],
       enforce: 'pre',
     });
 

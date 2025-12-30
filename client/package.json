@@ -4,6 +4,7 @@
   "description": "A visual prototyping interface for designing robot backchanneling.",
   "main": "index.js",
   "private": true,
+  "type": "module",
   "scripts": {
     "test:ts": "tsc --noEmit",
     "build": "webpack --mode production",
