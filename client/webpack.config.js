@@ -40,7 +40,12 @@ const config = {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        use: [
+          { 
+            loader: 'ts-loader',
+            options: { transpileOnly: true },
+          },
+        ],
         exclude: /node_modules/,
       },
       {
@@ -58,7 +63,10 @@ const config = {
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.ts', '.tsx', '.js'],
+    extensionAlias: {
+      '.js': ['.ts', '.tsx', '.js'],
+    }
   },
   plugins: [
     // Generate the HTML index page based on our template.

@@ -2,15 +2,17 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import Box from '@mui/material/Box/Box';
-import Slider from '@mui/material/Slider/Slider';
-import Divider from '@mui/material/Divider/Divider';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch/Switch';
-import Typography from '@mui/material/Typography/Typography';
+import { 
+  Box,
+  Typography,
+  Switch,
+  FormControlLabel,
+  Divider,
+  Slider,
+  Stack
+} from '@mui/material';
 import { useState } from 'react';
-import { Style } from '../models/style';
-import { Container, Stack } from '@mui/material';
+import { Style } from '../models/style.ts';
 
 type Props = {
   robotStyle: Style;

@@ -3,10 +3,10 @@
  */
 
 import './styles/index.css';
-import {initWorkspace} from './blockly/workspace';
-import { BlockCodeService } from './services/BlockCodeService';
+import { initWorkspace } from './blockly/workspace.ts';
+import { BlockCodeService } from './services/BlockCodeService.ts';
 import { createRoot } from 'react-dom/client';
-import Header from './components/Header';
+import Header from './components/Header.tsx';
 
 const main = () => {
   console.log('Initializing client...');

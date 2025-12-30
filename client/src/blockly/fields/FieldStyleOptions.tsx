@@ -1,7 +1,7 @@
 import * as Blockly from 'blockly';
-import { Style } from '../../models/style';
+import { Style } from '../../models/style.ts';
 import { createRoot } from 'react-dom/client';
-import StyleOptionsPane from '../../components/StyleOptionsPane';
+import StyleOptionsPane from '../../components/StyleOptionsPane.tsx';
 
 /**
  * Custom Blockly field for storing and editing the Style block's options

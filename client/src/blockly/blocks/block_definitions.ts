@@ -1,15 +1,15 @@
 import * as Blockly from 'blockly/core';
-import {listenBlockJson} from './listen_block';
-import {listenKeywordBlockJson} from './listen_keyword_block';
-import {robotDialogBlockJson} from './robot_dialog_block';
-import {sayBlockJson} from './say_block';
-import { happy_style, sad_style, excited_style, bored_style } from '../../models/style';
+import {listenBlockJson} from './listen_block.ts';
+import {listenKeywordBlockJson} from './listen_keyword_block.ts';
+import {robotDialogBlockJson} from './robot_dialog_block.ts';
+import {sayBlockJson} from './say_block.ts';
+import { happy_style, sad_style, excited_style, bored_style } from '../../models/style.ts';
 import { 
   happyStyleBlockJson,
   sadStyleBlockJson,
   excitedStyleBlockJson,
   boredStyleBlockJson
-} from './style_blocks';
+} from './style_blocks.ts';
 
 const allJson = [
   ...listenBlockJson,

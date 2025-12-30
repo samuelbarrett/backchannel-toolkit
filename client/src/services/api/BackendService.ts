@@ -1,6 +1,6 @@
 // handles calls to the backend API
 
-import type { paths } from './openapi-types';
+import type { paths } from './openapi-types.ts';
 import createClient from 'openapi-fetch';
 
 type StatusResponse = paths['/status']['get']['responses']['200']['content']['application/json'];

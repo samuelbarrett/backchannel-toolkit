@@ -15,13 +15,13 @@
  */
 
 import * as Blockly from 'blockly';
-import {blocks} from './blocks/block_definitions';
-import {forBlock} from './generators/generators';
+import {blocks} from './blocks/block_definitions.ts';
+import {forBlock} from './generators/generators.ts';
 import {javascriptGenerator} from 'blockly/javascript';
-import {save, load} from '../services/serialization';
-import {toolbox} from './toolbox';
-import { log } from '../services/debug-log';
-import { FieldStyleOptions } from './fields/FieldStyleOptions';
+import {save, load} from '../services/serialization.ts';
+import {toolbox} from './toolbox.ts';
+import { log } from '../services/debug-log.ts';
+import { FieldStyleOptions } from './fields/FieldStyleOptions.tsx';
 
 let workspace: Blockly.WorkspaceSvg;
 
