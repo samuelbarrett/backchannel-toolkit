@@ -2,41 +2,91 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { Slider } from '@mui/material';
+import Box from '@mui/material/Box/Box';
+import Slider from '@mui/material/Slider/Slider';
 import Divider from '@mui/material/Divider/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch/Switch';
 import Typography from '@mui/material/Typography/Typography';
 import { useState } from 'react';
-import { Style } from 'src/models/style';
+import { Style } from '../models/style';
+import { Container, Stack } from '@mui/material';
 
-export default function StyleOptionsPane({robotStyle}: {robotStyle: Style}) {
-  const [nodding, setNodding] = useState(robotStyle.nodding_enabled);
-  console.log("Rendering StyleOptionsPane with style:", robotStyle);
+type Props = {
+  robotStyle: Style;
+  onChange?: (newStyle: Style) => void;
+};
+
+export default function StyleOptionsPane({robotStyle, onChange}: Props) {
+  
+  // construct and return an updated Style object, called on changes to any field
+  const makeUpdatedStyle = (updates: Partial<Style>): Style => {
+    return new Style(
+      updates.nodding_behaviors ?? robotStyle.nodding_behaviors,
+      updates.nodding_frequency ?? robotStyle.nodding_frequency,
+      updates.nodding_intensity ?? robotStyle.nodding_intensity,
+      updates.nodding_up_down ?? robotStyle.nodding_up_down,
+      updates.nodding_left_right ?? robotStyle.nodding_left_right,
+      updates.utterance_behaviors ?? robotStyle.utterance_behaviors,
+      updates.utterance_frequency ?? robotStyle.utterance_frequency,
+      updates.utterance_volume ?? robotStyle.utterance_volume,
+      updates.utterances_list ?? robotStyle.utterances_list,
+      updates.looking_behaviors ?? robotStyle.looking_behaviors,
+      updates.looking_at_user_frequency ?? robotStyle.looking_at_user_frequency,
+      updates.looking_shift_gaze_frequency ?? robotStyle.looking_shift_gaze_frequency
+    );
+  };
 
   return (
-    <div>
-      <Typography variant="h6">Style Options</Typography>
-      <Divider />
-      <FormControlLabel control={<Switch checked={nodding} onChange={(e) => setNodding(e.target.checked)} />} label="Nodding"/>
-      <Divider variant="middle" />
-      {CustomSlider("Frequency")}
-    </div>
+    <Box sx={{ padding: 2, width: 350 }}>
+      <Stack spacing={1}>
+        <Typography variant="h5">Style Options</Typography>
+        <Divider />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={robotStyle.nodding_behaviors}
+              onChange={(e) => onChange?.(makeUpdatedStyle({nodding_behaviors: e.target.checked}))}
+            />
+          }
+          label="Nodding"/>
+        <Divider />
+        <CustomSlider
+          title="Frequency"
+          value={robotStyle.nodding_frequency}
+          onChange={(v: number) => onChange?.(makeUpdatedStyle({nodding_frequency: v}))}
+        />
+      </Stack>
+    </Box>
   );
 }
 
-function CustomSlider(title: string) {
+function CustomSlider({
+  title, 
+  value,
+  onChange
+}: {
+  title: string,
+  value: number,
+  onChange: (newValue: number) => void
+}) {
   return (
-    <div>
+    <Box sx={{ width: '85%', alignSelf: 'center' }}>
       <Typography gutterBottom>
         {title}
       </Typography>
       <Slider 
         aria-label={title}
-        defaultValue={50}
+        value={value}
+        onChange={(e, newValue) => onChange(newValue as number)}
         valueLabelDisplay="auto"
-        marks={[{value: 0, label: 'less'}, {value: 100, label: 'more'}]}
+        min={0}
+        max={100}
       />
-    </div>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Typography variant="body2" sx={{ cursor: 'pointer' }}>less</Typography>
+        <Typography variant="body2" sx={{ cursor: 'pointer' }}>more</Typography>
+      </Box>
+    </Box>
   )
 }

@@ -5,13 +5,13 @@ export class Style {
   /**
    * Whether nodding is enabled
    */
-  public nodding_enabled: boolean;
+  public nodding_behaviors: boolean;
   /**
-   * Nodding frequency from 0 (never) to 1 (always)
+   * Nodding frequency from 0 (never) to 100 (always)
    */
   public nodding_frequency: number;
   /**
-   * Nodding intensity from 0 (subtle) to 1 (exaggerated)
+   * Nodding intensity from 0 (subtle) to 100 (exaggerated)
    */
   public nodding_intensity: number;
   /**
@@ -25,13 +25,13 @@ export class Style {
   /**
    * Whether utterances are enabled
    */
-  public utterances_enabled: boolean;
+  public utterance_behaviors: boolean;
   /**
-   * Utterance frequency from 0 (never) to 1 (always)
+   * Utterance frequency from 0 (never) to 100 (always)
    */
   public utterance_frequency: number;
   /**
-   * Utterance volume from 0 (silent) to 1 (loud)
+   * Utterance volume from 0 (silent) to 100 (loud)
    */
   public utterance_volume: number;
   /**
@@ -41,40 +41,40 @@ export class Style {
   /**
    * Whether looking behavior is enabled
    */
-  public looking_enabled: boolean;
+  public looking_behaviors: boolean;
   /**
-   * Frequency of looking at the user from 0 (never) to 1 (always)
+   * Frequency of looking at the user from 0 (never) to 100 (always)
    */
   public looking_at_user_frequency: number;
   /**
-   * Frequency of shifting gaze from 0 (never) to 1 (always)
+   * Frequency of shifting gaze from 0 (never) to 100 (always)
    */
   public looking_shift_gaze_frequency: number;
 
   constructor(
-      nodding_enabled: boolean, 
+      nodding_behaviors: boolean, 
       nodding_frequency: number,
       nodding_intensity: number,
       nodding_up_down: boolean,
       nodding_left_right: boolean,
-      utterances_enabled: boolean,
+      utterance_behaviors: boolean,
       utterance_frequency: number,
       utterance_volume: number,
       utterances_list: string[],
-      looking_enabled: boolean,
+      looking_behaviors: boolean,
       looking_at_user_frequency: number,
       looking_shift_gaze_frequency: number
     ) {
-    this.nodding_enabled = nodding_enabled;
+    this.nodding_behaviors = nodding_behaviors;
     this.nodding_frequency = nodding_frequency;
     this.nodding_intensity = nodding_intensity;
     this.nodding_up_down = nodding_up_down;
     this.nodding_left_right = nodding_left_right;
-    this.utterances_enabled = utterances_enabled;
+    this.utterance_behaviors = utterance_behaviors;
     this.utterance_frequency = utterance_frequency;
     this.utterance_volume = utterance_volume;
     this.utterances_list = utterances_list;
-    this.looking_enabled = looking_enabled;
+    this.looking_behaviors = looking_behaviors;
     this.looking_at_user_frequency = looking_at_user_frequency;
     this.looking_shift_gaze_frequency = looking_shift_gaze_frequency;
   }
@@ -85,60 +85,60 @@ export class Style {
  */
 export const happy_style = new Style(
   true,
-  0.6,
-  0.7,
+  60,
+  70,
   true,
   false,
   true,
-  0.5,
-  0.7,
+  50,
+  70,
   ["Uh-huh", "Yes!", "I see!"],
   true,
-  0.8,
-  0.2
+  80,
+  20
 );
 
 export const sad_style = new Style(
   false,
-  0.0,
-  0.0,
+  0,
+  0,
   false,
   false,
   true,
-  0.3,
-  0.2,
+  30,
+  20,
   ["Hmm", "I understand", "Okay"],
   true,
-  0.3,
-  0.3
+  30,
+  30
 );
 
 export const excited_style = new Style(
   true,
-  0.8,
-  0.9,
+  80,
+  90,
   true,
   false,
   true,
-  0.8,
-  1.0,
+  80,
+  70,
   ["Wow!", "That's amazing!", "Incredible!"],
   true,
-  0.5,
-  0.7
+  50,
+  70
 );
 
 export const bored_style = new Style(
   true,
-  0.2,
-  0.2,
+  20,
+  20,
   false,
   true,
   false,
-  0.0,
-  0.0,
+  0,
+  0,
   [],
   true,
-  0.1,
-  0.1
+  10,
+  10
 );
