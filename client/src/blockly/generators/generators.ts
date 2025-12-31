@@ -8,7 +8,7 @@
 // https://github.com/RaspberryPiFoundation/blockly-samples
 
 import * as Blockly from 'blockly/core';
-import { log } from '../../services/debug-log';
+import { log } from '../../services/debug-log.ts';
 
 // Export all the code generators for our custom blocks,
 // but don't register them with Blockly yet.

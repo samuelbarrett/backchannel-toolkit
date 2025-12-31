@@ -1,9 +1,10 @@
-const webpack = require('webpack');
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const dotenv = require('dotenv');
+import webpack from 'webpack';
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import dotenv from 'dotenv';
 
 const env = dotenv.config.parsed || {};
+const __dirname = import.meta.dirname;
 
 const envKeys = Object.keys(env).reduce((prev, next) => {
   prev[`process.env.${next}`] = JSON.stringify(env[next]);
@@ -12,16 +13,22 @@ const envKeys = Object.keys(env).reduce((prev, next) => {
 
 // Base config that applies to either development or production mode.
 const config = {
-  entry: './src/index.ts',
+  entry: './src/index.tsx',
   output: {
     // Compile the source files into a bundle.
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
+    publicPath: '/',
   },
   // Enable webpack-dev-server to get hot refresh of the app.
   devServer: {
-    static: 'dist',
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    },
+    devMiddleware: {
+      publicPath: '/',
+    },
     proxy: {
       '/status': {
         target: 'http://localhost:3000',
@@ -33,7 +40,12 @@ const config = {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        use: [
+          { 
+            loader: 'ts-loader',
+            options: { transpileOnly: true },
+          },
+        ],
         exclude: /node_modules/,
       },
       {
@@ -41,10 +53,20 @@ const config = {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
       },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif|ico)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: '[name][ext]',
+        }
+      },
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.ts', '.tsx', '.js'],
+    extensionAlias: {
+      '.js': ['.ts', '.tsx', '.js'],
+    }
   },
   plugins: [
     // Generate the HTML index page based on our template.
@@ -52,12 +74,13 @@ const config = {
     // created above added in a script tag.
     new HtmlWebpackPlugin({
       template: 'src/index.html',
+      favicon: './public/favicon.ico',
     }),
     new webpack.DefinePlugin(envKeys),
   ],
 };
 
-module.exports = (env, argv) => {
+export default (env, argv) => {
   if (argv.mode === 'development') {
     // Set the output path to the `build` directory
     // so we don't clobber production builds.
@@ -71,7 +94,7 @@ module.exports = (env, argv) => {
     // Include the source maps for Blockly for easier debugging Blockly code.
     config.module.rules.push({
       test: /(blockly\/.*\.js)$/,
-      use: [require.resolve('source-map-loader')],
+      use: [import.meta.resolve('source-map-loader')],
       enforce: 'pre',
     });
 
