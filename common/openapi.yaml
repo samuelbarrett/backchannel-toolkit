@@ -24,12 +24,10 @@ components:
             intensity:
               type: number
               description: Intensity of nodding
-            vertical:
-              type: boolean
-              description: Whether to nod vertically
-            horizontal:
-              type: boolean
-              description: Whether to nod horizontally
+            direction:
+              type: string
+              enum: [up_down, left_right]
+              description: Direction of nodding
         utterances:
           type: object
           additionalProperties: false

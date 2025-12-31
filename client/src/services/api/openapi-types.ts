@@ -200,10 +200,11 @@ export interface components {
                 frequency?: number;
                 /** @description Intensity of nodding */
                 intensity?: number;
-                /** @description Whether to nod vertically */
-                vertical?: boolean;
-                /** @description Whether to nod horizontally */
-                horizontal?: boolean;
+                /**
+                 * @description Direction of nodding
+                 * @enum {string}
+                 */
+                direction?: "up_down" | "left_right";
             };
             utterances?: {
                 /** @description Whether to use verbal utterances */
