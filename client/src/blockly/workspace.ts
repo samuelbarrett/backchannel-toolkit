@@ -15,18 +15,20 @@
  */
 
 import * as Blockly from 'blockly';
-import {blocks} from './blocks/block_definitions';
-import {forBlock} from './generators/generators';
+import {blocks} from './blocks/block_definitions.ts';
+import {forBlock} from './generators/generators.ts';
 import {javascriptGenerator} from 'blockly/javascript';
-import {save, load} from '../services/serialization';
-import {toolbox} from './toolbox';
-import { log } from '../services/debug-log';
+import {save, load} from '../services/serialization.ts';
+import {toolbox} from './toolbox.ts';
+import { log } from '../services/debug-log.ts';
+import { FieldStyleOptions } from './fields/FieldStyleOptions.tsx';
 
 let workspace: Blockly.WorkspaceSvg;
 
 export const initWorkspace = () => {
-  // Register the blocks and generator with Blockly
+  // Register the blocks, fields, and generator with Blockly
   Blockly.common.defineBlocks(blocks);
+  Blockly.fieldRegistry.register('field_style_options', FieldStyleOptions);
   Object.assign(javascriptGenerator.forBlock, forBlock);
 
   // Set up UI elements and inject Blockly

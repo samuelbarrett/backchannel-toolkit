@@ -1,6 +1,6 @@
 import express from 'express';
 import 'dotenv/config';
-import { backendService } from './BackendService';
+import { backendService } from './BackendService.ts';
 
 const app = express();
 
