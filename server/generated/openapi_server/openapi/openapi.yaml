@@ -1,0 +1,218 @@
+openapi: 3.0.3
+info:
+  description: API for communication between Node.js client and Python backend
+  title: Backchannel Toolkit API
+  version: 1.0.0
+servers:
+- url: http://localhost:5000
+paths:
+  /command/listenKeyword:
+    post:
+      operationId: command_listen_keyword_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_command_listenKeyword_post_request"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_command_listenKeyword_post_200_response"
+          description: Command received
+      summary: Send a command for the robot to listen until it detects a keyword
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+  /command/listenSilence:
+    post:
+      operationId: command_listen_silence_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_command_listenSilence_post_request"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_command_listenSilence_post_200_response"
+          description: Command received
+      summary: Send a command for the robot to listen until it detects silence
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+  /command/speak:
+    post:
+      operationId: command_speak_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_command_speak_post_request"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_command_speak_post_200_response"
+          description: Command received
+      summary: Send a speak command to the server
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+  /status:
+    get:
+      operationId: status_get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_status_get_200_response"
+          description: Server status
+      summary: Get server status
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+components:
+  schemas:
+    Style:
+      additionalProperties: false
+      properties:
+        nodding:
+          $ref: "#/components/schemas/Style_nodding"
+        utterances:
+          $ref: "#/components/schemas/Style_utterances"
+        gaze:
+          $ref: "#/components/schemas/Style_gaze"
+      title: Style
+      type: object
+    _status_get_200_response:
+      example:
+        status: Server is running
+      properties:
+        status:
+          example: Server is running
+          title: status
+          type: string
+      title: _status_get_200_response
+      type: object
+    _command_speak_post_request:
+      additionalProperties: true
+      properties:
+        text:
+          description: "This is what I, the robot, will say."
+          type: string
+        style:
+          $ref: "#/components/schemas/Style"
+      title: _command_speak_post_request
+      type: object
+    _command_speak_post_200_response:
+      example:
+        received_command: Speak command received
+      properties:
+        received_command:
+          example: Speak command received
+          title: received_command
+          type: string
+      title: _command_speak_post_200_response
+      type: object
+    _command_listenSilence_post_request:
+      additionalProperties: true
+      properties:
+        style:
+          $ref: "#/components/schemas/Style"
+      title: _command_listenSilence_post_request
+      type: object
+    _command_listenSilence_post_200_response:
+      example:
+        received_command: ListenUntilSilence command received
+      properties:
+        received_command:
+          example: ListenUntilSilence command received
+          title: received_command
+          type: string
+      title: _command_listenSilence_post_200_response
+      type: object
+    _command_listenKeyword_post_request:
+      additionalProperties: true
+      properties:
+        keyword:
+          description: The keyword to listen for
+          type: string
+        style:
+          $ref: "#/components/schemas/Style"
+      title: _command_listenKeyword_post_request
+      type: object
+    _command_listenKeyword_post_200_response:
+      example:
+        received_command: ListenUntilKeyword command received
+      properties:
+        received_command:
+          example: ListenUntilKeyword command received
+          title: received_command
+          type: string
+      title: _command_listenKeyword_post_200_response
+      type: object
+    Style_nodding:
+      additionalProperties: false
+      properties:
+        enabled:
+          description: Whether to nod while speaking
+          title: enabled
+          type: boolean
+        frequency:
+          description: Frequency of nodding (nodding per second)
+          title: frequency
+          type: number
+        intensity:
+          description: Intensity of nodding
+          title: intensity
+          type: number
+        direction:
+          description: Direction of nodding
+          enum:
+          - up_down
+          - left_right
+          title: direction
+          type: string
+      title: Style_nodding
+      type: object
+    Style_utterances:
+      additionalProperties: false
+      properties:
+        enabled:
+          description: Whether to use verbal utterances
+          title: enabled
+          type: boolean
+        utterance_frequency:
+          description: Frequency of utterances
+          title: utterance_frequency
+          type: number
+        utterance_volume:
+          description: Volume of utterances
+          title: utterance_volume
+          type: number
+        utterance_list:
+          description: List of utterances to use
+          items:
+            type: string
+          title: utterance_list
+          type: array
+      title: Style_utterances
+      type: object
+    Style_gaze:
+      additionalProperties: false
+      properties:
+        enabled:
+          description: Whether to use gaze behavior
+          title: enabled
+          type: boolean
+        eye_contact:
+          description: Frequency of eye contact
+          title: eye_contact
+          type: number
+        shift_gaze:
+          description: Frequency of gaze shifts
+          title: shift_gaze
+          type: number
+      title: Style_gaze
+      type: object
