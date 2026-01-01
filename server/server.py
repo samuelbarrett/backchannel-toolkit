@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 # main file for the server application
 
-import api.api as api
+import services.api.api as api
 
 def main():
   initialize_server()
