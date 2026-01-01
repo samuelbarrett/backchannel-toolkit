@@ -12,7 +12,7 @@ type listenKeywordRequestBody = paths['/command/listenKeyword']['post']['request
 type listenKeywordResponse = paths['/command/listenKeyword']['post']['responses']['200']['content']['application/json'];
 
 const client = createClient<paths>({
-  baseUrl: process.env.API_BASE_URL,
+  baseUrl: process.env.BASE_SERVER_URL,
 });
 
 export const backendService = {
