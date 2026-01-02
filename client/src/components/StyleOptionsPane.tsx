@@ -31,6 +31,12 @@ type Props = {
   onChange?: (newStyle: Style) => void;
 };
 
+/**
+ * Main React component for the style options pane.
+ * @param robotStyle the current style of the robot's behaviors, as a prop
+ * @param onChange callback when any style option is changed, to update the style block's state
+ * @returns a React JSX component
+ */
 export default function StyleOptionsPane({robotStyle, onChange}: Props) {
   
   // construct and return an updated Style object, called on changes to any field
