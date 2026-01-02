@@ -19,7 +19,8 @@ import {
   Checkbox,
   FormGroup,
   FormLabel,
-  RadioGroup
+  RadioGroup,
+  Radio
 } from '@mui/material';
 import { useState } from 'react';
 import { Style } from '../models/style.ts';
@@ -75,6 +76,17 @@ export default function StyleOptionsPane({robotStyle, onChange}: Props) {
           onChange={(v: number) => onChange?.(makeUpdatedStyle({nodding_intensity: v}))}
           isDisabled={!robotStyle.nodding_behaviors}
         />
+        <FormControl>
+          <FormLabel>Direction of nodding</FormLabel>
+          <RadioGroup
+            name="nodding-direction-group"
+            value={robotStyle.nodding_direction}
+            onChange={(e) => onChange?.(makeUpdatedStyle({nodding_direction: e.target.value}))}
+          >
+            <FormControlLabel value="up_down" control={<Radio />} label="Up and Down" disabled={!robotStyle.nodding_behaviors} />
+            <FormControlLabel value="left_right" control={<Radio />} label="Side to Side" disabled={!robotStyle.nodding_behaviors} />
+          </RadioGroup>
+        </FormControl>
         <Divider />
         <FormControlLabel
           control={
