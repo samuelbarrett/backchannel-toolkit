@@ -53,25 +53,19 @@ export const initWorkspace = () => {
 
 const addEventListeners = () => {
   // Every time the workspace changes state, save the changes to storage.
-    workspace.addChangeListener((e: Blockly.Events.Abstract) => {
-      // UI events are things like scrolling, zooming, etc.
-      // No need to save after one of these.
-      if (!e.isUiEvent) {
-        save(workspace);
-      }
-    });
-
-    const runButton = document.getElementById('playButton');
-    runButton?.addEventListener('click', () => {
-      console.log('Run button clicked');
-      runCode();
-    });
+  workspace.addChangeListener((e: Blockly.Events.Abstract) => {
+    // UI events are things like scrolling, zooming, etc.
+    // No need to save after one of these.
+    if (!e.isUiEvent) {
+      save(workspace);
+    }
+  });
 };
 
 /**
  * evaluates the generated code from the blocks in the workspace.
  */
-const runCode = () => {
+export const runCode = () => {
   const blocks: Blockly.Block[] = workspace.getAllBlocks(true).filter((block) => block.type === 'robot_dialog_block');
   if (blocks.length > 0) {
     const code = javascriptGenerator.workspaceToCode(workspace);
@@ -82,4 +76,3 @@ const runCode = () => {
     log('No robot dialog block found in workspace.');
   }
 };
-

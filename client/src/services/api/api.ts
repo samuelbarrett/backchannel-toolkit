@@ -6,6 +6,7 @@ const app = express();
 
 app.get('/status', async (req, res) => {
   try {
+    console.log('Received /status request');
     const result = await backendService.getStatus();
     res.json(result);
   } catch (error) {

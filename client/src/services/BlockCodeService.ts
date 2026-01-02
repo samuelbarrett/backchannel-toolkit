@@ -7,7 +7,7 @@
 export const BlockCodeService = {
   robotDialog: async () => {
     console.log('BlockCodeService.robotDialog called');
-    const response = await fetch('/status', {
+    const response = await fetch('http://localhost:3000/status', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     });
