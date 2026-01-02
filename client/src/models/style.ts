@@ -15,13 +15,9 @@ export class Style {
    */
   public nodding_intensity: number;
   /**
-   * Whether nodding up and down is enabled
+   * Direction of nodding. Acceptable values are "up_down" or "left_right"
    */
-  public nodding_up_down: boolean;
-  /**
-   * Whether nodding side to side is enabled
-   */
-  public nodding_left_right: boolean;
+  public nodding_direction: string;
   /**
    * Whether utterances are enabled
    */
@@ -55,8 +51,7 @@ export class Style {
       nodding_behaviors: boolean, 
       nodding_frequency: number,
       nodding_intensity: number,
-      nodding_up_down: boolean,
-      nodding_left_right: boolean,
+      nodding_direction: string,
       utterance_behaviors: boolean,
       utterance_frequency: number,
       utterance_volume: number,
@@ -68,8 +63,7 @@ export class Style {
     this.nodding_behaviors = nodding_behaviors;
     this.nodding_frequency = nodding_frequency;
     this.nodding_intensity = nodding_intensity;
-    this.nodding_up_down = nodding_up_down;
-    this.nodding_left_right = nodding_left_right;
+    this.nodding_direction = nodding_direction;
     this.utterance_behaviors = utterance_behaviors;
     this.utterance_frequency = utterance_frequency;
     this.utterance_volume = utterance_volume;
@@ -81,18 +75,24 @@ export class Style {
 }
 
 /**
+ * All available utterance options
+ */
+export const all_utterances: string[] = [
+  "Uh-huh", "Yes", "I see", "Hmm", "Okay", "Uhh", "Sigh", "Wow", "No", "Mhm", "Right"
+]
+
+/**
  * Default parameters for styles
  */
 export const happy_style = new Style(
   true,
   60,
   70,
-  true,
-  false,
+  "up_down",
   true,
   50,
   70,
-  ["Uh-huh", "Yes!", "I see!"],
+  ["Uh-huh", "Yes", "I see"],
   true,
   80,
   20
@@ -102,12 +102,11 @@ export const sad_style = new Style(
   false,
   0,
   0,
-  false,
-  false,
+  "left_right",
   true,
   30,
   20,
-  ["Hmm", "I understand", "Okay"],
+  ["Hmm", "Uhh", "Okay"],
   true,
   30,
   30
@@ -117,12 +116,11 @@ export const excited_style = new Style(
   true,
   80,
   90,
-  true,
-  false,
+  "up_down",
   true,
   80,
   70,
-  ["Wow!", "That's amazing!", "Incredible!"],
+  ["Wow", "Yes"],
   true,
   50,
   70
@@ -132,8 +130,7 @@ export const bored_style = new Style(
   true,
   20,
   20,
-  false,
-  true,
+  "left_right",
   false,
   0,
   0,
