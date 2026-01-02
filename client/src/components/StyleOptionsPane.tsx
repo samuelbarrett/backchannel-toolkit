@@ -23,12 +23,12 @@ import {
   Radio
 } from '@mui/material';
 import { useState } from 'react';
-import { Style } from '../models/style.ts';
+import { StyleSchema } from '../models/style.ts';
 import { all_utterances } from '../models/style.ts';
 
 type Props = {
-  robotStyle: Style;
-  onChange?: (newStyle: Style) => void;
+  robotStyle: StyleSchema;
+  onChange?: (newStyle: StyleSchema) => void;
 };
 
 /**
@@ -40,20 +40,27 @@ type Props = {
 export default function StyleOptionsPane({robotStyle, onChange}: Props) {
   
   // construct and return an updated Style object, called on changes to any field
-  const makeUpdatedStyle = (updates: Partial<Style>): Style => {
-    return new Style(
-      updates.nodding_behaviors ?? robotStyle.nodding_behaviors,
-      updates.nodding_frequency ?? robotStyle.nodding_frequency,
-      updates.nodding_intensity ?? robotStyle.nodding_intensity,
-      updates.nodding_direction ?? robotStyle.nodding_direction,
-      updates.utterance_behaviors ?? robotStyle.utterance_behaviors,
-      updates.utterance_frequency ?? robotStyle.utterance_frequency,
-      updates.utterance_volume ?? robotStyle.utterance_volume,
-      updates.utterances_list ?? robotStyle.utterances_list,
-      updates.looking_behaviors ?? robotStyle.looking_behaviors,
-      updates.looking_at_user_frequency ?? robotStyle.looking_at_user_frequency,
-      updates.looking_shift_gaze_frequency ?? robotStyle.looking_shift_gaze_frequency
-    );
+  const makeUpdatedStyle = (updates: Partial<StyleSchema>): StyleSchema => {
+    const newStyle: StyleSchema = {
+      nodding: {
+        enabled: updates.nodding?.enabled ?? robotStyle.nodding?.enabled,
+        frequency: updates.nodding?.frequency ?? robotStyle.nodding?.frequency,
+        intensity: updates.nodding?.intensity ?? robotStyle.nodding?.intensity,
+        direction: updates.nodding?.direction ?? robotStyle.nodding?.direction,
+      },
+      utterances: {
+        enabled: updates.utterances?.enabled ?? robotStyle.utterances?.enabled,
+        utterance_frequency: updates.utterances?.utterance_frequency ?? robotStyle.utterances?.utterance_frequency,
+        utterance_volume: updates.utterances?.utterance_volume ?? robotStyle.utterances?.utterance_volume,
+        utterance_list: updates.utterances?.utterance_list ?? robotStyle.utterances?.utterance_list,
+      },
+      gaze: {
+        enabled: updates.gaze?.enabled ?? robotStyle.gaze?.enabled,
+        eye_contact: updates.gaze?.eye_contact ?? robotStyle.gaze?.eye_contact,
+        shift_gaze: updates.gaze?.shift_gaze ?? robotStyle.gaze?.shift_gaze,
+      }
+    };
+    return newStyle;
   };
 
   return (
@@ -64,84 +71,84 @@ export default function StyleOptionsPane({robotStyle, onChange}: Props) {
         <FormControlLabel
           control={
             <Switch
-              checked={robotStyle.nodding_behaviors}
-              onChange={(e) => onChange?.(makeUpdatedStyle({nodding_behaviors: e.target.checked}))}
+              checked={robotStyle.nodding?.enabled}
+              onChange={(e) => onChange?.(makeUpdatedStyle({nodding: { enabled: e.target.checked }}))}
             />
           }
           label="Nodding"/>
         <Divider />
         <CustomSlider
           title="Frequency"
-          value={robotStyle.nodding_frequency}
-          onChange={(v: number) => onChange?.(makeUpdatedStyle({nodding_frequency: v}))}
-          isDisabled={!robotStyle.nodding_behaviors}
+          value={robotStyle.nodding?.frequency || 0}
+          onChange={(v: number) => onChange?.(makeUpdatedStyle({nodding: { frequency: v }}))}
+          isDisabled={!robotStyle.nodding?.enabled}
         />
         <CustomSlider
           title="Intensity"
-          value={robotStyle.nodding_intensity}
-          onChange={(v: number) => onChange?.(makeUpdatedStyle({nodding_intensity: v}))}
-          isDisabled={!robotStyle.nodding_behaviors}
+          value={robotStyle.nodding?.intensity || 0}
+          onChange={(v: number) => onChange?.(makeUpdatedStyle({nodding: { intensity: v }}))}
+          isDisabled={!robotStyle.nodding?.enabled}
         />
         <FormControl>
           <FormLabel>Direction of nodding</FormLabel>
           <RadioGroup
             name="nodding-direction-group"
-            value={robotStyle.nodding_direction}
-            onChange={(e) => onChange?.(makeUpdatedStyle({nodding_direction: e.target.value}))}
+            value={robotStyle.nodding?.direction}
+            onChange={(e) => onChange?.(makeUpdatedStyle({nodding: { direction: e.target.value as 'up_down' | 'left_right' }}))}
           >
-            <FormControlLabel value="up_down" control={<Radio />} label="Up and Down" disabled={!robotStyle.nodding_behaviors} />
-            <FormControlLabel value="left_right" control={<Radio />} label="Side to Side" disabled={!robotStyle.nodding_behaviors} />
+            <FormControlLabel value="up_down" control={<Radio />} label="Up and Down" disabled={!robotStyle.nodding?.enabled} />
+            <FormControlLabel value="left_right" control={<Radio />} label="Side to Side" disabled={!robotStyle.nodding?.enabled} />
           </RadioGroup>
         </FormControl>
         <Divider />
         <FormControlLabel
           control={
             <Switch
-              checked={robotStyle.utterance_behaviors}
-              onChange={(e) => onChange?.(makeUpdatedStyle({utterance_behaviors: e.target.checked}))}
+              checked={robotStyle.utterances?.enabled}
+              onChange={(e) => onChange?.(makeUpdatedStyle({utterances: { enabled: e.target.checked }}))}
             />
           }
           label="Verbal Utterances"/>
         <Divider />
         <CustomSlider
           title="Frequency"
-          value={robotStyle.utterance_frequency}
-          onChange={(v: number) => onChange?.(makeUpdatedStyle({utterance_frequency: v}))}
-          isDisabled={!robotStyle.utterance_behaviors}
+          value={robotStyle.utterances?.utterance_frequency || 0}
+          onChange={(v: number) => onChange?.(makeUpdatedStyle({utterances: { utterance_frequency: v }}))}
+          isDisabled={!robotStyle.utterances?.enabled}
         />
         <CustomSlider
           title="Volume"
-          value={robotStyle.utterance_volume}
-          onChange={(v: number) => onChange?.(makeUpdatedStyle({utterance_volume: v}))}
-          isDisabled={!robotStyle.utterance_behaviors}
+          value={robotStyle.utterances?.utterance_volume || 0}
+          onChange={(v: number) => onChange?.(makeUpdatedStyle({utterances: { utterance_volume: v }}))}
+          isDisabled={!robotStyle.utterances?.enabled}
         />
         <MultiSelect 
-          value={robotStyle.utterances_list}
+          value={robotStyle.utterances?.utterance_list || []}
           optionsList={all_utterances}
-          onChange={(newList: string[]) => onChange?.(makeUpdatedStyle({utterances_list: newList}))}
-          isDisabled={!robotStyle.utterance_behaviors}
+          onChange={(newList: string[]) => onChange?.(makeUpdatedStyle({utterances: { utterance_list: newList }}))}
+          isDisabled={!robotStyle.utterances?.enabled}
         />
         <Divider />
         <FormControlLabel
           control={
             <Switch
-              checked={robotStyle.looking_behaviors}
-              onChange={(e) => onChange?.(makeUpdatedStyle({looking_behaviors: e.target.checked}))}
+              checked={robotStyle.gaze?.enabled}
+              onChange={(e) => onChange?.(makeUpdatedStyle({gaze: { enabled: e.target.checked }}))}
             />
           }
           label="Looking"/>
         <Divider />
         <CustomSlider
           title="Eye Contact"
-          value={robotStyle.looking_at_user_frequency}
-          onChange={(v: number) => onChange?.(makeUpdatedStyle({looking_at_user_frequency: v}))}
-          isDisabled={!robotStyle.looking_behaviors}
+          value={robotStyle.gaze?.eye_contact || 0}
+          onChange={(v: number) => onChange?.(makeUpdatedStyle({gaze: { eye_contact: v }}))}
+          isDisabled={!robotStyle.gaze?.enabled}
         />
         <CustomSlider
           title="Shift Gaze"
-          value={robotStyle.looking_shift_gaze_frequency}
-          onChange={(v: number) => onChange?.(makeUpdatedStyle({looking_shift_gaze_frequency: v}))}
-          isDisabled={!robotStyle.looking_behaviors}
+          value={robotStyle.gaze?.shift_gaze || 0}
+          onChange={(v: number) => onChange?.(makeUpdatedStyle({gaze: { shift_gaze: v }}))}
+          isDisabled={!robotStyle.gaze?.enabled}
         />
       </Stack>
     </Box>
