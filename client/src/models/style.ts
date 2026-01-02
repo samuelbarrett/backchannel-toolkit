@@ -81,6 +81,13 @@ export class Style {
 }
 
 /**
+ * All available utterance options
+ */
+export const all_utterances: string[] = [
+  "Uh-huh", "Yes", "I see", "Hmm", "Okay", "Uhh", "Sigh", "Wow", "No", "Mhm", "Right"
+]
+
+/**
  * Default parameters for styles
  */
 export const happy_style = new Style(
@@ -92,7 +99,7 @@ export const happy_style = new Style(
   true,
   50,
   70,
-  ["Uh-huh", "Yes!", "I see!"],
+  ["Uh-huh", "Yes", "I see"],
   true,
   80,
   20
@@ -107,7 +114,7 @@ export const sad_style = new Style(
   true,
   30,
   20,
-  ["Hmm", "I understand", "Okay"],
+  ["Hmm", "Uhh", "Okay"],
   true,
   30,
   30
@@ -122,7 +129,7 @@ export const excited_style = new Style(
   true,
   80,
   70,
-  ["Wow!", "That's amazing!", "Incredible!"],
+  ["Wow", "Yes"],
   true,
   50,
   70
