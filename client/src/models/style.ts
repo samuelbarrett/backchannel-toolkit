@@ -1,78 +1,6 @@
-/**
- * Model representing style options for robot listening behaviors.
- */
-export class Style {
-  /**
-   * Whether nodding is enabled
-   */
-  public nodding_behaviors: boolean;
-  /**
-   * Nodding frequency from 0 (never) to 100 (always)
-   */
-  public nodding_frequency: number;
-  /**
-   * Nodding intensity from 0 (subtle) to 100 (exaggerated)
-   */
-  public nodding_intensity: number;
-  /**
-   * Direction of nodding. Acceptable values are "up_down" or "left_right"
-   */
-  public nodding_direction: string;
-  /**
-   * Whether utterances are enabled
-   */
-  public utterance_behaviors: boolean;
-  /**
-   * Utterance frequency from 0 (never) to 100 (always)
-   */
-  public utterance_frequency: number;
-  /**
-   * Utterance volume from 0 (silent) to 100 (loud)
-   */
-  public utterance_volume: number;
-  /**
-   * List of utterances
-   */
-  public utterances_list: string[];
-  /**
-   * Whether looking behavior is enabled
-   */
-  public looking_behaviors: boolean;
-  /**
-   * Frequency of looking at the user from 0 (never) to 100 (always)
-   */
-  public looking_at_user_frequency: number;
-  /**
-   * Frequency of shifting gaze from 0 (never) to 100 (always)
-   */
-  public looking_shift_gaze_frequency: number;
+import type { components } from '../services/api/openapi-types.ts';
 
-  constructor(
-      nodding_behaviors: boolean, 
-      nodding_frequency: number,
-      nodding_intensity: number,
-      nodding_direction: string,
-      utterance_behaviors: boolean,
-      utterance_frequency: number,
-      utterance_volume: number,
-      utterances_list: string[],
-      looking_behaviors: boolean,
-      looking_at_user_frequency: number,
-      looking_shift_gaze_frequency: number
-    ) {
-    this.nodding_behaviors = nodding_behaviors;
-    this.nodding_frequency = nodding_frequency;
-    this.nodding_intensity = nodding_intensity;
-    this.nodding_direction = nodding_direction;
-    this.utterance_behaviors = utterance_behaviors;
-    this.utterance_frequency = utterance_frequency;
-    this.utterance_volume = utterance_volume;
-    this.utterances_list = utterances_list;
-    this.looking_behaviors = looking_behaviors;
-    this.looking_at_user_frequency = looking_at_user_frequency;
-    this.looking_shift_gaze_frequency = looking_shift_gaze_frequency;
-  }
-}
+export type StyleSchema = components['schemas']['Style'];
 
 /**
  * All available utterance options
@@ -82,60 +10,84 @@ export const all_utterances: string[] = [
 ]
 
 /**
- * Default parameters for styles
+ * Default parameters for provided styles
  */
-export const happy_style = new Style(
-  true,
-  60,
-  70,
-  "up_down",
-  true,
-  50,
-  70,
-  ["Uh-huh", "Yes", "I see"],
-  true,
-  80,
-  20
-);
+export const happy_style: StyleSchema = {
+  nodding: {
+    enabled: true,
+    frequency: 60,
+    intensity: 70,
+    direction: "up_down"
+  },
+  utterances: {
+    enabled: true,
+    utterance_frequency: 50,
+    utterance_volume: 70,
+    utterance_list: ["Uh-huh", "Yes", "I see"]
+  },
+  gaze: {
+    enabled: true,
+    eye_contact: 80,
+    shift_gaze: 20
+  }
+};
 
-export const sad_style = new Style(
-  false,
-  0,
-  0,
-  "left_right",
-  true,
-  30,
-  20,
-  ["Hmm", "Uhh", "Okay"],
-  true,
-  30,
-  30
-);
+export const sad_style: StyleSchema = {
+  nodding: {
+    enabled: false,
+    frequency: 20,
+    intensity: 10,
+    direction: "left_right"
+  },
+  utterances: {
+    enabled: true,
+    utterance_frequency: 30,
+    utterance_volume: 30,
+    utterance_list: ["Sigh", "Hmm", "Okay", "Uhh"]
+  },
+  gaze: {
+    enabled: true,
+    eye_contact: 30,
+    shift_gaze: 30
+  }
+};
 
-export const excited_style = new Style(
-  true,
-  80,
-  90,
-  "up_down",
-  true,
-  80,
-  70,
-  ["Wow", "Yes"],
-  true,
-  50,
-  70
-);
+export const excited_style: StyleSchema = {
+  nodding: {
+    enabled: true,
+    frequency: 80,
+    intensity: 90,
+    direction: "up_down"
+  },
+  utterances: {
+    enabled: true,
+    utterance_frequency: 80,
+    utterance_volume: 70,
+    utterance_list: ["Wow", "Yes"]
+  },
+  gaze: {
+    enabled: true,
+    eye_contact: 50,
+    shift_gaze: 70
+  }
+};
 
-export const bored_style = new Style(
-  true,
-  20,
-  20,
-  "left_right",
-  false,
-  0,
-  0,
-  [],
-  true,
-  10,
-  10
-);
+export const bored_style: StyleSchema = {
+  nodding: {
+    enabled: true,
+    frequency: 20,
+    intensity: 20,
+    direction: "left_right"
+  },
+  utterances: {
+    enabled: false,
+    utterance_frequency: 0,
+    utterance_volume: 0,
+    utterance_list: []
+  },
+  gaze: {
+    enabled: true,
+    eye_contact: 10,
+    shift_gaze: 10
+  }
+};
