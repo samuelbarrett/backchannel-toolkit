@@ -7,14 +7,14 @@ from werkzeug.serving import run_simple
 from openapi_adapter import create_connexion_app
 
 def start():
-  app = Flask(__name__)
-  define_routes(app)
+  # app = Flask(__name__)
+  # define_routes(app)
   
   openapi_app = create_connexion_app()
-  application = DispatcherMiddleware(app, {'/api': openapi_app})
+  # application = DispatcherMiddleware(app, {'/': openapi_app})
   
   # for development only
-  run_simple("0.0.0.0", 12000, application, use_reloader=True, use_debugger=True)
+  run_simple("0.0.0.0", 12000, openapi_app, use_reloader=True, use_debugger=True)
 
 def define_routes(app):
   # get the status of the server

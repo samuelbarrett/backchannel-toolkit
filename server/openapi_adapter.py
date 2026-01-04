@@ -9,14 +9,15 @@ import connexion
 from generated.openapi_server import encoder
 
 def create_connexion_app():
-	app = connexion.App(
+	app = connexion.FlaskApp(
 		__name__,
 		specification_dir=os.path.join(
 			os.path.dirname(__file__),
 			"generated",
 			"openapi_server",
+			"openapi"
 		),
 	)
 	app.app.json_encoder = encoder.JSONEncoder
-	app.add_api("openapi/openapi.yaml", pythonic_params=True)
+	app.add_api("openapi.yaml", base_path='/', pythonic_params=True)
 	return app.app
