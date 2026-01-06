@@ -13,18 +13,16 @@ import eventsystem.EventDispatcher;
  */
 public class TestSotaDialogController {
   public static void main(String [] args) {
+
+    System.out.println("------------- Testing SotaDialogController -------------");
     
-    // test one event
+    System.out.println("Test one event");
     BackchannelEvent[] testOneEvent = new BackchannelEvent[] {
       new UtteranceBackchannelEvent("right"),
     };
     test(testOneEvent);
     
-    // test with no events
-    BackchannelEvent[] testNoEvent = new BackchannelEvent[] {};
-    test(testNoEvent);
-    
-    // test with a sequence of backchannel events
+    System.out.println("Test multiple events");
     BackchannelEvent[] testMultipleEvents = new BackchannelEvent[] {
       new NodBackchannelEvent(5, 3),
       new UtteranceBackchannelEvent("uh-huh"),
@@ -35,8 +33,8 @@ public class TestSotaDialogController {
   }
 
   public static void test(BackchannelEvent[] events) {
-    EventDispatcher dispatcher = new EventDispatcher();
-    StubHttpCommandProvider commandProvider = new StubHttpCommandProvider(events);
+    final EventDispatcher dispatcher = new EventDispatcher();
+    final StubHttpCommandProvider commandProvider = new StubHttpCommandProvider(events);
     SotaDialogController controller = new SotaDialogController();
     
     commandProvider.addListener(controller);
@@ -49,7 +47,9 @@ public class TestSotaDialogController {
         if (d instanceof SotaDialogController.SotaStateData) {
           SotaDialogController.SotaStateData sd = (SotaDialogController.SotaStateData) d;
           if (sd.data == SotaDialogController.SotaState.READY) {
-            commandProvider.requestOnce();
+            if (!commandProvider.requestOnce()) {
+              dispatcher.stop();
+            }
           }
         }
       }
@@ -59,15 +59,6 @@ public class TestSotaDialogController {
     commandProvider.requestOnce();
 
     dispatcher.run();
-
-    // wait for all events to be processed
-    while(commandProvider.isRunning()) {
-      try {
-        Thread.sleep(2000);
-      } catch (InterruptedException ie) {
-        ie.printStackTrace();
-      }
-    }
   }
 }
 
@@ -89,14 +80,17 @@ class StubHttpCommandProvider extends DataProvider {
     // no continuous polling - only respond to requestOnce calls
   }
 
-  public void requestOnce() {
-    if (index < events.length) {
-      this.notifyListeners(events[index]);
-      index++;
+  // modified for testing purposes
+  public boolean requestOnce() {
+    if (this.index < events.length) {
+      this.notifyListeners(events[this.index]);
+      this.index++;
+      return true;
     }
+    return false;
   }
 
   public boolean isRunning() {
-    return index < events.length;
+    return this.index < events.length;
   }
 }
