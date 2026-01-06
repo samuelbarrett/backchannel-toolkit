@@ -12,7 +12,7 @@
         <property name="scp.edison.pass" value="edison00" />
 
         <!--target folders -->
-        <property name="sota.basedir" value="/home/root/backchanneling" />
+        <property name="sota.basedir" value="/home/root/listenbot" />
 
         <!--dir structure -->
         <property name="src.dir" value="src"/>
@@ -31,9 +31,6 @@
         <path id="build.lib">   <!-- include all jars in the listed lib dir into our classpath-->
                 <fileset dir="${lib.dir}" includes="*.jar" />
         </path>
-
-        
-
 
         <!-- Targets -->
         <target name="clean">
@@ -70,38 +67,14 @@
                 </jar>
         </target>
 
-        <!-- Special build target for the serverside (laptop) program, to account for its dependencies -->
-        <target name="__make_jar_dialogserver">  <!-- internal use -->
-                <!-- <manifestclasspath property="dialogserver.manifest.classpath" jarfile="DialogServer.jar">
-                        <classpath>
-                                <fileset dir="lib" includes="*.jar" />
-                        </classpath>
-                </manifestclasspath> -->
-                <!-- Runnable classpath for the DialogServer -->
-                <path id="dialogserver.classpath">
-                        <fileset dir="${lib.dir}"> 
-                                <include name="*.jar" />
-                        </fileset>
-                </path>
-                <manifestclasspath property="dialogserver.manifest.classpath" jarfile="${jars.dir}/DialogServer.jar">
-                        <classpath refid="dialogserver.classpath"/>
-                </manifestclasspath>
-                <jar jarfile="${jars.dir}/DialogServer.jar" basedir="${bin.dir}">
-                        <manifest>
-                                <attribute name="Class-Path" value="${dialogserver.manifest.classpath}"/>
-                                <attribute name="Main-Class" value="${jar.class}"/>
-                        </manifest>
-                </jar>
-        </target>
-
         <target name="make_jars" depends="compile">
                 <antcall target="__make_jar">
                         <param name="jar.class" value="dialog.SotaDialog" />
                         <param name="jar.name" value="SotaDialog.jar" />
                 </antcall>
-                <antcall target="__make_jar">
-                        <param name="jar.class" value="tools.AS3_1" />
-                        <param name="jar.name" value="AS3_1.jar" />
+               <antcall target="__make_jar">
+                        <param name="jar.class" value="test.TestSotaDialogController" />
+                        <param name="jar.name" value="TestSotaDialogController.jar" />
                 </antcall>
         </target>
 

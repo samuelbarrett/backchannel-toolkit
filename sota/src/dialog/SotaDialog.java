@@ -16,49 +16,49 @@ import eventsystem.EventDispatcher;
  * Communicates with the DialogServer running on a separate device.
  */
 public class SotaDialog {
-public static void main(String [] args) {
-  EventDispatcher dispatcher = new EventDispatcher();
+  public static void main(String [] args) {
+    EventDispatcher dispatcher = new EventDispatcher();
 
-  // send microphone data to the server
-  DataProvider mic = new MicAudioProvider(4000, 1024);
-  UDPSender audioSender = new UDPSender("10.0.0.184", 7777);
-  mic.addListener(audioSender);
+    // send microphone data to the server
+    DataProvider mic = new MicAudioProvider(4000, 1024);
+    UDPSender audioSender = new UDPSender("10.0.0.184", 7777);
+    mic.addListener(audioSender);
 
-  // handle incoming audio from the server
-  DataProvider audioReceiver = new UDPReceiver(8888, 6000);
-  //audioReceiver.addListener( /* handle receiving audio to play back */ );
+    // handle incoming audio from the server
+    DataProvider audioReceiver = new UDPReceiver(8888, 6000);
+    //audioReceiver.addListener( /* handle receiving audio to play back */ );
 
-  // HTTP client that polls for commands and outputs state updates to its listeners
-  HttpCommandProvider commandProvider = new HttpCommandProvider("http://10.0.0.184:5000", 1000);
+    // HTTP client that polls for commands and outputs state updates to its listeners
+    HttpCommandProvider commandProvider = new HttpCommandProvider("http://10.0.0.184:5000", 1000);
 
-  SotaDialogController controller = new SotaDialogController();
-  commandProvider.addListener(controller);
+    SotaDialogController controller = new SotaDialogController();
+    commandProvider.addListener(controller);
 
-  // Orchestrate command polling from the main app: start the provider paused
-  // and request a command whenever the controller transitions to LISTENING.
-  // start paused to ensure we only poll when requested
-  commandProvider.pausePolling();
-  commandProvider.start();
+    // Orchestrate command polling from the main app: start the provider paused
+    // and request a command whenever the controller transitions to READY.
+    // start paused to ensure we only poll when requested
+    commandProvider.pausePolling();
+    commandProvider.start();
 
-  controller.addListener(new eventsystem.EventListener() {
-    @Override
-    public void handle(datatypes.Data d, eventsystem.EventGenerator sender) {
-      if (d instanceof SotaDialogController.SotaStateData) {
-        SotaDialogController.SotaStateData sd = (SotaDialogController.SotaStateData) d;
-        if (sd.data == SotaDialogController.SotaState.LISTENING) {
-          commandProvider.requestOnce();
+    // when the controller is ready, tell HttpCommandProvider to request the next command
+    controller.addListener(new eventsystem.EventListener() {
+      @Override
+      public void handle(datatypes.Data d, eventsystem.EventGenerator sender) {
+        if (d instanceof SotaDialogController.SotaStateData) {
+          SotaDialogController.SotaStateData sd = (SotaDialogController.SotaStateData) d;
+          if (sd.data == SotaDialogController.SotaState.READY) {
+            commandProvider.requestOnce();
+          }
         }
       }
-    }
-  });
+    });
 
-  // trigger an initial request
-  commandProvider.requestOnce();
+    // trigger an initial request
+    commandProvider.requestOnce();
 
-  mic.start();
-  commandProvider.start();
-  audioReceiver.start();
+    mic.start();
+    audioReceiver.start();
 
-  dispatcher.run();
-}
+    dispatcher.run();
+  }
 }
