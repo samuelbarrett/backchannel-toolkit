@@ -92,7 +92,13 @@
                 </scp>
         </target>
 
-        <target name="upload_resources">
+        <target name="upload_libs">
+                <scp todir="${scp.edison.user}:${scp.edison.pass}@${scp.server}:${remotelib.dir}" trust="yes" sftp="true" verbose="true" >       
+                        <fileset dir="${lib.dir}"/>
+                </scp>
+        </target>
+
+        <target name="upload_resources_all">
                 <!-- make the folder if it doesn't exist -->
                 <sshexec
                         host="${scp.server}"
@@ -101,14 +107,42 @@
                         command="mkdir -p ${sota.basedir}/${resources.dir}"
                         trust="true" />
     
-                <scp todir="${scp.edison.user}:${scp.edison.pass}@${scp.server}:${sota.basedir}/${resources.dir}" trust="yes" sftp="true" >       
+                <scp todir="${scp.edison.user}:${scp.edison.pass}@${scp.server}:${sota.basedir}/${resources.dir}" trust="yes" sftp="true" verbose="true" >       
                         <fileset dir="${resources.dir}"/>
                 </scp>
    
-                <scp todir="${scp.edison.user}:${scp.edison.pass}@${scp.server}:${remotelib.dir}" trust="yes" sftp="true" >       
+                <scp todir="${scp.edison.user}:${scp.edison.pass}@${scp.server}:${remotelib.dir}" trust="yes" sftp="true" verbose="true" >       
                         <fileset dir="${lib.dir}"/>
                 </scp>
         </target>
+
+        <target name="upload_resources_utterances">
+                <!-- make the folder if it doesn't exist -->
+                <sshexec
+                        host="${scp.server}"
+                        username="${scp.edison.user}"
+                        password="${scp.edison.pass}"
+                        command="mkdir -p ${sota.basedir}/${resources.dir}/utterances"
+                        trust="true" />
+    
+                <scp todir="${scp.edison.user}:${scp.edison.pass}@${scp.server}:${sota.basedir}/${resources.dir}/utterances" trust="yes" sftp="true" verbose="true" >       
+                        <fileset dir="${resources.dir}/utterances"/>
+                </scp>
+        </target>
+
+        <target name="upload_resources_config">
+                <!-- make the folder if it doesn't exist -->
+                <sshexec
+                        host="${scp.server}"
+                        username="${scp.edison.user}"
+                        password="${scp.edison.pass}"
+                        command="mkdir -p ${sota.basedir}/${resources.dir}/config"
+                        trust="true" />
+    
+                <scp todir="${scp.edison.user}:${scp.edison.pass}@${scp.server}:${sota.basedir}/${resources.dir}/config" trust="yes" sftp="true" verbose="true" >       
+                        <fileset dir="${resources.dir}/config"/>
+                </scp>
+        </target> 
 
         <target name="compile_and_send_jars" depends="compile, make_jars, upload_jars" description="Compile all into Jars and upload">
         </target>
