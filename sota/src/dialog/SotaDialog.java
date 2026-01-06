@@ -29,7 +29,7 @@ public class SotaDialog {
     //audioReceiver.addListener( /* handle receiving audio to play back */ );
 
     // HTTP client that polls for commands and outputs state updates to its listeners
-    HttpCommandProvider commandProvider = new HttpCommandProvider("http://10.0.0.184:5000", 1000);
+    final HttpCommandProvider commandProvider = new HttpCommandProvider("http://10.0.0.184:5000", 1000);
 
     SotaDialogController controller = new SotaDialogController();
     commandProvider.addListener(controller);

@@ -1,5 +1,9 @@
 package dataprocessors.sota;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import dataprocessors.DataProcessor;
 import datatypes.Data;
 import datatypes.behaviors.BackchannelEvent;
@@ -46,6 +50,8 @@ public class SotaDialogController extends DataProcessor {
     private long backchannelFinishTimeMs;    // when the robot will finish speaking
     private static final long MIN_BACKCHANNEL_INTERVAL_MS = 1000; // minimum time between backchannels
 
+    private final ScheduledExecutorService readyNotifier = Executors.newSingleThreadScheduledExecutor();
+
     public SotaDialogController() {
         this.mem = new CRobotMem();
 		this.motion = new CSotaMotion(mem);
@@ -75,8 +81,22 @@ public class SotaDialogController extends DataProcessor {
         if (this.state == SotaState.READY) {
             executeBackchannel(backchannel);
             this.state = SotaState.BUSY;
+            scheduleReadyNotification();
         }
         return new SotaStateData(this.state);
+    }
+
+    private void scheduleReadyNotification() {
+        long delayMs = Math.max(0, this.backchannelFinishTimeMs - System.currentTimeMillis());
+        readyNotifier.schedule(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (SotaDialogController.this) {
+                    state = SotaState.READY;
+                    SotaDialogController.this.notifyListeners(new SotaStateData(state));
+                }
+            }
+        }, delayMs, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -93,10 +113,10 @@ public class SotaDialogController extends DataProcessor {
     
     // plays a backchannel
     private void playVerbalBackchannel() {
-        long playTime = CPlayWave.getPlayTime("../resources/minecraft-villager-complete-trade.wav");
+        long playTime = CPlayWave.getPlayTime("../resources/utterances/test_hmm.wav");
         long currentTimeMs = System.currentTimeMillis();
         this.backchannelFinishTimeMs = currentTimeMs + playTime + MIN_BACKCHANNEL_INTERVAL_MS;
-        CPlayWave.PlayWave("../resources/minecraft-villager-complete-trade.wav");
+        CPlayWave.PlayWave("../resources/utterances/test_hmm.wav");
     }
     
     // Adjust head pitch to make Sota nod using the nod poses
