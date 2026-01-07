@@ -6,7 +6,30 @@ info:
 servers:
   - url: http://localhost:5000
 components:
+  securitySchemes:
+    PairingToken:
+      type: apiKey
+      in: header
+      name: X-Pairing-Token
   schemas:
+    Behavior:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          description: Type of behavior (e.g., nod, utterance, gaze)
+        amplitude:
+          type: number
+          description: Amplitude of the behavior (for nodding behavior)
+        speed:
+          type: number
+          description: Speed of the behavior (for nodding behavior)
+        utterance:
+          type: string
+          description: Utterance text (for utterance behavior)
     Style:
       type: object
       additionalProperties: false
@@ -60,6 +83,27 @@ components:
               type: number
               description: Frequency of gaze shifts
 paths:
+  /pair:
+    post:
+      summary: Pair with the server using a pairing token
+      security:
+        - PairingToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                robot_id:
+                  type: string
+                  description: The unique identifier for the robot
+                pairing_token:
+                  type: string
+                  description: The pairing token to authenticate with the server
+      responses:
+        '200':
+          description: Paired successfully
   /status:
     get:
       summary: Get server status
@@ -74,9 +118,34 @@ paths:
                   status:
                     type: string
                     example: Server is running
+  /command:
+    get:
+      summary: get next command from server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                robot_id:
+                  type: string
+                  description: The unique identifier for the robot
+      responses:
+        '200':
+          description: Next command
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Behavior:
+                    $ref: '#/components/schemas/Behavior'
   /command/speak:
     post:
       summary: Send a speak command to the server
+      security:
+        - PairingToken: []
       requestBody:
         required: true
         content:
@@ -104,6 +173,8 @@ paths:
   /command/listenSilence:
     post:
       summary: Send a command for the robot to listen until it detects silence
+      security:
+        - PairingToken: []
       requestBody:
         required: true
         content:
@@ -128,6 +199,8 @@ paths:
   /command/listenKeyword:
     post:
       summary: Send a command for the robot to listen until it detects a keyword
+      security:
+        - PairingToken: []
       requestBody:
         required: true
         content:

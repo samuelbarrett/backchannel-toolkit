@@ -4,6 +4,49 @@
  */
 
 export interface paths {
+    "/pair": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pair with the server using a pairing token */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** @description The unique identifier for the robot */
+                        robot_id?: string;
+                        /** @description The pairing token to authenticate with the server */
+                        pairing_token?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Paired successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/status": {
         parameters: {
             query?: never;
@@ -30,6 +73,51 @@ export interface paths {
                         "application/json": {
                             /** @example Server is running */
                             status?: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/command": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** get next command from server */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** @description The unique identifier for the robot */
+                        robot_id?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Next command */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            Behavior?: components["schemas"]["Behavior"];
                         };
                     };
                 };
@@ -192,6 +280,16 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        Behavior: {
+            /** @description Type of behavior (e.g., nod, utterance, gaze) */
+            type: string;
+            /** @description Amplitude of the behavior (for nodding behavior) */
+            amplitude?: number;
+            /** @description Speed of the behavior (for nodding behavior) */
+            speed?: number;
+            /** @description Utterance text (for utterance behavior) */
+            utterance?: string;
+        };
         Style: {
             nodding?: {
                 /** @description Whether to nod while speaking */

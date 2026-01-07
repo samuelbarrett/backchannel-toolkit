@@ -3,14 +3,33 @@ from typing import Dict
 from typing import Tuple
 from typing import Union
 
+from openapi_server.models.command_get200_response import CommandGet200Response  # noqa: E501
+from openapi_server.models.command_get_request import CommandGetRequest  # noqa: E501
 from openapi_server.models.command_listen_keyword_post200_response import CommandListenKeywordPost200Response  # noqa: E501
 from openapi_server.models.command_listen_keyword_post_request import CommandListenKeywordPostRequest  # noqa: E501
 from openapi_server.models.command_listen_silence_post200_response import CommandListenSilencePost200Response  # noqa: E501
 from openapi_server.models.command_listen_silence_post_request import CommandListenSilencePostRequest  # noqa: E501
 from openapi_server.models.command_speak_post200_response import CommandSpeakPost200Response  # noqa: E501
 from openapi_server.models.command_speak_post_request import CommandSpeakPostRequest  # noqa: E501
+from openapi_server.models.pair_post_request import PairPostRequest  # noqa: E501
 from openapi_server.models.status_get200_response import StatusGet200Response  # noqa: E501
 from openapi_server import util
+
+
+def command_get(body):  # noqa: E501
+    """get next command from server
+
+     # noqa: E501
+
+    :param command_get_request: 
+    :type command_get_request: dict | bytes
+
+    :rtype: Union[CommandGet200Response, Tuple[CommandGet200Response, int], Tuple[CommandGet200Response, int, Dict[str, str]]
+    """
+    command_get_request = body
+    if connexion.request.is_json:
+        command_get_request = CommandGetRequest.from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
 
 
 def command_listen_keyword_post(body):  # noqa: E501
@@ -58,6 +77,22 @@ def command_speak_post(body):  # noqa: E501
     command_speak_post_request = body
     if connexion.request.is_json:
         command_speak_post_request = CommandSpeakPostRequest.from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
+
+
+def pair_post(body):  # noqa: E501
+    """Pair with the server using a pairing token
+
+     # noqa: E501
+
+    :param pair_post_request: 
+    :type pair_post_request: dict | bytes
+
+    :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]
+    """
+    pair_post_request = body
+    if connexion.request.is_json:
+        pair_post_request = PairPostRequest.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 

@@ -6,6 +6,24 @@ info:
 servers:
 - url: http://localhost:5000
 paths:
+  /command:
+    get:
+      operationId: command_get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_command_get_request"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_command_get_200_response"
+          description: Next command
+      summary: get next command from server
+      x-openapi-router-controller: openapi_server.controllers.default_controller
   /command/listenKeyword:
     post:
       operationId: command_listen_keyword_post
@@ -22,6 +40,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/_command_listenKeyword_post_200_response"
           description: Command received
+      security:
+      - PairingToken: []
       summary: Send a command for the robot to listen until it detects a keyword
       x-openapi-router-controller: openapi_server.controllers.default_controller
   /command/listenSilence:
@@ -40,6 +60,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/_command_listenSilence_post_200_response"
           description: Command received
+      security:
+      - PairingToken: []
       summary: Send a command for the robot to listen until it detects silence
       x-openapi-router-controller: openapi_server.controllers.default_controller
   /command/speak:
@@ -58,7 +80,25 @@ paths:
               schema:
                 $ref: "#/components/schemas/_command_speak_post_200_response"
           description: Command received
+      security:
+      - PairingToken: []
       summary: Send a speak command to the server
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+  /pair:
+    post:
+      operationId: pair_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_pair_post_request"
+        required: true
+      responses:
+        "200":
+          description: Paired successfully
+      security:
+      - PairingToken: []
+      summary: Pair with the server using a pairing token
       x-openapi-router-controller: openapi_server.controllers.default_controller
   /status:
     get:
@@ -74,6 +114,34 @@ paths:
       x-openapi-router-controller: openapi_server.controllers.default_controller
 components:
   schemas:
+    Behavior:
+      additionalProperties: false
+      example:
+        amplitude: 0.8008281904610115
+        type: type
+        speed: 6.027456183070403
+        utterance: utterance
+      properties:
+        type:
+          description: "Type of behavior (e.g., nod, utterance, gaze)"
+          title: type
+          type: string
+        amplitude:
+          description: Amplitude of the behavior (for nodding behavior)
+          title: amplitude
+          type: number
+        speed:
+          description: Speed of the behavior (for nodding behavior)
+          title: speed
+          type: number
+        utterance:
+          description: Utterance text (for utterance behavior)
+          title: utterance
+          type: string
+      required:
+      - type
+      title: Behavior
+      type: object
     Style:
       additionalProperties: false
       properties:
@@ -85,6 +153,18 @@ components:
           $ref: "#/components/schemas/Style_gaze"
       title: Style
       type: object
+    _pair_post_request:
+      properties:
+        robot_id:
+          description: The unique identifier for the robot
+          title: robot_id
+          type: string
+        pairing_token:
+          description: The pairing token to authenticate with the server
+          title: pairing_token
+          type: string
+      title: _pair_post_request
+      type: object
     _status_get_200_response:
       example:
         status: Server is running
@@ -94,6 +174,26 @@ components:
           title: status
           type: string
       title: _status_get_200_response
+      type: object
+    _command_get_request:
+      properties:
+        robot_id:
+          description: The unique identifier for the robot
+          title: robot_id
+          type: string
+      title: _command_get_request
+      type: object
+    _command_get_200_response:
+      example:
+        Behavior:
+          amplitude: 0.8008281904610115
+          type: type
+          speed: 6.027456183070403
+          utterance: utterance
+      properties:
+        Behavior:
+          $ref: "#/components/schemas/Behavior"
+      title: _command_get_200_response
       type: object
     _command_speak_post_request:
       additionalProperties: true
@@ -216,3 +316,9 @@ components:
           type: number
       title: Style_gaze
       type: object
+  securitySchemes:
+    PairingToken:
+      in: header
+      name: X-Pairing-Token
+      type: apiKey
+      x-apikeyInfoFunc: openapi_server.controllers.security_controller.info_from_PairingToken
