@@ -2,7 +2,6 @@ import asyncio
 import random
 import time
 from typing import Any, Dict
-from services.scheduler.Scheduler import Scheduler
 
 """
 RobotAction represents a single primary action of generated behaviors. It manages multiple sub-behaviors (like nodding, gazing)
@@ -23,19 +22,19 @@ class RobotAction:
     self._stop_event = asyncio.Event()
     self._tasks: list[asyncio.Task] = []
 
-  async def run(self, scheduler: Scheduler):
+  async def run(self, output_queue: asyncio.Queue):
     """
     Run this action and its behaviors: spawn sub-behaviors, run primary, then stop subs cleanly.
     """
     # spawn sub-behaviors
     if self.config.get("nod", {}).get("enabled"):
-      t = asyncio.create_task(self._nodder(scheduler.queue))
+      t = asyncio.create_task(self._nodder(output_queue))
       self._tasks.append(t)
     if self.config.get("gaze", {}).get("enabled"):
-      t = asyncio.create_task(self._gazer(scheduler.queue))
+      t = asyncio.create_task(self._gazer(output_queue))
       self._tasks.append(t)
     # audio/tss or listening primary
-    primary_task = asyncio.create_task(self._primary_behavior(scheduler.queue))
+    primary_task = asyncio.create_task(self._primary_behavior(output_queue))
 
     try:
       await primary_task

@@ -15,14 +15,3 @@ def start():
   
   # for development only
   run_simple("0.0.0.0", 12000, openapi_app, use_reloader=True, use_debugger=True)
-
-def define_routes(app):
-  # get the status of the server
-  @app.route('/status', methods=['GET'])
-  def status():
-    return jsonify({"status": "Server is running"}), 200
-
-  @app.route('/command', methods=['POST'])
-  def command():
-    content = request.json
-    return jsonify({"received_command": content}), 200

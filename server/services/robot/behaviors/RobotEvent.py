@@ -4,5 +4,7 @@ from dataclasses import dataclass
 
 @dataclass
 class RobotEvent:
-    type: str
-    params: dict
+  type: str # either "NOD", "UTTERANCE", or "LOOK"
+  amplitude: int = 0
+  speed: int = 0
+  utterance: str = ""
