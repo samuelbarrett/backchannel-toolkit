@@ -32,8 +32,6 @@ export const initWorkspace = () => {
   Object.assign(javascriptGenerator.forBlock, forBlock);
 
   // Set up UI elements and inject Blockly
-  const codeDiv = document.getElementById('generatedCode')?.firstChild;
-  const outputDiv = document.getElementById('output');
   const blocklyDiv = document.getElementById('blocklyDiv');
 
   if (!blocklyDiv) {

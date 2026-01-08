@@ -86,8 +86,7 @@ paths:
   /pair:
     post:
       summary: Pair with the server using a pairing token
-      security:
-        - PairingToken: []
+      security: []
       requestBody:
         required: true
         content:
@@ -98,12 +97,65 @@ paths:
                 robot_id:
                   type: string
                   description: The unique identifier for the robot
-                pairing_token:
-                  type: string
-                  description: The pairing token to authenticate with the server
       responses:
         '200':
           description: Paired successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pairing_token:
+                    type: string
+                    description: The token to be used for authenticated requests
+                    example: "xj2bjzx8b1njk2n"
+        '400':
+          description: Invalid robot ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid robot ID
+        '409':
+          description: Robot already paired
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Robot already paired
+  /robot/register:
+    post:
+      summary: Register a new robot with the server
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                robot_id:
+                  type: string
+                  description: The unique identifier for the robot
+      responses:
+        '200':
+          description: Registered successfully
+        '409':
+          description: Robot already registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Robot already registered
   /status:
     get:
       summary: Get server status

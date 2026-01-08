@@ -12,26 +12,21 @@ class PairPostRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, robot_id=None, pairing_token=None):  # noqa: E501
+    def __init__(self, robot_id=None):  # noqa: E501
         """PairPostRequest - a model defined in OpenAPI
 
         :param robot_id: The robot_id of this PairPostRequest.  # noqa: E501
         :type robot_id: str
-        :param pairing_token: The pairing_token of this PairPostRequest.  # noqa: E501
-        :type pairing_token: str
         """
         self.openapi_types = {
-            'robot_id': str,
-            'pairing_token': str
+            'robot_id': str
         }
 
         self.attribute_map = {
-            'robot_id': 'robot_id',
-            'pairing_token': 'pairing_token'
+            'robot_id': 'robot_id'
         }
 
         self._robot_id = robot_id
-        self._pairing_token = pairing_token
 
     @classmethod
     def from_dict(cls, dikt) -> 'PairPostRequest':
@@ -66,26 +61,3 @@ class PairPostRequest(Model):
         """
 
         self._robot_id = robot_id
-
-    @property
-    def pairing_token(self) -> str:
-        """Gets the pairing_token of this PairPostRequest.
-
-        The pairing token to authenticate with the server  # noqa: E501
-
-        :return: The pairing_token of this PairPostRequest.
-        :rtype: str
-        """
-        return self._pairing_token
-
-    @pairing_token.setter
-    def pairing_token(self, pairing_token: str):
-        """Sets the pairing_token of this PairPostRequest.
-
-        The pairing token to authenticate with the server  # noqa: E501
-
-        :param pairing_token: The pairing_token of this PairPostRequest.
-        :type pairing_token: str
-        """
-
-        self._pairing_token = pairing_token

@@ -17,6 +17,16 @@ app.get('/status', async (req, res) => {
   }
 });
 
+app.post('/pair', async (req, res): Promise<void> => {
+  try {
+    console.log('Received /pair request');
+    const response = await backendService.pair(req.body.robot_id);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to pair with robot' });
+  }
+});
+
 app.post('/command/speak', async (req, res) => {
   try {
     console.log('Received /command/speak request');

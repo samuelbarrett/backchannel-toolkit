@@ -26,8 +26,6 @@ export interface paths {
                     "application/json": {
                         /** @description The unique identifier for the robot */
                         robot_id?: string;
-                        /** @description The pairing token to authenticate with the server */
-                        pairing_token?: string;
                     };
                 };
             };
@@ -37,7 +35,92 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description The token to be used for authenticated requests
+                             * @example xj2bjzx8b1njk2n
+                             */
+                            pairing_token?: string;
+                        };
+                    };
+                };
+                /** @description Invalid robot ID */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example Invalid robot ID */
+                            error?: string;
+                        };
+                    };
+                };
+                /** @description Robot already paired */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example Robot already paired */
+                            error?: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/robot/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Register a new robot with the server */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** @description The unique identifier for the robot */
+                        robot_id?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Registered successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
                     content?: never;
+                };
+                /** @description Robot already registered */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example Robot already registered */
+                            error?: string;
+                        };
+                    };
                 };
             };
         };
