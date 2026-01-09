@@ -23,6 +23,8 @@ const config = {
   },
   // Enable webpack-dev-server to get hot refresh of the app.
   devServer: {
+    host: '0.0.0.0',
+    port: 8080,
     static: {
       directory: path.join(__dirname, 'dist'),
     },
