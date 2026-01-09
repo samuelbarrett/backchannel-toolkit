@@ -143,6 +143,15 @@ paths:
                 robot_id:
                   type: string
                   description: The unique identifier for the robot
+                ip:
+                  type: string
+                  description: The IP address of the robot
+                voice_port:
+                  type: integer
+                  description: The port number the robot is listening on for audio playback
+                microphone_port:
+                  type: integer
+                  description: The port number the robot's microphone is listening on
       responses:
         '200':
           description: Registered successfully

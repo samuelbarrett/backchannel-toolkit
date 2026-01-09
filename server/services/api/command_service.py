@@ -19,6 +19,7 @@ from generated.openapi_server.models.pair_post400_response import PairPost400Res
 from generated.openapi_server.models.pair_post409_response import PairPost409Response  # noqa: E501
 from generated.openapi_server.models.pair_post_request import PairPostRequest  # noqa: E501
 from generated.openapi_server.models.robot_register_post409_response import RobotRegisterPost409Response  # noqa: E501
+from generated.openapi_server.models.robot_register_post_request import RobotRegisterPostRequest  # noqa: E501
 from generated.openapi_server.models.status_get200_response import StatusGet200Response  # noqa: E501
 from generated.openapi_server import util
 
@@ -37,28 +38,27 @@ async def handle_command_get(command_get_request):
     A serializable response (model instance, dict, tuple).
   """
   print("handle_command_get called with: %s", command_get_request)
-  robot: Robot = registry.find_by_id(int(command_get_request.robot_id))
-  behavior: Behavior = await robot.get_next_behavior()
+  behavior: Behavior = registry.get_command_for_robot(int(command_get_request.robot_id))
   print(f"Retrieved behavior: {behavior}")
   return CommandGet200Response(behavior=behavior)
 
 
-def handle_command_listen_keyword_post(request_model):
+def handle_command_listen_keyword_post(request_model: CommandListenKeywordPostRequest):
   print("handle_command_listen_keyword_post: %s", request_model)
   return {"status": "ok", "action": "listen_keyword"}
 
 
-def handle_command_listen_silence_post(request_model):
+def handle_command_listen_silence_post(request_model: CommandListenSilencePostRequest):
   print("handle_command_listen_silence_post: %s", request_model)
   return {"status": "ok", "action": "listen_silence"}
 
 
-def handle_command_speak_post(request_model):
+def handle_command_speak_post(request_model: CommandSpeakPostRequest):
   print("handle_command_speak_post: %s", request_model)
   return {"status": "ok", "action": "speak"}
 
 
-def handle_pair_post(request_model):
+def handle_pair_post(request_model: PairPostRequest):
   print("handle_pair_post: %s", request_model)
   robot_id: int = int(request_model.robot_id)
   robot: Robot = registry.find_by_id(robot_id)
@@ -77,13 +77,13 @@ def handle_pair_post(request_model):
 
 def handle_status_get():
   print("handle_status_get called")
-  return {"status": "ok", "server": "running"}
+  return StatusGet200Response(status="ok")
 
 
-def handle_register_post(request_model: PairPostRequest):
+def handle_register_post(request_model: RobotRegisterPostRequest):
   print("handle_register_post: %s", request_model)
   robot_id: int = int(request_model.robot_id)
-  if registry.add(robot_id):
+  if registry.add(robot_id, request_model.ip, request_model.voice_port, request_model.microphone_port):
     print(f"Robot with id {robot_id} registered successfully.")
     return {"status": "ok", "action": "register"}
   else:

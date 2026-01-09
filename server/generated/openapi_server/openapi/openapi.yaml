@@ -133,7 +133,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/_pair_post_request"
+              $ref: "#/components/schemas/_robot_register_post_request"
         required: true
         x-body-name: body
       responses:
@@ -240,6 +240,26 @@ components:
           title: error
           type: string
       title: _pair_post_409_response
+      type: object
+    _robot_register_post_request:
+      properties:
+        robot_id:
+          description: The unique identifier for the robot
+          title: robot_id
+          type: string
+        ip:
+          description: The IP address of the robot
+          title: ip
+          type: string
+        voice_port:
+          description: The port number the robot is listening on for audio playback
+          title: voice_port
+          type: integer
+        microphone_port:
+          description: The port number the robot's microphone is listening on
+          title: microphone_port
+          type: integer
+      title: _robot_register_post_request
       type: object
     _robot_register_post_409_response:
       example:
