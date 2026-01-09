@@ -1,4 +1,5 @@
-# flake8: noqa
+# coding: utf-8
+
 # import models into model package
 from openapi_server.models.behavior import Behavior
 from openapi_server.models.command_get200_response import CommandGet200Response

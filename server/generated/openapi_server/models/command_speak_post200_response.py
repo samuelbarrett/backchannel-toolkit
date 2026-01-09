@@ -1,6 +1,8 @@
-from datetime import date, datetime  # noqa: F401
+# coding: utf-8
 
-from typing import List, Dict  # noqa: F401
+from datetime import date, datetime
+
+from typing import List, Dict, Type
 
 from openapi_server.models.base_model import Model
 from openapi_server import util
@@ -12,11 +14,10 @@ class CommandSpeakPost200Response(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, received_command=None):  # noqa: E501
+    def __init__(self, received_command: str=None):
         """CommandSpeakPost200Response - a model defined in OpenAPI
 
-        :param received_command: The received_command of this CommandSpeakPost200Response.  # noqa: E501
-        :type received_command: str
+        :param received_command: The received_command of this CommandSpeakPost200Response.
         """
         self.openapi_types = {
             'received_command': str
@@ -29,18 +30,16 @@ class CommandSpeakPost200Response(Model):
         self._received_command = received_command
 
     @classmethod
-    def from_dict(cls, dikt) -> 'CommandSpeakPost200Response':
+    def from_dict(cls, dikt: dict) -> 'CommandSpeakPost200Response':
         """Returns the dict as a model
 
         :param dikt: A dict.
-        :type: dict
-        :return: The _command_speak_post_200_response of this CommandSpeakPost200Response.  # noqa: E501
-        :rtype: CommandSpeakPost200Response
+        :return: The _command_speak_post_200_response of this CommandSpeakPost200Response.
         """
         return util.deserialize_model(dikt, cls)
 
     @property
-    def received_command(self) -> str:
+    def received_command(self):
         """Gets the received_command of this CommandSpeakPost200Response.
 
 
@@ -50,7 +49,7 @@ class CommandSpeakPost200Response(Model):
         return self._received_command
 
     @received_command.setter
-    def received_command(self, received_command: str):
+    def received_command(self, received_command):
         """Sets the received_command of this CommandSpeakPost200Response.
 
 

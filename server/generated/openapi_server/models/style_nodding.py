@@ -1,6 +1,8 @@
-from datetime import date, datetime  # noqa: F401
+# coding: utf-8
 
-from typing import List, Dict  # noqa: F401
+from datetime import date, datetime
+
+from typing import List, Dict, Type
 
 from openapi_server.models.base_model import Model
 from openapi_server import util
@@ -12,17 +14,13 @@ class StyleNodding(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, enabled=None, frequency=None, intensity=None, direction=None):  # noqa: E501
+    def __init__(self, enabled: bool=None, frequency: float=None, intensity: float=None, direction: str=None):
         """StyleNodding - a model defined in OpenAPI
 
-        :param enabled: The enabled of this StyleNodding.  # noqa: E501
-        :type enabled: bool
-        :param frequency: The frequency of this StyleNodding.  # noqa: E501
-        :type frequency: float
-        :param intensity: The intensity of this StyleNodding.  # noqa: E501
-        :type intensity: float
-        :param direction: The direction of this StyleNodding.  # noqa: E501
-        :type direction: str
+        :param enabled: The enabled of this StyleNodding.
+        :param frequency: The frequency of this StyleNodding.
+        :param intensity: The intensity of this StyleNodding.
+        :param direction: The direction of this StyleNodding.
         """
         self.openapi_types = {
             'enabled': bool,
@@ -44,21 +42,19 @@ class StyleNodding(Model):
         self._direction = direction
 
     @classmethod
-    def from_dict(cls, dikt) -> 'StyleNodding':
+    def from_dict(cls, dikt: dict) -> 'StyleNodding':
         """Returns the dict as a model
 
         :param dikt: A dict.
-        :type: dict
-        :return: The Style_nodding of this StyleNodding.  # noqa: E501
-        :rtype: StyleNodding
+        :return: The Style_nodding of this StyleNodding.
         """
         return util.deserialize_model(dikt, cls)
 
     @property
-    def enabled(self) -> bool:
+    def enabled(self):
         """Gets the enabled of this StyleNodding.
 
-        Whether to nod while speaking  # noqa: E501
+        Whether to nod while speaking
 
         :return: The enabled of this StyleNodding.
         :rtype: bool
@@ -66,10 +62,10 @@ class StyleNodding(Model):
         return self._enabled
 
     @enabled.setter
-    def enabled(self, enabled: bool):
+    def enabled(self, enabled):
         """Sets the enabled of this StyleNodding.
 
-        Whether to nod while speaking  # noqa: E501
+        Whether to nod while speaking
 
         :param enabled: The enabled of this StyleNodding.
         :type enabled: bool
@@ -78,10 +74,10 @@ class StyleNodding(Model):
         self._enabled = enabled
 
     @property
-    def frequency(self) -> float:
+    def frequency(self):
         """Gets the frequency of this StyleNodding.
 
-        Frequency of nodding (nodding per second)  # noqa: E501
+        Frequency of nodding (nodding per second)
 
         :return: The frequency of this StyleNodding.
         :rtype: float
@@ -89,10 +85,10 @@ class StyleNodding(Model):
         return self._frequency
 
     @frequency.setter
-    def frequency(self, frequency: float):
+    def frequency(self, frequency):
         """Sets the frequency of this StyleNodding.
 
-        Frequency of nodding (nodding per second)  # noqa: E501
+        Frequency of nodding (nodding per second)
 
         :param frequency: The frequency of this StyleNodding.
         :type frequency: float
@@ -101,10 +97,10 @@ class StyleNodding(Model):
         self._frequency = frequency
 
     @property
-    def intensity(self) -> float:
+    def intensity(self):
         """Gets the intensity of this StyleNodding.
 
-        Intensity of nodding  # noqa: E501
+        Intensity of nodding
 
         :return: The intensity of this StyleNodding.
         :rtype: float
@@ -112,10 +108,10 @@ class StyleNodding(Model):
         return self._intensity
 
     @intensity.setter
-    def intensity(self, intensity: float):
+    def intensity(self, intensity):
         """Sets the intensity of this StyleNodding.
 
-        Intensity of nodding  # noqa: E501
+        Intensity of nodding
 
         :param intensity: The intensity of this StyleNodding.
         :type intensity: float
@@ -124,10 +120,10 @@ class StyleNodding(Model):
         self._intensity = intensity
 
     @property
-    def direction(self) -> str:
+    def direction(self):
         """Gets the direction of this StyleNodding.
 
-        Direction of nodding  # noqa: E501
+        Direction of nodding
 
         :return: The direction of this StyleNodding.
         :rtype: str
@@ -135,10 +131,10 @@ class StyleNodding(Model):
         return self._direction
 
     @direction.setter
-    def direction(self, direction: str):
+    def direction(self, direction):
         """Sets the direction of this StyleNodding.
 
-        Direction of nodding  # noqa: E501
+        Direction of nodding
 
         :param direction: The direction of this StyleNodding.
         :type direction: str

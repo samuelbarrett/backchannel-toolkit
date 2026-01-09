@@ -1,6 +1,7 @@
 /**
  * Clientside service for initiating the server-side pairing process to a robot.
  */
+import type { paths } from './api/openapi-types.ts';
 
 sessionStorage.setItem('pairingToken', '');
 

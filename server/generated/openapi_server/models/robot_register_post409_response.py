@@ -1,6 +1,8 @@
-from datetime import date, datetime  # noqa: F401
+# coding: utf-8
 
-from typing import List, Dict  # noqa: F401
+from datetime import date, datetime
+
+from typing import List, Dict, Type
 
 from openapi_server.models.base_model import Model
 from openapi_server import util
@@ -12,11 +14,10 @@ class RobotRegisterPost409Response(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, error=None):  # noqa: E501
+    def __init__(self, error: str=None):
         """RobotRegisterPost409Response - a model defined in OpenAPI
 
-        :param error: The error of this RobotRegisterPost409Response.  # noqa: E501
-        :type error: str
+        :param error: The error of this RobotRegisterPost409Response.
         """
         self.openapi_types = {
             'error': str
@@ -29,18 +30,16 @@ class RobotRegisterPost409Response(Model):
         self._error = error
 
     @classmethod
-    def from_dict(cls, dikt) -> 'RobotRegisterPost409Response':
+    def from_dict(cls, dikt: dict) -> 'RobotRegisterPost409Response':
         """Returns the dict as a model
 
         :param dikt: A dict.
-        :type: dict
-        :return: The _robot_register_post_409_response of this RobotRegisterPost409Response.  # noqa: E501
-        :rtype: RobotRegisterPost409Response
+        :return: The _robot_register_post_409_response of this RobotRegisterPost409Response.
         """
         return util.deserialize_model(dikt, cls)
 
     @property
-    def error(self) -> str:
+    def error(self):
         """Gets the error of this RobotRegisterPost409Response.
 
 
@@ -50,7 +49,7 @@ class RobotRegisterPost409Response(Model):
         return self._error
 
     @error.setter
-    def error(self, error: str):
+    def error(self, error):
         """Sets the error of this RobotRegisterPost409Response.
 
 

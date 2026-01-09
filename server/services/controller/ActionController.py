@@ -1,6 +1,6 @@
 import asyncio
 from typing import Any, Dict
-from server.services.robot.behaviors.RobotAction import RobotAction
+from services.robot.behaviors.RobotAction import RobotAction
 
 """
 ActionController receives actions, queues them, and runs them in FIFO order using the provided Scheduler.

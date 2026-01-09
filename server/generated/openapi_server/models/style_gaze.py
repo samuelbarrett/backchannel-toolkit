@@ -1,6 +1,8 @@
-from datetime import date, datetime  # noqa: F401
+# coding: utf-8
 
-from typing import List, Dict  # noqa: F401
+from datetime import date, datetime
+
+from typing import List, Dict, Type
 
 from openapi_server.models.base_model import Model
 from openapi_server import util
@@ -12,15 +14,12 @@ class StyleGaze(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, enabled=None, eye_contact=None, shift_gaze=None):  # noqa: E501
+    def __init__(self, enabled: bool=None, eye_contact: float=None, shift_gaze: float=None):
         """StyleGaze - a model defined in OpenAPI
 
-        :param enabled: The enabled of this StyleGaze.  # noqa: E501
-        :type enabled: bool
-        :param eye_contact: The eye_contact of this StyleGaze.  # noqa: E501
-        :type eye_contact: float
-        :param shift_gaze: The shift_gaze of this StyleGaze.  # noqa: E501
-        :type shift_gaze: float
+        :param enabled: The enabled of this StyleGaze.
+        :param eye_contact: The eye_contact of this StyleGaze.
+        :param shift_gaze: The shift_gaze of this StyleGaze.
         """
         self.openapi_types = {
             'enabled': bool,
@@ -39,21 +38,19 @@ class StyleGaze(Model):
         self._shift_gaze = shift_gaze
 
     @classmethod
-    def from_dict(cls, dikt) -> 'StyleGaze':
+    def from_dict(cls, dikt: dict) -> 'StyleGaze':
         """Returns the dict as a model
 
         :param dikt: A dict.
-        :type: dict
-        :return: The Style_gaze of this StyleGaze.  # noqa: E501
-        :rtype: StyleGaze
+        :return: The Style_gaze of this StyleGaze.
         """
         return util.deserialize_model(dikt, cls)
 
     @property
-    def enabled(self) -> bool:
+    def enabled(self):
         """Gets the enabled of this StyleGaze.
 
-        Whether to use gaze behavior  # noqa: E501
+        Whether to use gaze behavior
 
         :return: The enabled of this StyleGaze.
         :rtype: bool
@@ -61,10 +58,10 @@ class StyleGaze(Model):
         return self._enabled
 
     @enabled.setter
-    def enabled(self, enabled: bool):
+    def enabled(self, enabled):
         """Sets the enabled of this StyleGaze.
 
-        Whether to use gaze behavior  # noqa: E501
+        Whether to use gaze behavior
 
         :param enabled: The enabled of this StyleGaze.
         :type enabled: bool
@@ -73,10 +70,10 @@ class StyleGaze(Model):
         self._enabled = enabled
 
     @property
-    def eye_contact(self) -> float:
+    def eye_contact(self):
         """Gets the eye_contact of this StyleGaze.
 
-        Frequency of eye contact  # noqa: E501
+        Frequency of eye contact
 
         :return: The eye_contact of this StyleGaze.
         :rtype: float
@@ -84,10 +81,10 @@ class StyleGaze(Model):
         return self._eye_contact
 
     @eye_contact.setter
-    def eye_contact(self, eye_contact: float):
+    def eye_contact(self, eye_contact):
         """Sets the eye_contact of this StyleGaze.
 
-        Frequency of eye contact  # noqa: E501
+        Frequency of eye contact
 
         :param eye_contact: The eye_contact of this StyleGaze.
         :type eye_contact: float
@@ -96,10 +93,10 @@ class StyleGaze(Model):
         self._eye_contact = eye_contact
 
     @property
-    def shift_gaze(self) -> float:
+    def shift_gaze(self):
         """Gets the shift_gaze of this StyleGaze.
 
-        Frequency of gaze shifts  # noqa: E501
+        Frequency of gaze shifts
 
         :return: The shift_gaze of this StyleGaze.
         :rtype: float
@@ -107,10 +104,10 @@ class StyleGaze(Model):
         return self._shift_gaze
 
     @shift_gaze.setter
-    def shift_gaze(self, shift_gaze: float):
+    def shift_gaze(self, shift_gaze):
         """Sets the shift_gaze of this StyleGaze.
 
-        Frequency of gaze shifts  # noqa: E501
+        Frequency of gaze shifts
 
         :param shift_gaze: The shift_gaze of this StyleGaze.
         :type shift_gaze: float

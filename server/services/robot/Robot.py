@@ -9,6 +9,7 @@ from services.controller.ActionController import ActionController
 class Robot:
   def __init__(self, id):
     self.id = id
+    self.client = None
     self.output_queue: asyncio.Queue = asyncio.Queue()
     self._controller = ActionController(self.output_queue)
 
@@ -25,4 +26,8 @@ class Robot:
     """Get the next behavior from the robot's behavior queue."""
     return await self.output_queue.get()
   
-
+  def get_client(self) -> str | None:
+    return self.client
+  
+  def set_client(self, client: str):
+    self.client = client

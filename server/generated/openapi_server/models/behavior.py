@@ -1,6 +1,8 @@
-from datetime import date, datetime  # noqa: F401
+# coding: utf-8
 
-from typing import List, Dict  # noqa: F401
+from datetime import date, datetime
+
+from typing import List, Dict, Type
 
 from openapi_server.models.base_model import Model
 from openapi_server import util
@@ -12,17 +14,13 @@ class Behavior(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, type=None, amplitude=None, speed=None, utterance=None):  # noqa: E501
+    def __init__(self, type: str=None, amplitude: float=None, speed: float=None, utterance: str=None):
         """Behavior - a model defined in OpenAPI
 
-        :param type: The type of this Behavior.  # noqa: E501
-        :type type: str
-        :param amplitude: The amplitude of this Behavior.  # noqa: E501
-        :type amplitude: float
-        :param speed: The speed of this Behavior.  # noqa: E501
-        :type speed: float
-        :param utterance: The utterance of this Behavior.  # noqa: E501
-        :type utterance: str
+        :param type: The type of this Behavior.
+        :param amplitude: The amplitude of this Behavior.
+        :param speed: The speed of this Behavior.
+        :param utterance: The utterance of this Behavior.
         """
         self.openapi_types = {
             'type': str,
@@ -44,21 +42,19 @@ class Behavior(Model):
         self._utterance = utterance
 
     @classmethod
-    def from_dict(cls, dikt) -> 'Behavior':
+    def from_dict(cls, dikt: dict) -> 'Behavior':
         """Returns the dict as a model
 
         :param dikt: A dict.
-        :type: dict
-        :return: The Behavior of this Behavior.  # noqa: E501
-        :rtype: Behavior
+        :return: The Behavior of this Behavior.
         """
         return util.deserialize_model(dikt, cls)
 
     @property
-    def type(self) -> str:
+    def type(self):
         """Gets the type of this Behavior.
 
-        Type of behavior (e.g., nod, utterance, gaze)  # noqa: E501
+        Type of behavior (e.g., nod, utterance, gaze)
 
         :return: The type of this Behavior.
         :rtype: str
@@ -66,24 +62,24 @@ class Behavior(Model):
         return self._type
 
     @type.setter
-    def type(self, type: str):
+    def type(self, type):
         """Sets the type of this Behavior.
 
-        Type of behavior (e.g., nod, utterance, gaze)  # noqa: E501
+        Type of behavior (e.g., nod, utterance, gaze)
 
         :param type: The type of this Behavior.
         :type type: str
         """
         if type is None:
-            raise ValueError("Invalid value for `type`, must not be `None`")  # noqa: E501
+            raise ValueError("Invalid value for `type`, must not be `None`")
 
         self._type = type
 
     @property
-    def amplitude(self) -> float:
+    def amplitude(self):
         """Gets the amplitude of this Behavior.
 
-        Amplitude of the behavior (for nodding behavior)  # noqa: E501
+        Amplitude of the behavior (for nodding behavior)
 
         :return: The amplitude of this Behavior.
         :rtype: float
@@ -91,10 +87,10 @@ class Behavior(Model):
         return self._amplitude
 
     @amplitude.setter
-    def amplitude(self, amplitude: float):
+    def amplitude(self, amplitude):
         """Sets the amplitude of this Behavior.
 
-        Amplitude of the behavior (for nodding behavior)  # noqa: E501
+        Amplitude of the behavior (for nodding behavior)
 
         :param amplitude: The amplitude of this Behavior.
         :type amplitude: float
@@ -103,10 +99,10 @@ class Behavior(Model):
         self._amplitude = amplitude
 
     @property
-    def speed(self) -> float:
+    def speed(self):
         """Gets the speed of this Behavior.
 
-        Speed of the behavior (for nodding behavior)  # noqa: E501
+        Speed of the behavior (for nodding behavior)
 
         :return: The speed of this Behavior.
         :rtype: float
@@ -114,10 +110,10 @@ class Behavior(Model):
         return self._speed
 
     @speed.setter
-    def speed(self, speed: float):
+    def speed(self, speed):
         """Sets the speed of this Behavior.
 
-        Speed of the behavior (for nodding behavior)  # noqa: E501
+        Speed of the behavior (for nodding behavior)
 
         :param speed: The speed of this Behavior.
         :type speed: float
@@ -126,10 +122,10 @@ class Behavior(Model):
         self._speed = speed
 
     @property
-    def utterance(self) -> str:
+    def utterance(self):
         """Gets the utterance of this Behavior.
 
-        Utterance text (for utterance behavior)  # noqa: E501
+        Utterance text (for utterance behavior)
 
         :return: The utterance of this Behavior.
         :rtype: str
@@ -137,10 +133,10 @@ class Behavior(Model):
         return self._utterance
 
     @utterance.setter
-    def utterance(self, utterance: str):
+    def utterance(self, utterance):
         """Sets the utterance of this Behavior.
 
-        Utterance text (for utterance behavior)  # noqa: E501
+        Utterance text (for utterance behavior)
 
         :param utterance: The utterance of this Behavior.
         :type utterance: str

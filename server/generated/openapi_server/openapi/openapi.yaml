@@ -36,6 +36,7 @@ paths:
             schema:
               $ref: "#/components/schemas/_command_listenKeyword_post_request"
         required: true
+        x-body-name: body
       responses:
         "200":
           content:
@@ -47,6 +48,7 @@ paths:
       - PairingToken: []
       summary: Send a command for the robot to listen until it detects a keyword
       x-openapi-router-controller: openapi_server.controllers.default_controller
+      x-codegen-request-body-name: body
   /command/listenSilence:
     post:
       operationId: command_listen_silence_post
@@ -56,6 +58,7 @@ paths:
             schema:
               $ref: "#/components/schemas/_command_listenSilence_post_request"
         required: true
+        x-body-name: body
       responses:
         "200":
           content:
@@ -67,6 +70,7 @@ paths:
       - PairingToken: []
       summary: Send a command for the robot to listen until it detects silence
       x-openapi-router-controller: openapi_server.controllers.default_controller
+      x-codegen-request-body-name: body
   /command/speak:
     post:
       operationId: command_speak_post
@@ -76,6 +80,7 @@ paths:
             schema:
               $ref: "#/components/schemas/_command_speak_post_request"
         required: true
+        x-body-name: body
       responses:
         "200":
           content:
@@ -87,6 +92,7 @@ paths:
       - PairingToken: []
       summary: Send a speak command to the server
       x-openapi-router-controller: openapi_server.controllers.default_controller
+      x-codegen-request-body-name: body
   /pair:
     post:
       operationId: pair_post
@@ -96,6 +102,7 @@ paths:
             schema:
               $ref: "#/components/schemas/_pair_post_request"
         required: true
+        x-body-name: body
       responses:
         "200":
           content:
@@ -118,6 +125,7 @@ paths:
       security: []
       summary: Pair with the server using a pairing token
       x-openapi-router-controller: openapi_server.controllers.default_controller
+      x-codegen-request-body-name: body
   /robot/register:
     post:
       operationId: robot_register_post
@@ -127,6 +135,7 @@ paths:
             schema:
               $ref: "#/components/schemas/_pair_post_request"
         required: true
+        x-body-name: body
       responses:
         "200":
           description: Registered successfully
@@ -139,6 +148,7 @@ paths:
       security: []
       summary: Register a new robot with the server
       x-openapi-router-controller: openapi_server.controllers.default_controller
+      x-codegen-request-body-name: body
   /status:
     get:
       operationId: status_get

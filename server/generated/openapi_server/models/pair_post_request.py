@@ -1,6 +1,8 @@
-from datetime import date, datetime  # noqa: F401
+# coding: utf-8
 
-from typing import List, Dict  # noqa: F401
+from datetime import date, datetime
+
+from typing import List, Dict, Type
 
 from openapi_server.models.base_model import Model
 from openapi_server import util
@@ -12,11 +14,10 @@ class PairPostRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, robot_id=None):  # noqa: E501
+    def __init__(self, robot_id: str=None):
         """PairPostRequest - a model defined in OpenAPI
 
-        :param robot_id: The robot_id of this PairPostRequest.  # noqa: E501
-        :type robot_id: str
+        :param robot_id: The robot_id of this PairPostRequest.
         """
         self.openapi_types = {
             'robot_id': str
@@ -29,21 +30,19 @@ class PairPostRequest(Model):
         self._robot_id = robot_id
 
     @classmethod
-    def from_dict(cls, dikt) -> 'PairPostRequest':
+    def from_dict(cls, dikt: dict) -> 'PairPostRequest':
         """Returns the dict as a model
 
         :param dikt: A dict.
-        :type: dict
-        :return: The _pair_post_request of this PairPostRequest.  # noqa: E501
-        :rtype: PairPostRequest
+        :return: The _pair_post_request of this PairPostRequest.
         """
         return util.deserialize_model(dikt, cls)
 
     @property
-    def robot_id(self) -> str:
+    def robot_id(self):
         """Gets the robot_id of this PairPostRequest.
 
-        The unique identifier for the robot  # noqa: E501
+        The unique identifier for the robot
 
         :return: The robot_id of this PairPostRequest.
         :rtype: str
@@ -51,10 +50,10 @@ class PairPostRequest(Model):
         return self._robot_id
 
     @robot_id.setter
-    def robot_id(self, robot_id: str):
+    def robot_id(self, robot_id):
         """Sets the robot_id of this PairPostRequest.
 
-        The unique identifier for the robot  # noqa: E501
+        The unique identifier for the robot
 
         :param robot_id: The robot_id of this PairPostRequest.
         :type robot_id: str
