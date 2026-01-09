@@ -19,20 +19,16 @@ from openapi_server.models.status_get200_response import StatusGet200Response  #
 from openapi_server import util
 
 
-def command_get(body):  # noqa: E501
+async def command_get(request: web.Request, robot_id) -> web.Response:
     """get next command from server
 
-     # noqa: E501
+    
 
-    :param pair_post_request: 
-    :type pair_post_request: dict | bytes
+    :param robot_id: The unique identifier for the robot
+    :type robot_id: str
 
-    :rtype: Union[CommandGet200Response, Tuple[CommandGet200Response, int], Tuple[CommandGet200Response, int, Dict[str, str]]
     """
-    pair_post_request = body
-    if connexion.request.is_json:
-        pair_post_request = PairPostRequest.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return web.Response(status=200)
 
 
 def command_listen_keyword_post(body):  # noqa: E501

@@ -1,6 +1,8 @@
-from datetime import date, datetime  # noqa: F401
+# coding: utf-8
 
-from typing import List, Dict  # noqa: F401
+from datetime import date, datetime
+
+from typing import List, Dict, Type
 
 from openapi_server.models.base_model import Model
 from openapi_server import util
@@ -12,11 +14,10 @@ class StatusGet200Response(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, status=None):  # noqa: E501
+    def __init__(self, status: str=None):
         """StatusGet200Response - a model defined in OpenAPI
 
-        :param status: The status of this StatusGet200Response.  # noqa: E501
-        :type status: str
+        :param status: The status of this StatusGet200Response.
         """
         self.openapi_types = {
             'status': str
@@ -29,18 +30,16 @@ class StatusGet200Response(Model):
         self._status = status
 
     @classmethod
-    def from_dict(cls, dikt) -> 'StatusGet200Response':
+    def from_dict(cls, dikt: dict) -> 'StatusGet200Response':
         """Returns the dict as a model
 
         :param dikt: A dict.
-        :type: dict
-        :return: The _status_get_200_response of this StatusGet200Response.  # noqa: E501
-        :rtype: StatusGet200Response
+        :return: The _status_get_200_response of this StatusGet200Response.
         """
         return util.deserialize_model(dikt, cls)
 
     @property
-    def status(self) -> str:
+    def status(self):
         """Gets the status of this StatusGet200Response.
 
 
@@ -50,7 +49,7 @@ class StatusGet200Response(Model):
         return self._status
 
     @status.setter
-    def status(self, status: str):
+    def status(self, status):
         """Sets the status of this StatusGet200Response.
 
 

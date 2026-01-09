@@ -173,16 +173,13 @@ paths:
   /command:
     get:
       summary: get next command from server
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                robot_id:
-                  type: string
-                  description: The unique identifier for the robot
+      parameters:
+        - in: query
+          name: robot_id
+          schema:
+            type: string
+          required: true
+          description: The unique identifier for the robot
       responses:
         '200':
           description: Next command

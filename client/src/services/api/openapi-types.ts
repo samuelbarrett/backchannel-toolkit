@@ -179,19 +179,15 @@ export interface paths {
         /** get next command from server */
         get: {
             parameters: {
-                query?: never;
+                query: {
+                    /** @description The unique identifier for the robot */
+                    robot_id: string;
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
             };
-            requestBody: {
-                content: {
-                    "application/json": {
-                        /** @description The unique identifier for the robot */
-                        robot_id?: string;
-                    };
-                };
-            };
+            requestBody?: never;
             responses: {
                 /** @description Next command */
                 200: {

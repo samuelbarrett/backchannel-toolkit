@@ -21,8 +21,8 @@ class Robot:
     """Enqueue a RobotAction to be executed by the robot."""
     self._controller.enqueue(action)
 
-  def get_next_behavior(self):
+  async def get_next_behavior(self):
     """Get the next behavior from the robot's behavior queue."""
-    return self.output_queue.get()
+    return await self.output_queue.get()
   
 

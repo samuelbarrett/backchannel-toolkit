@@ -9,12 +9,15 @@ paths:
   /command:
     get:
       operationId: command_get
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/_pair_post_request"
+      parameters:
+      - description: The unique identifier for the robot
+        explode: true
+        in: query
+        name: robot_id
         required: true
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           content:
