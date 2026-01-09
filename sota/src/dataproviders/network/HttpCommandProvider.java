@@ -2,10 +2,13 @@ package dataproviders.network;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import java.util.concurrent.ThreadPoolExecutor;
@@ -32,6 +35,8 @@ public class HttpCommandProvider extends DataProvider {
   private final Object pollLock = new Object();
   private volatile boolean enabled = true;
   private final Gson gson = new Gson();
+  private int robotId;
+  String getCommandUrl;
 
   /**
    * Handles threads spun up for each HTTP request (requestOnce calls)
@@ -43,9 +48,24 @@ public class HttpCommandProvider extends DataProvider {
     new ThreadPoolExecutor.DiscardPolicy()
   );
 
-  public HttpCommandProvider(String serverBaseUrl, int pollIntervalMs) {
+  public HttpCommandProvider(String serverBaseUrl, int pollIntervalMs, int robotId) {
     this.serverBaseUrl = serverBaseUrl;
     this.pollIntervalMs = pollIntervalMs;
+    this.robotId = robotId;
+    // build URL containing robot ID parameter
+    this.getCommandUrl = buildGetCommandUrl(this.robotId);
+  }
+
+  // build the GET command URL with robot ID parameter in the URL
+  private String buildGetCommandUrl(int robotId) {
+    String result= "";
+    try {
+      String robotIdParam = URLEncoder.encode(String.valueOf(robotId), "UTF-8");
+      result = serverBaseUrl + "/command?robot_id=" + robotIdParam;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return result;
   }
 
   // continuous polling loop
@@ -77,13 +97,46 @@ public class HttpCommandProvider extends DataProvider {
   }
 
   /**
+   * Initialize the robot to the server
+   * @param robotId the robot's unique ID
+   */
+  public void initializeRobot(int robotId) {
+    try {
+      URL url = new URL(serverBaseUrl + "/robot/register");
+      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+      conn.setRequestMethod("POST");
+      conn.setDoOutput(true);
+      conn.setRequestProperty("Content-Type", "application/json");
+      conn.setRequestProperty("Accept", "application/json");
+
+      // build JSON params for robot initialization
+      JsonObject paramsJson = new JsonObject();
+      paramsJson.addProperty("robot_id", String.valueOf(this.robotId));
+
+      OutputStream os = conn.getOutputStream();
+      os.write(paramsJson.toString().getBytes("UTF-8"));
+      os.flush();
+      os.close();
+      
+      int code = conn.getResponseCode();
+      if (code == 200) {
+        System.out.println("HttpCommandProvider: Robot initialized successfully.");
+      } else {
+        System.err.println("HttpCommandProvider: Robot initialization failed with code: " + code);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
    * Perform a single HTTP GET to the server and notify listeners with the parsed StateData
    * This is used by both the main polling loop and external callers via requestOnce()
    */
   private void singlePoll() {
     HttpURLConnection conn = null;
     try {
-      URL url = new URL(serverBaseUrl + "/command");
+      URL url = new URL(getCommandUrl);
       conn = (HttpURLConnection) url.openConnection();
       conn.setRequestMethod("GET");
       conn.setConnectTimeout(5000);
