@@ -3,6 +3,8 @@ import random
 import time
 from typing import Any, Dict
 
+from generated.openapi_server.models.behavior import Behavior
+
 """
 RobotAction represents a single primary action of generated behaviors. It manages multiple sub-behaviors (like nodding, gazing)
 that run concurrently while a primary behavior (like TTS playback or listening) is active.
@@ -66,12 +68,11 @@ class RobotAction:
       await asyncio.sleep(interval)
       if self._stop_event.is_set():
         break
-      event = {
-        "type": "nod",
-        "action_id": self.action_id,
-        "timestamp": time.time(),
-        "payload": {"amplitude": random.uniform(0.5, 1.0)}
-      }
+      event: Behavior = Behavior(
+        type="nod",
+        amplitude=random.randint(1, 10),
+        speed=random.randint(1, 5),
+      )
       await out_queue.put(event)
 
   async def _gazer(self, out_queue: asyncio.Queue):
@@ -85,12 +86,11 @@ class RobotAction:
       await asyncio.sleep(interval)
       if self._stop_event.is_set():
         break
-      event = {
-        "type": "gaze",
-        "action_id": self.action_id,
-        "timestamp": time.time(),
-        "payload": {"yaw": random.uniform(-20, 20), "pitch": random.uniform(-5, 5)}
-      }
+      event: Behavior = Behavior(
+        type="look",
+        amplitude=0,  # not used for gaze
+        speed=0,      # not used for gaze
+      )
       await out_queue.put(event)
 
   async def _primary_behavior(self, out_queue: asyncio.Queue):
