@@ -3,17 +3,27 @@ import {
   Toolbar,
   Box,
   Button,
-  Typography
+  Typography,
+  Stack,
+  IconButton
 } from '@mui/material';
+import { Settings as SettingsIcon } from '@mui/icons-material';
+import { runCode } from '../blockly/workspace.ts';
+import { useDialog } from './DialogProvider.tsx';
 
-type Props = {
-  onClick?: () => void;
-};
+export default function Header() {
+  const { openDialog } = useDialog();
 
-export default function Header({ onClick: onClick }: Props) {
   const handlePlayButtonClick = () => {
-    if (onClick) onClick();
+    runCode();
   };
+
+  const handleShowDialog = () => {
+    openDialog({
+      title: 'Pair with Robot',
+      body: <Typography>Enter the Robot ID to pair with your robot.</Typography>,
+    });
+  }
 
   return (
     <AppBar position="static" color="transparent" elevation={0}>
@@ -24,10 +34,15 @@ export default function Header({ onClick: onClick }: Props) {
             ListenBot App
           </Typography>
         </Box>
-
-        <Button variant="contained" color="primary" onClick={handlePlayButtonClick} sx={{ textTransform: 'none' }}>
-          Play
-        </Button>
+        <Stack direction="row" spacing={1}>
+          <Button variant="contained" color="primary" onClick={handlePlayButtonClick} sx={{ textTransform: 'none' }}>
+            Play
+          </Button>
+          <div></div>
+          <IconButton size="small" onClick={handleShowDialog}>
+            <SettingsIcon />
+          </IconButton> 
+        </Stack>
       </Toolbar>
     </AppBar>
   );

@@ -1,16 +1,16 @@
 package dataprocessors.sota;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import dataprocessors.DataProcessor;
-import dataprocessors.SilenceDetector.SilenceStatusData;
-import dataprocessors.SilenceDetector.Status;
 import datatypes.Data;
-import datatypes.StateData;
+import datatypes.behaviors.BackchannelEvent;
 import eventsystem.EventGenerator;
 import tools.ServoRangeTool;
 
 import jp.vstone.RobotLib.*;
-
-import java.awt.Color;
 
 /**
  * A controller for the Sota robot that manages its output for dialog.
@@ -19,10 +19,10 @@ import java.awt.Color;
 public class SotaDialogController extends DataProcessor {
     /**
      * SotaStateData defines the robot's states.
-     * LISTENING - the robot is listening for the user's speech
-     * SPEAKING - the robot is speaking
+     * BUSY - the robot is processing input or performing an action
+     * READY - the robot is ready to receive input
      */
-    public enum SotaState { LISTENING, BACKCHANNELING }
+    public enum SotaState { BUSY, READY }
     public static class SotaStateData extends Data {
         private static final long serialVersionUID = 1L;
         public final SotaState data;
@@ -38,7 +38,6 @@ public class SotaDialogController extends DataProcessor {
     
     // ------------- SotaDialogController -------------
     static final String TAG = "SotaDialogController";
-    private CRobotPose pose;
     private CSotaMotion motion;
     private CRobotMem mem;
 
@@ -47,26 +46,17 @@ public class SotaDialogController extends DataProcessor {
     private CRobotPose nodDown = null;
     private CRobotPose nodUp = null;
 
-    private Status currentStatus = null;
     private SotaState state;
-    private long backchannel_finish_time_ms;    // when the robot will finish speaking
-    private boolean backchannelled;
+    private long backchannelFinishTimeMs;    // when the robot will finish speaking
     private static final long MIN_BACKCHANNEL_INTERVAL_MS = 1000; // minimum time between backchannels
 
-    // behaviour parameters as set by the DialogServer
-    private boolean _verbal;
-    private boolean _nodding;
-    private long _delay;
-    private int _frequency;
-    private Status _silenceStatus;
+    private final ScheduledExecutorService readyNotifier = Executors.newSingleThreadScheduledExecutor();
 
     public SotaDialogController() {
         this.mem = new CRobotMem();
 		this.motion = new CSotaMotion(mem);
-		this.pose = new CRobotPose();
-        this.backchannel_finish_time_ms = 0;
-        this.backchannelled = false;
-        this.state = SotaState.LISTENING;
+        this.backchannelFinishTimeMs = 0;
+        this.state = SotaState.READY;
 
         mem.Connect();
         this.motion.InitRobot_Sota();
@@ -76,70 +66,64 @@ public class SotaDialogController extends DataProcessor {
     
     @Override
     protected Data process(Data input, EventGenerator sender) {
-        StateData stateData = (StateData) input;
-        return update(stateData);
+        BackchannelEvent backchannel = (BackchannelEvent) input;
+        return update(backchannel);
     }
 
-    public SotaStateData update(StateData stateData) {
+    public SotaStateData update(BackchannelEvent backchannel) {
         // manage internal Sota state
-        if (this.state == SotaState.BACKCHANNELING) {
-            long current_time_ms = System.currentTimeMillis();
-            if (current_time_ms > this.backchannel_finish_time_ms) {
-                this.state = SotaState.LISTENING;
-                this.backchannelled = false;
+        if (this.state == SotaState.BUSY) {
+            long currentTimeMs = System.currentTimeMillis();
+            if (currentTimeMs > this.backchannelFinishTimeMs) {
+                this.state = SotaState.READY;
             }
         }
-        setBehaviourParams(stateData);
-        dialogStatusUpdate(this._silenceStatus);
+        if (this.state == SotaState.READY) {
+            executeBackchannel(backchannel);
+            this.state = SotaState.BUSY;
+            scheduleReadyNotification();
+        }
         return new SotaStateData(this.state);
     }
 
-    
-    // handles Sota behaviour according to the state of the dialog, as dictated by DialogServer
-    private void dialogStatusUpdate(Status status) {
-        if(this.currentStatus != status) {
-            this.currentStatus = status;
-            System.out.println(status);
-            if(status == Status.STARTUP) {
-                pose.setLED_Sota(Color.GRAY, Color.GRAY, 0, Color.GRAY);
-            } else if(status == Status.TALKING) {
-                if (!this.backchannelled) pose.setLED_Sota(Color.GREEN, Color.GREEN, 0, Color.GREEN);
-            } else if (status == Status.PAUSED) {
-                pose.setLED_Sota(Color.YELLOW, Color.YELLOW, 0, Color.YELLOW);
-                if (!this.backchannelled) {
-                    backchannel();
+    private void scheduleReadyNotification() {
+        long delayMs = Math.max(0, this.backchannelFinishTimeMs - System.currentTimeMillis());
+        readyNotifier.schedule(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (SotaDialogController.this) {
+                    state = SotaState.READY;
+                    SotaDialogController.this.notifyListeners(new SotaStateData(state));
                 }
-            } else if (status == Status.STOPPED) {
-                pose.setLED_Sota(Color.RED, Color.RED, 0, Color.RED);
             }
-            motion.play(pose, 50);
-        }
+        }, delayMs, TimeUnit.MILLISECONDS);
     }
 
-    private void backchannel() {
-        double rand = Math.random();
-        if ( (double)this._frequency > rand) {
-            if (this._verbal) playVerbalBackchannel();
-            if (this._nodding) playNod();
+    /**
+     * Executes the given backchannel behavior on the robot.
+     * @param backchannel the backchannel event to execute
+     */
+    private void executeBackchannel(BackchannelEvent backchannel) {
+        if (backchannel.getType() == BackchannelEvent.BEHAVIOR_TYPE.NOD) {
+            playNod();
+        } else if (backchannel.getType() == BackchannelEvent.BEHAVIOR_TYPE.UTTERANCE) {
+            playVerbalBackchannel();
         }
     }
     
     // plays a backchannel
     private void playVerbalBackchannel() {
-        long play_time = CPlayWave.getPlayTime("../resources/minecraft-villager-complete-trade.wav");
-        long current_time_ms = System.currentTimeMillis();
-        CPlayWave.PlayWave("../resources/minecraft-villager-complete-trade.wav");
-        this.backchannel_finish_time_ms = current_time_ms + play_time + MIN_BACKCHANNEL_INTERVAL_MS;
-        this.backchannelled = true;
-        this.state = SotaState.BACKCHANNELING;
+        long playTime = CPlayWave.getPlayTime("../resources/utterances/test_hmm.wav");
+        long currentTimeMs = System.currentTimeMillis();
+        this.backchannelFinishTimeMs = currentTimeMs + playTime + MIN_BACKCHANNEL_INTERVAL_MS;
+        CPlayWave.PlayWave("../resources/utterances/test_hmm.wav");
     }
     
     // Adjust head pitch to make Sota nod using the nod poses
     private void playNod() {
-        long play_time = 1000;
-        this.backchannel_finish_time_ms = System.currentTimeMillis() + play_time + MIN_BACKCHANNEL_INTERVAL_MS;
-        this.backchannelled = true;
-        this.state = SotaState.BACKCHANNELING;
+        long playTime = 1000;
+        long currentTimeMs = System.currentTimeMillis();
+        this.backchannelFinishTimeMs = currentTimeMs + playTime + MIN_BACKCHANNEL_INTERVAL_MS;
         
         this.motion.play(nodDown, 275);
         this.motion.waitEndinterpAll();
@@ -174,14 +158,5 @@ public class SotaDialogController extends DataProcessor {
         this.nodUp.addServoAngle(Byte.valueOf(CSotaMotion.SV_HEAD_P), minHeadPitch);
         this.nodNeutral.addServoAngle(Byte.valueOf(CSotaMotion.SV_HEAD_P), midHeadPitch);
         this.nodDown.addServoAngle(Byte.valueOf(CSotaMotion.SV_HEAD_P), maxHeadPitch);
-    }
-
-    // set the backchanneling parameters according to the state we received from DialogServer
-    private void setBehaviourParams(StateData stateData) {
-        this._verbal = stateData.isVerbal();
-        this._nodding = stateData.isNodding();
-        this._delay = stateData.getDelay();
-        this._frequency = stateData.getFrequency();
-        this._silenceStatus = stateData.getSilenceStatus().data;
     }
 }

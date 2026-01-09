@@ -1,6 +1,8 @@
-from datetime import date, datetime  # noqa: F401
+# coding: utf-8
 
-from typing import List, Dict  # noqa: F401
+from datetime import date, datetime
+
+from typing import List, Dict, Type
 
 from openapi_server.models.base_model import Model
 from openapi_server import util
@@ -12,17 +14,13 @@ class StyleUtterances(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, enabled=None, utterance_frequency=None, utterance_volume=None, utterance_list=None):  # noqa: E501
+    def __init__(self, enabled: bool=None, utterance_frequency: float=None, utterance_volume: float=None, utterance_list: List[str]=None):
         """StyleUtterances - a model defined in OpenAPI
 
-        :param enabled: The enabled of this StyleUtterances.  # noqa: E501
-        :type enabled: bool
-        :param utterance_frequency: The utterance_frequency of this StyleUtterances.  # noqa: E501
-        :type utterance_frequency: float
-        :param utterance_volume: The utterance_volume of this StyleUtterances.  # noqa: E501
-        :type utterance_volume: float
-        :param utterance_list: The utterance_list of this StyleUtterances.  # noqa: E501
-        :type utterance_list: List[str]
+        :param enabled: The enabled of this StyleUtterances.
+        :param utterance_frequency: The utterance_frequency of this StyleUtterances.
+        :param utterance_volume: The utterance_volume of this StyleUtterances.
+        :param utterance_list: The utterance_list of this StyleUtterances.
         """
         self.openapi_types = {
             'enabled': bool,
@@ -44,21 +42,19 @@ class StyleUtterances(Model):
         self._utterance_list = utterance_list
 
     @classmethod
-    def from_dict(cls, dikt) -> 'StyleUtterances':
+    def from_dict(cls, dikt: dict) -> 'StyleUtterances':
         """Returns the dict as a model
 
         :param dikt: A dict.
-        :type: dict
-        :return: The Style_utterances of this StyleUtterances.  # noqa: E501
-        :rtype: StyleUtterances
+        :return: The Style_utterances of this StyleUtterances.
         """
         return util.deserialize_model(dikt, cls)
 
     @property
-    def enabled(self) -> bool:
+    def enabled(self):
         """Gets the enabled of this StyleUtterances.
 
-        Whether to use verbal utterances  # noqa: E501
+        Whether to use verbal utterances
 
         :return: The enabled of this StyleUtterances.
         :rtype: bool
@@ -66,10 +62,10 @@ class StyleUtterances(Model):
         return self._enabled
 
     @enabled.setter
-    def enabled(self, enabled: bool):
+    def enabled(self, enabled):
         """Sets the enabled of this StyleUtterances.
 
-        Whether to use verbal utterances  # noqa: E501
+        Whether to use verbal utterances
 
         :param enabled: The enabled of this StyleUtterances.
         :type enabled: bool
@@ -78,10 +74,10 @@ class StyleUtterances(Model):
         self._enabled = enabled
 
     @property
-    def utterance_frequency(self) -> float:
+    def utterance_frequency(self):
         """Gets the utterance_frequency of this StyleUtterances.
 
-        Frequency of utterances  # noqa: E501
+        Frequency of utterances
 
         :return: The utterance_frequency of this StyleUtterances.
         :rtype: float
@@ -89,10 +85,10 @@ class StyleUtterances(Model):
         return self._utterance_frequency
 
     @utterance_frequency.setter
-    def utterance_frequency(self, utterance_frequency: float):
+    def utterance_frequency(self, utterance_frequency):
         """Sets the utterance_frequency of this StyleUtterances.
 
-        Frequency of utterances  # noqa: E501
+        Frequency of utterances
 
         :param utterance_frequency: The utterance_frequency of this StyleUtterances.
         :type utterance_frequency: float
@@ -101,10 +97,10 @@ class StyleUtterances(Model):
         self._utterance_frequency = utterance_frequency
 
     @property
-    def utterance_volume(self) -> float:
+    def utterance_volume(self):
         """Gets the utterance_volume of this StyleUtterances.
 
-        Volume of utterances  # noqa: E501
+        Volume of utterances
 
         :return: The utterance_volume of this StyleUtterances.
         :rtype: float
@@ -112,10 +108,10 @@ class StyleUtterances(Model):
         return self._utterance_volume
 
     @utterance_volume.setter
-    def utterance_volume(self, utterance_volume: float):
+    def utterance_volume(self, utterance_volume):
         """Sets the utterance_volume of this StyleUtterances.
 
-        Volume of utterances  # noqa: E501
+        Volume of utterances
 
         :param utterance_volume: The utterance_volume of this StyleUtterances.
         :type utterance_volume: float
@@ -124,10 +120,10 @@ class StyleUtterances(Model):
         self._utterance_volume = utterance_volume
 
     @property
-    def utterance_list(self) -> List[str]:
+    def utterance_list(self):
         """Gets the utterance_list of this StyleUtterances.
 
-        List of utterances to use  # noqa: E501
+        List of utterances to use
 
         :return: The utterance_list of this StyleUtterances.
         :rtype: List[str]
@@ -135,10 +131,10 @@ class StyleUtterances(Model):
         return self._utterance_list
 
     @utterance_list.setter
-    def utterance_list(self, utterance_list: List[str]):
+    def utterance_list(self, utterance_list):
         """Sets the utterance_list of this StyleUtterances.
 
-        List of utterances to use  # noqa: E501
+        List of utterances to use
 
         :param utterance_list: The utterance_list of this StyleUtterances.
         :type utterance_list: List[str]

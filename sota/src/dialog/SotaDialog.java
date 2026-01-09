@@ -16,49 +16,60 @@ import eventsystem.EventDispatcher;
  * Communicates with the DialogServer running on a separate device.
  */
 public class SotaDialog {
-public static void main(String [] args) {
-  EventDispatcher dispatcher = new EventDispatcher();
+  public static void main(String [] args) {
+    if (args.length < 2) {
+      System.out.println("Please provide the robot ID and server IP as command line arguments.");
+      return;
+    }
+    int robotId = Integer.parseInt(args[0]);
+    String serverIp = args[1];
+    run(robotId, serverIp);
+  }
 
-  // send microphone data to the server
-  DataProvider mic = new MicAudioProvider(4000, 1024);
-  UDPSender audioSender = new UDPSender("10.0.0.184", 7777);
-  mic.addListener(audioSender);
+  public static void run(int robotId, String serverIp) {
+    EventDispatcher dispatcher = new EventDispatcher();
 
-  // handle incoming audio from the server
-  DataProvider audioReceiver = new UDPReceiver(8888, 6000);
-  //audioReceiver.addListener( /* handle receiving audio to play back */ );
+    // send microphone data to the server
+    DataProvider mic = new MicAudioProvider(4000, 1024);
+    UDPSender audioSender = new UDPSender(serverIp, 7777);
+    mic.addListener(audioSender);
 
-  // HTTP client that polls for commands and outputs state updates to its listeners
-  HttpCommandProvider commandProvider = new HttpCommandProvider("http://10.0.0.184:5000", 1000);
+    // handle incoming audio from the server
+    DataProvider audioReceiver = new UDPReceiver(8888, 6000);
+    //audioReceiver.addListener( /* handle receiving audio to play back */ );
 
-  SotaDialogController controller = new SotaDialogController();
-  commandProvider.addListener(controller);
+    // HTTP client that polls for commands and outputs state updates to its listeners
+    final HttpCommandProvider commandProvider = new HttpCommandProvider("http://" + serverIp + ":12000/api", 1000, robotId);
 
-  // Orchestrate command polling from the main app: start the provider paused
-  // and request a command whenever the controller transitions to LISTENING.
-  // start paused to ensure we only poll when requested
-  commandProvider.pausePolling();
-  commandProvider.start();
+    SotaDialogController controller = new SotaDialogController();
+    commandProvider.addListener(controller);
 
-  controller.addListener(new eventsystem.EventListener() {
-    @Override
-    public void handle(datatypes.Data d, eventsystem.EventGenerator sender) {
-      if (d instanceof SotaDialogController.SotaStateData) {
-        SotaDialogController.SotaStateData sd = (SotaDialogController.SotaStateData) d;
-        if (sd.data == SotaDialogController.SotaState.LISTENING) {
-          commandProvider.requestOnce();
+    // Orchestrate command polling from the main app: start the provider paused
+    // and request a command whenever the controller transitions to READY.
+    // start paused to ensure we only poll when requested
+    commandProvider.pausePolling();
+    commandProvider.initializeRobot(robotId);
+    commandProvider.start();
+
+    // when the controller is ready, tell HttpCommandProvider to request the next command
+    controller.addListener(new eventsystem.EventListener() {
+      @Override
+      public void handle(datatypes.Data d, eventsystem.EventGenerator sender) {
+        if (d instanceof SotaDialogController.SotaStateData) {
+          SotaDialogController.SotaStateData sd = (SotaDialogController.SotaStateData) d;
+          if (sd.data == SotaDialogController.SotaState.READY) {
+            commandProvider.requestOnce();
+          }
         }
       }
-    }
-  });
+    });
 
-  // trigger an initial request
-  commandProvider.requestOnce();
+    // trigger an initial request
+    commandProvider.requestOnce();
 
-  mic.start();
-  commandProvider.start();
-  audioReceiver.start();
+    mic.start();
+    audioReceiver.start();
 
-  dispatcher.run();
-}
+    dispatcher.run();
+  } 
 }

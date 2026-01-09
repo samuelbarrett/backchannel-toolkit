@@ -6,6 +6,27 @@ info:
 servers:
 - url: http://localhost:5000
 paths:
+  /command:
+    get:
+      operationId: command_get
+      parameters:
+      - description: The unique identifier for the robot
+        explode: true
+        in: query
+        name: robot_id
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_command_get_200_response"
+          description: Next command
+      summary: get next command from server
+      x-openapi-router-controller: openapi_server.controllers.default_controller
   /command/listenKeyword:
     post:
       operationId: command_listen_keyword_post
@@ -15,6 +36,7 @@ paths:
             schema:
               $ref: "#/components/schemas/_command_listenKeyword_post_request"
         required: true
+        x-body-name: body
       responses:
         "200":
           content:
@@ -22,8 +44,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/_command_listenKeyword_post_200_response"
           description: Command received
+      security:
+      - PairingToken: []
       summary: Send a command for the robot to listen until it detects a keyword
       x-openapi-router-controller: openapi_server.controllers.default_controller
+      x-codegen-request-body-name: body
   /command/listenSilence:
     post:
       operationId: command_listen_silence_post
@@ -33,6 +58,7 @@ paths:
             schema:
               $ref: "#/components/schemas/_command_listenSilence_post_request"
         required: true
+        x-body-name: body
       responses:
         "200":
           content:
@@ -40,8 +66,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/_command_listenSilence_post_200_response"
           description: Command received
+      security:
+      - PairingToken: []
       summary: Send a command for the robot to listen until it detects silence
       x-openapi-router-controller: openapi_server.controllers.default_controller
+      x-codegen-request-body-name: body
   /command/speak:
     post:
       operationId: command_speak_post
@@ -51,6 +80,7 @@ paths:
             schema:
               $ref: "#/components/schemas/_command_speak_post_request"
         required: true
+        x-body-name: body
       responses:
         "200":
           content:
@@ -58,8 +88,67 @@ paths:
               schema:
                 $ref: "#/components/schemas/_command_speak_post_200_response"
           description: Command received
+      security:
+      - PairingToken: []
       summary: Send a speak command to the server
       x-openapi-router-controller: openapi_server.controllers.default_controller
+      x-codegen-request-body-name: body
+  /pair:
+    post:
+      operationId: pair_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_pair_post_request"
+        required: true
+        x-body-name: body
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_pair_post_200_response"
+          description: Paired successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_pair_post_400_response"
+          description: Invalid robot ID
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_pair_post_409_response"
+          description: Robot already paired
+      security: []
+      summary: Pair with the server using a pairing token
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+      x-codegen-request-body-name: body
+  /robot/register:
+    post:
+      operationId: robot_register_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_pair_post_request"
+        required: true
+        x-body-name: body
+      responses:
+        "200":
+          description: Registered successfully
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_robot_register_post_409_response"
+          description: Robot already registered
+      security: []
+      summary: Register a new robot with the server
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+      x-codegen-request-body-name: body
   /status:
     get:
       operationId: status_get
@@ -74,6 +163,34 @@ paths:
       x-openapi-router-controller: openapi_server.controllers.default_controller
 components:
   schemas:
+    Behavior:
+      additionalProperties: false
+      example:
+        amplitude: 0.8008281904610115
+        type: type
+        speed: 6.027456183070403
+        utterance: utterance
+      properties:
+        type:
+          description: "Type of behavior (e.g., nod, utterance, gaze)"
+          title: type
+          type: string
+        amplitude:
+          description: Amplitude of the behavior (for nodding behavior)
+          title: amplitude
+          type: number
+        speed:
+          description: Speed of the behavior (for nodding behavior)
+          title: speed
+          type: number
+        utterance:
+          description: Utterance text (for utterance behavior)
+          title: utterance
+          type: string
+      required:
+      - type
+      title: Behavior
+      type: object
     Style:
       additionalProperties: false
       properties:
@@ -85,6 +202,55 @@ components:
           $ref: "#/components/schemas/Style_gaze"
       title: Style
       type: object
+    _pair_post_request:
+      properties:
+        robot_id:
+          description: The unique identifier for the robot
+          title: robot_id
+          type: string
+      title: _pair_post_request
+      type: object
+    _pair_post_200_response:
+      example:
+        pairing_token: xj2bjzx8b1njk2n
+      properties:
+        pairing_token:
+          description: The token to be used for authenticated requests
+          example: xj2bjzx8b1njk2n
+          title: pairing_token
+          type: string
+      title: _pair_post_200_response
+      type: object
+    _pair_post_400_response:
+      example:
+        error: Invalid robot ID
+      properties:
+        error:
+          example: Invalid robot ID
+          title: error
+          type: string
+      title: _pair_post_400_response
+      type: object
+    _pair_post_409_response:
+      example:
+        error: Robot already paired
+      properties:
+        error:
+          example: Robot already paired
+          title: error
+          type: string
+      title: _pair_post_409_response
+      type: object
+    _robot_register_post_409_response:
+      example:
+        error: Robot already registered
+      properties:
+        error:
+          example: Robot already registered
+          title: error
+          type: string
+      title: _robot_register_post_409_response
+      type: object
     _status_get_200_response:
       example:
         status: Server is running
@@ -94,6 +260,18 @@ components:
           title: status
           type: string
       title: _status_get_200_response
+      type: object
+    _command_get_200_response:
+      example:
+        Behavior:
+          amplitude: 0.8008281904610115
+          type: type
+          speed: 6.027456183070403
+          utterance: utterance
+      properties:
+        Behavior:
+          $ref: "#/components/schemas/Behavior"
+      title: _command_get_200_response
       type: object
     _command_speak_post_request:
       additionalProperties: true
@@ -216,3 +394,9 @@ components:
           type: number
       title: Style_gaze
       type: object
+  securitySchemes:
+    PairingToken:
+      in: header
+      name: X-Pairing-Token
+      type: apiKey
+      x-apikeyInfoFunc: openapi_server.controllers.security_controller.info_from_PairingToken

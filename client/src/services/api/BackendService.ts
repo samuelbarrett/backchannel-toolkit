@@ -11,6 +11,8 @@ type listenSilenceRequestBody = paths['/command/listenSilence']['post']['request
 type listenSilenceResponse = paths['/command/listenSilence']['post']['responses']['200']['content']['application/json'];
 type listenKeywordRequestBody = paths['/command/listenKeyword']['post']['requestBody']['content']['application/json'];
 type listenKeywordResponse = paths['/command/listenKeyword']['post']['responses']['200']['content']['application/json'];
+type PairRequestBody = paths['/pair']['post']['requestBody']['content']['application/json'];
+type PairResponse = paths['/pair']['post']['responses']['200']['content']['application/json'];
 
 const backend = createClient<paths>({
   baseUrl: process.env.BASE_SERVER_URL,
@@ -21,6 +23,16 @@ export const backendService = {
     const {data, error} = await backend.GET('/status');
     if (error || !data) {
       console.error('Error fetching status from backend:', error);
+    }
+    return data;
+  },
+  pair: async (
+    robot_id: string
+  ): Promise<PairResponse | undefined> => {
+    const body: PairRequestBody = { robot_id };
+    const {data, error} = await backend.POST('/pair', {body});
+    if (error || !data) {
+      console.error(`Error pairing with robot ${robot_id}:`, error);
     }
     return data;
   },

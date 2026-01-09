@@ -18,7 +18,10 @@ export const BlockCodeService = {
     console.log('BlockCodeService.say called with message:', speech, 'and style:', style);
     const response = await fetch('http://localhost:3000/command/speak', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'X-Pairing-Token': sessionStorage.getItem('pairingToken') || ''
+      },
       body: JSON.stringify({ speech: speech, style: style })
     });
   },
@@ -26,7 +29,10 @@ export const BlockCodeService = {
     console.log('BlockCodeService.listenForKeyword called with keyword:', keyword);
     const response = await fetch('http://localhost:3000/command/listenKeyword', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'X-Pairing-Token': sessionStorage.getItem('pairingToken') || ''
+      },
       body: JSON.stringify({ keyword: keyword, style: style })
     });
   },
@@ -34,7 +40,10 @@ export const BlockCodeService = {
     console.log('BlockCodeService.listenUntilSilence called');
     const response = await fetch('http://localhost:3000/command/listenSilence', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'X-Pairing-Token': sessionStorage.getItem('pairingToken') || ''
+      },
       body: JSON.stringify({ style: style })
     });
   }

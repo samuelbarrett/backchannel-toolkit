@@ -6,7 +6,7 @@ This generates stubbed server-side code conforms to the API specification laid o
 
 It was generated with the OpenAPI generator CLI, using the following command:
 
-`openapi-generator generate -i ../common/openapi.yaml -g python-flask -o ./generated`
+`openapi-generator generate -i ../common/openapi.yaml -g python-aiohttp -o ./generated`
 
 ### Usage
 The generated server must be installed as a package to be imported and invoked in the main server code, using e.g., `pip install -e ./generated` if run from the `server/` directory.
