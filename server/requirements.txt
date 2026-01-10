@@ -1,6 +1,7 @@
 a2wsgi==1.10.10
 aiohappyeyeballs==2.6.1
 aiohttp==3.13.3
+aiohttp-jinja2==1.6
 aiosignal==1.4.0
 anyio==4.12.1
 asgiref==3.11.0
@@ -26,7 +27,7 @@ jsonschema==4.25.1
 jsonschema-specifications==2025.9.1
 MarkupSafe==3.0.3
 multidict==6.7.0
--e git+ssh://git@github.com/samuelbarrett/backchannel-toolkit.git@36a2268f2712fdcae2f9ab1b47c0a68909fd5e3e#egg=openapi_server&subdirectory=server/generated
+-e git+ssh://git@github.com/samuelbarrett/backchannel-toolkit.git@fa07ffc9562c7e08ed04f6badd3cad5ac7841398#egg=openapi_server&subdirectory=server/generated
 packaging==25.0
 pluggy==1.6.0
 propcache==0.4.1
