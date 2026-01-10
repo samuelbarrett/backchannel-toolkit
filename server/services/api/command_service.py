@@ -37,9 +37,10 @@ async def handle_command_get(command_get_request):
   Returns:
     A serializable response (model instance, dict, tuple).
   """
-  print("handle_command_get called with: %s", command_get_request)
-  behavior: Behavior = registry.get_command_for_robot(int(command_get_request.robot_id))
-  print(f"Retrieved behavior: {behavior}")
+  print("handle_command_get called with id:", command_get_request)
+  robot: Robot = registry.find_by_id(int(command_get_request))
+  if robot is not None:
+    behavior: Behavior = await robot.get_next_behavior()
   return CommandGet200Response(behavior=behavior)
 
 

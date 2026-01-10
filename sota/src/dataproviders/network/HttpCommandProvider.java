@@ -150,7 +150,7 @@ public class HttpCommandProvider extends DataProvider {
       conn.setRequestMethod("GET");
       conn.setConnectTimeout(5000);
       // read timeout can be long for long-poll support
-      conn.setReadTimeout(30000);
+      conn.setReadTimeout(0);
 
       int code = conn.getResponseCode();
       if (code == 200) {

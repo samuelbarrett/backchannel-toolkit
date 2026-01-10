@@ -62,7 +62,7 @@ async def command_listen_silence_post(request: web.Request, body) -> web.Respons
 
     """
     body = CommandListenSilencePostRequest.from_dict(body)
-    return handle_command_listen_keyword_post(body)
+    return handle_command_listen_silence_post(body)
 
 
 async def command_speak_post(request: web.Request, body) -> web.Response:
