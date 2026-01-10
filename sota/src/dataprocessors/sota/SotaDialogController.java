@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 import dataprocessors.DataProcessor;
 import datatypes.Data;
 import datatypes.behaviors.BackchannelEvent;
+import datatypes.behaviors.NodBackchannelEvent;
+import datatypes.behaviors.UtteranceBackchannelEvent;
 import eventsystem.EventGenerator;
 import tools.ServoRangeTool;
 
@@ -105,14 +107,14 @@ public class SotaDialogController extends DataProcessor {
      */
     private void executeBackchannel(BackchannelEvent backchannel) {
         if (backchannel.getType() == BackchannelEvent.BEHAVIOR_TYPE.NOD) {
-            playNod();
+            playNod((NodBackchannelEvent) backchannel);
         } else if (backchannel.getType() == BackchannelEvent.BEHAVIOR_TYPE.UTTERANCE) {
-            playVerbalBackchannel();
+            playVerbalBackchannel((UtteranceBackchannelEvent) backchannel);
         }
     }
     
     // plays a backchannel
-    private void playVerbalBackchannel() {
+    private void playVerbalBackchannel(UtteranceBackchannelEvent utteranceEvent) {
         long playTime = CPlayWave.getPlayTime("../resources/utterances/test_hmm.wav");
         long currentTimeMs = System.currentTimeMillis();
         this.backchannelFinishTimeMs = currentTimeMs + playTime + MIN_BACKCHANNEL_INTERVAL_MS;
@@ -120,7 +122,7 @@ public class SotaDialogController extends DataProcessor {
     }
     
     // Adjust head pitch to make Sota nod using the nod poses
-    private void playNod() {
+    private void playNod(NodBackchannelEvent nodEvent) {
         long playTime = 1000;
         long currentTimeMs = System.currentTimeMillis();
         this.backchannelFinishTimeMs = currentTimeMs + playTime + MIN_BACKCHANNEL_INTERVAL_MS;

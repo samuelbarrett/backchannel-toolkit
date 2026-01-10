@@ -5,9 +5,9 @@ import datatypes.Data;
 /**
  * Abstract class representing a robot backchanneling behavior, e.g., nod or utterance.
  */
-public abstract class BackchannelEvent extends Data {
+public class BackchannelEvent extends Data {
     
-    public static enum BEHAVIOR_TYPE { NOD, UTTERANCE };
+    public static enum BEHAVIOR_TYPE { NOD, UTTERANCE, LOOK, UPDATE };
     private final BEHAVIOR_TYPE type;
 
     public BackchannelEvent(BEHAVIOR_TYPE type) {

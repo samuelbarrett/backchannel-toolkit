@@ -1,10 +1,13 @@
 package dialog;
 
+import dataprocessors.audio.AudioPlayback;
+import dataprocessors.network.TCPSender;
 import dataprocessors.network.UDPSender;
 import dataprocessors.sota.SotaDialogController;
 import dataproviders.DataProvider;
 import dataproviders.audio.MicAudioProvider;
 import dataproviders.network.HttpCommandProvider;
+import dataproviders.network.TCPReceiver;
 import dataproviders.network.UDPReceiver;
 import eventsystem.EventDispatcher;
 
@@ -19,6 +22,7 @@ public class SotaDialog {
 
   private static final int MICROPHONE_PORT = 7777;
   private static final int AUDIO_PLAYBACK_PORT = 8888;
+  private static final int UDP_RECEIVER_BUFFER_SIZE = 6000;
   public static void main(String [] args) {
     if (args.length < 2) {
       System.out.println("Please provide the robot ID and server IP as command line arguments.");
@@ -41,8 +45,10 @@ public class SotaDialog {
     mic.addListener(audioSender);
 
     // handle incoming audio from the server
-    DataProvider audioReceiver = new UDPReceiver(AUDIO_PLAYBACK_PORT, 6000);
-    //audioReceiver.addListener( /* handle receiving audio to play back */ );
+    UDPReceiver audioReceiver = new UDPReceiver(AUDIO_PLAYBACK_PORT, UDP_RECEIVER_BUFFER_SIZE);
+    AudioPlayback audioPlayback = new AudioPlayback();
+    audioPlayback.playTestTone("../resources/utterances/test_hmm.wav");
+    audioReceiver.addListener(audioPlayback);
 
     // HTTP client that polls for commands and outputs state updates to its listeners
     final HttpCommandProvider commandProvider = new HttpCommandProvider("http://" + serverIp + ":12000/api", 1000, robotId, localIp, MICROPHONE_PORT, AUDIO_PLAYBACK_PORT);
