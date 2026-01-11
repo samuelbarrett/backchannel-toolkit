@@ -14,6 +14,7 @@ from openapi_server.models.pair_post400_response import PairPost400Response
 from openapi_server.models.pair_post409_response import PairPost409Response
 from openapi_server.models.pair_post_request import PairPostRequest
 from openapi_server.models.robot_register_post409_response import RobotRegisterPost409Response
+from openapi_server.models.robot_register_post_request import RobotRegisterPostRequest
 from openapi_server.models.status_get200_response import StatusGet200Response
 from openapi_server.models.style import Style
 from openapi_server.models.style_gaze import StyleGaze

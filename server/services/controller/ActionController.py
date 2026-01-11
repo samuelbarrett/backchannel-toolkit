@@ -31,11 +31,11 @@ class ActionController:
     while True:
       action = await self._action_queue.get()
       try:
-        print(f"[Controller] Starting session {action.action_id}")
+        print(f"[Controller] Starting session {action}")
         await action.run(self._output_queue)
-        print(f"[Controller] Finished session {action.action_id}")
+        print(f"[Controller] Finished session {action}")
       except Exception as e:
-        print(f"[Controller] Session {action.action_id} error: {e}")
+        print(f"[Controller] Session {action} error: {e}")
       finally:
         self._action_queue.task_done()
 

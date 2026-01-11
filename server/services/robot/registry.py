@@ -6,17 +6,19 @@ import threading
 
 from .Robot import Robot
 
-_lock = threading.Lock()
+_lock = threading.RLock()
 _robots: List[Robot] = []
 
-def add(id: int) -> bool:
+async def add(id: int, ip: str, voice_port: int, microphone_port: int) -> bool:
   """Add a Robot instance to the registry."""
   with _lock:
     if find_by_id(id) is not None:
       print(f"Robot with id {id} already exists in registry.")
       return False  # already exists
     else:
-      _robots.append(Robot(id))
+      robot: Robot = Robot(id, ip, voice_port, microphone_port)
+      await robot.initialize()
+      _robots.append(robot)
       print(f"Added Robot with id {id} to registry.")
       return True
 
@@ -52,5 +54,17 @@ def clear():
   with _lock:
     _robots.clear()
     print("Cleared all Robots from registry.")
+
+def get_command_for_robot(id: int) -> Any:
+  """Get the next command for the Robot with the given id.
+
+  Returns None if no command is available or robot not found.
+  """
+  robot: Robot = find_by_id(id)
+  if robot is not None:
+    return robot.get_next_behavior()
+  else:
+    print(f"Robot with id {id} not found in registry.")
+    return None
 
 __all__ = ["add", "remove", "list_all", "find_by_id", "clear"]

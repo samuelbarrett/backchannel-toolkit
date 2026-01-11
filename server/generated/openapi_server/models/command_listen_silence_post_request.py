@@ -15,19 +15,23 @@ class CommandListenSilencePostRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, style: Style=None):
+    def __init__(self, robot_id: str=None, style: Style=None):
         """CommandListenSilencePostRequest - a model defined in OpenAPI
 
+        :param robot_id: The robot_id of this CommandListenSilencePostRequest.
         :param style: The style of this CommandListenSilencePostRequest.
         """
         self.openapi_types = {
+            'robot_id': str,
             'style': Style
         }
 
         self.attribute_map = {
+            'robot_id': 'robot_id',
             'style': 'style'
         }
 
+        self._robot_id = robot_id
         self._style = style
 
     @classmethod
@@ -38,6 +42,29 @@ class CommandListenSilencePostRequest(Model):
         :return: The _command_listenSilence_post_request of this CommandListenSilencePostRequest.
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def robot_id(self):
+        """Gets the robot_id of this CommandListenSilencePostRequest.
+
+        The unique identifier for the robot
+
+        :return: The robot_id of this CommandListenSilencePostRequest.
+        :rtype: str
+        """
+        return self._robot_id
+
+    @robot_id.setter
+    def robot_id(self, robot_id):
+        """Sets the robot_id of this CommandListenSilencePostRequest.
+
+        The unique identifier for the robot
+
+        :param robot_id: The robot_id of this CommandListenSilencePostRequest.
+        :type robot_id: str
+        """
+
+        self._robot_id = robot_id
 
     @property
     def style(self):

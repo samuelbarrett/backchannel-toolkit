@@ -36,6 +36,9 @@ public class HttpCommandProvider extends DataProvider {
   private volatile boolean enabled = true;
   private final Gson gson = new Gson();
   private int robotId;
+  private String localIp;
+  private int micPort;
+  private int audioPort;
   String getCommandUrl;
 
   /**
@@ -48,10 +51,13 @@ public class HttpCommandProvider extends DataProvider {
     new ThreadPoolExecutor.DiscardPolicy()
   );
 
-  public HttpCommandProvider(String serverBaseUrl, int pollIntervalMs, int robotId) {
+  public HttpCommandProvider(String serverBaseUrl, int pollIntervalMs, int robotId, String localIp, int micPort, int audioPort) {
     this.serverBaseUrl = serverBaseUrl;
     this.pollIntervalMs = pollIntervalMs;
     this.robotId = robotId;
+    this.localIp = localIp;
+    this.micPort = micPort;
+    this.audioPort = audioPort;
     // build URL containing robot ID parameter
     this.getCommandUrl = buildGetCommandUrl(this.robotId);
   }
@@ -112,6 +118,9 @@ public class HttpCommandProvider extends DataProvider {
       // build JSON params for robot initialization
       JsonObject paramsJson = new JsonObject();
       paramsJson.addProperty("robot_id", String.valueOf(this.robotId));
+      paramsJson.addProperty("ip", this.localIp);
+      paramsJson.addProperty("voice_port", this.audioPort);
+      paramsJson.addProperty("microphone_port", this.micPort);
 
       OutputStream os = conn.getOutputStream();
       os.write(paramsJson.toString().getBytes("UTF-8"));
@@ -141,7 +150,7 @@ public class HttpCommandProvider extends DataProvider {
       conn.setRequestMethod("GET");
       conn.setConnectTimeout(5000);
       // read timeout can be long for long-poll support
-      conn.setReadTimeout(30000);
+      conn.setReadTimeout(0);
 
       int code = conn.getResponseCode();
       if (code == 200) {

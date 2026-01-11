@@ -1,10 +1,13 @@
 package dialog;
 
+import dataprocessors.audio.AudioPlayback;
+import dataprocessors.network.TCPSender;
 import dataprocessors.network.UDPSender;
 import dataprocessors.sota.SotaDialogController;
 import dataproviders.DataProvider;
 import dataproviders.audio.MicAudioProvider;
 import dataproviders.network.HttpCommandProvider;
+import dataproviders.network.TCPReceiver;
 import dataproviders.network.UDPReceiver;
 import eventsystem.EventDispatcher;
 
@@ -16,6 +19,10 @@ import eventsystem.EventDispatcher;
  * Communicates with the DialogServer running on a separate device.
  */
 public class SotaDialog {
+
+  private static final int MICROPHONE_PORT = 7777;
+  private static final int AUDIO_PLAYBACK_PORT = 8888;
+  private static final int UDP_RECEIVER_BUFFER_SIZE = 6000;
   public static void main(String [] args) {
     if (args.length < 2) {
       System.out.println("Please provide the robot ID and server IP as command line arguments.");
@@ -29,17 +36,21 @@ public class SotaDialog {
   public static void run(int robotId, String serverIp) {
     EventDispatcher dispatcher = new EventDispatcher();
 
+    String localIp = getLocalIpForRemote(serverIp, 6100);
+    System.out.println("Detected local IP: " + localIp);
+
     // send microphone data to the server
     DataProvider mic = new MicAudioProvider(4000, 1024);
-    UDPSender audioSender = new UDPSender(serverIp, 7777);
+    UDPSender audioSender = new UDPSender(serverIp, MICROPHONE_PORT);
     mic.addListener(audioSender);
 
     // handle incoming audio from the server
-    DataProvider audioReceiver = new UDPReceiver(8888, 6000);
-    //audioReceiver.addListener( /* handle receiving audio to play back */ );
+    UDPReceiver audioReceiver = new UDPReceiver(AUDIO_PLAYBACK_PORT, UDP_RECEIVER_BUFFER_SIZE);
+    AudioPlayback audioPlayback = new AudioPlayback();
+    audioReceiver.addListener(audioPlayback);
 
     // HTTP client that polls for commands and outputs state updates to its listeners
-    final HttpCommandProvider commandProvider = new HttpCommandProvider("http://" + serverIp + ":12000/api", 1000, robotId);
+    final HttpCommandProvider commandProvider = new HttpCommandProvider("http://" + serverIp + ":12000/api", 1000, robotId, localIp, MICROPHONE_PORT, AUDIO_PLAYBACK_PORT);
 
     SotaDialogController controller = new SotaDialogController();
     commandProvider.addListener(controller);
@@ -72,4 +83,18 @@ public class SotaDialog {
 
     dispatcher.run();
   } 
+
+  // quickly fetch the robot' local IP address for reaching a given remote host
+  private static String getLocalIpForRemote(String remoteHost, int remotePort) {
+    try {
+      java.net.DatagramSocket socket = new java.net.DatagramSocket();
+      socket.connect(java.net.InetAddress.getByName(remoteHost), remotePort);
+      String localIp = socket.getLocalAddress().getHostAddress();
+      socket.close();
+      return localIp;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
 }

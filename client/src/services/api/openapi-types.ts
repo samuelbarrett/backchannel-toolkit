@@ -99,6 +99,12 @@ export interface paths {
                     "application/json": {
                         /** @description The unique identifier for the robot */
                         robot_id?: string;
+                        /** @description The IP address of the robot */
+                        ip?: string;
+                        /** @description The port number the robot is listening on for audio playback */
+                        voice_port?: number;
+                        /** @description The port number the robot's microphone is listening on */
+                        microphone_port?: number;
                     };
                 };
             };
@@ -230,6 +236,8 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
+                        /** @description The unique identifier for the robot */
+                        robot_id?: string;
                         /** @description This is what I, the robot, will say. */
                         text?: string;
                         style?: components["schemas"]["Style"];
@@ -279,6 +287,8 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
+                        /** @description The unique identifier for the robot */
+                        robot_id?: string;
                         style?: components["schemas"]["Style"];
                     } & {
                         [key: string]: unknown;
@@ -326,6 +336,8 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
+                        /** @description The unique identifier for the robot */
+                        robot_id?: string;
                         /** @description The keyword to listen for */
                         keyword?: string;
                         style?: components["schemas"]["Style"];

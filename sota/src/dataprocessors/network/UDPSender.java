@@ -1,8 +1,5 @@
 package dataprocessors.network;
 
-import java.io.ByteArrayOutputStream;
-
-import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -10,8 +7,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import dataprocessors.DataProcessor;
+import datatypes.ByteArrayData;
 import datatypes.Data;
-import datatypes.UDPMessage;
 import eventsystem.EventGenerator;
 
 public class UDPSender extends DataProcessor {
@@ -21,8 +18,6 @@ public class UDPSender extends DataProcessor {
 
     private InetAddress address;
     private DatagramSocket socket;
-
-    private int seq = 0;
 
     public UDPSender(String ip, int port) {
         this.ip = ip;
@@ -40,18 +35,10 @@ public class UDPSender extends DataProcessor {
     protected Data process(Data input, EventGenerator sender) {
         try {
             this.init();
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-    
-            oos.writeObject(new UDPMessage(seq, input));
-            oos.flush();
-
-            byte[] serialized = baos.toByteArray();
-
-            DatagramPacket packet = new DatagramPacket(serialized, serialized.length, this.address, this.port);
+            
+            ByteArrayData bytes = (ByteArrayData) input;
+            DatagramPacket packet = new DatagramPacket(bytes.data, bytes.data.length, this.address, this.port);
             socket.send(packet);
-            seq++;
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -133,7 +133,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/_pair_post_request"
+              $ref: "#/components/schemas/_robot_register_post_request"
         required: true
         x-body-name: body
       responses:
@@ -241,6 +241,26 @@ components:
           type: string
       title: _pair_post_409_response
       type: object
+    _robot_register_post_request:
+      properties:
+        robot_id:
+          description: The unique identifier for the robot
+          title: robot_id
+          type: string
+        ip:
+          description: The IP address of the robot
+          title: ip
+          type: string
+        voice_port:
+          description: The port number the robot is listening on for audio playback
+          title: voice_port
+          type: integer
+        microphone_port:
+          description: The port number the robot's microphone is listening on
+          title: microphone_port
+          type: integer
+      title: _robot_register_post_request
+      type: object
     _robot_register_post_409_response:
       example:
         error: Robot already registered
@@ -276,6 +296,9 @@ components:
     _command_speak_post_request:
       additionalProperties: true
       properties:
+        robot_id:
+          description: The unique identifier for the robot
+          type: string
         text:
           description: "This is what I, the robot, will say."
           type: string
@@ -296,6 +319,9 @@ components:
     _command_listenSilence_post_request:
       additionalProperties: true
       properties:
+        robot_id:
+          description: The unique identifier for the robot
+          type: string
         style:
           $ref: "#/components/schemas/Style"
       title: _command_listenSilence_post_request
@@ -313,6 +339,9 @@ components:
     _command_listenKeyword_post_request:
       additionalProperties: true
       properties:
+        robot_id:
+          description: The unique identifier for the robot
+          type: string
         keyword:
           description: The keyword to listen for
           type: string

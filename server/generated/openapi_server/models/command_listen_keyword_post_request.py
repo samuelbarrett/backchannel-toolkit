@@ -15,22 +15,26 @@ class CommandListenKeywordPostRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, keyword: str=None, style: Style=None):
+    def __init__(self, robot_id: str=None, keyword: str=None, style: Style=None):
         """CommandListenKeywordPostRequest - a model defined in OpenAPI
 
+        :param robot_id: The robot_id of this CommandListenKeywordPostRequest.
         :param keyword: The keyword of this CommandListenKeywordPostRequest.
         :param style: The style of this CommandListenKeywordPostRequest.
         """
         self.openapi_types = {
+            'robot_id': str,
             'keyword': str,
             'style': Style
         }
 
         self.attribute_map = {
+            'robot_id': 'robot_id',
             'keyword': 'keyword',
             'style': 'style'
         }
 
+        self._robot_id = robot_id
         self._keyword = keyword
         self._style = style
 
@@ -42,6 +46,29 @@ class CommandListenKeywordPostRequest(Model):
         :return: The _command_listenKeyword_post_request of this CommandListenKeywordPostRequest.
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def robot_id(self):
+        """Gets the robot_id of this CommandListenKeywordPostRequest.
+
+        The unique identifier for the robot
+
+        :return: The robot_id of this CommandListenKeywordPostRequest.
+        :rtype: str
+        """
+        return self._robot_id
+
+    @robot_id.setter
+    def robot_id(self, robot_id):
+        """Sets the robot_id of this CommandListenKeywordPostRequest.
+
+        The unique identifier for the robot
+
+        :param robot_id: The robot_id of this CommandListenKeywordPostRequest.
+        :type robot_id: str
+        """
+
+        self._robot_id = robot_id
 
     @property
     def keyword(self):

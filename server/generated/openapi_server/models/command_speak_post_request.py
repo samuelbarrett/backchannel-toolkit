@@ -15,22 +15,26 @@ class CommandSpeakPostRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, text: str=None, style: Style=None):
+    def __init__(self, robot_id: str=None, text: str=None, style: Style=None):
         """CommandSpeakPostRequest - a model defined in OpenAPI
 
+        :param robot_id: The robot_id of this CommandSpeakPostRequest.
         :param text: The text of this CommandSpeakPostRequest.
         :param style: The style of this CommandSpeakPostRequest.
         """
         self.openapi_types = {
+            'robot_id': str,
             'text': str,
             'style': Style
         }
 
         self.attribute_map = {
+            'robot_id': 'robot_id',
             'text': 'text',
             'style': 'style'
         }
 
+        self._robot_id = robot_id
         self._text = text
         self._style = style
 
@@ -42,6 +46,29 @@ class CommandSpeakPostRequest(Model):
         :return: The _command_speak_post_request of this CommandSpeakPostRequest.
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def robot_id(self):
+        """Gets the robot_id of this CommandSpeakPostRequest.
+
+        The unique identifier for the robot
+
+        :return: The robot_id of this CommandSpeakPostRequest.
+        :rtype: str
+        """
+        return self._robot_id
+
+    @robot_id.setter
+    def robot_id(self, robot_id):
+        """Sets the robot_id of this CommandSpeakPostRequest.
+
+        The unique identifier for the robot
+
+        :param robot_id: The robot_id of this CommandSpeakPostRequest.
+        :type robot_id: str
+        """
+
+        self._robot_id = robot_id
 
     @property
     def text(self):

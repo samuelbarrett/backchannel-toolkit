@@ -3,7 +3,6 @@ README.md
 openapi_server/__init__.py
 openapi_server/__main__.py
 openapi_server/controllers/__init__.py
-openapi_server/controllers/default_controller.py
 openapi_server/controllers/security_controller.py
 openapi_server/models/__init__.py
 openapi_server/models/base_model.py
@@ -20,6 +19,7 @@ openapi_server/models/pair_post400_response.py
 openapi_server/models/pair_post409_response.py
 openapi_server/models/pair_post_request.py
 openapi_server/models/robot_register_post409_response.py
+openapi_server/models/robot_register_post_request.py
 openapi_server/models/status_get200_response.py
 openapi_server/models/style.py
 openapi_server/models/style_gaze.py

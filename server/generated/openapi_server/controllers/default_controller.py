@@ -13,6 +13,7 @@ from openapi_server.models.pair_post400_response import PairPost400Response
 from openapi_server.models.pair_post409_response import PairPost409Response
 from openapi_server.models.pair_post_request import PairPostRequest
 from openapi_server.models.robot_register_post409_response import RobotRegisterPost409Response
+from openapi_server.models.robot_register_post_request import RobotRegisterPostRequest
 from openapi_server.models.status_get200_response import StatusGet200Response
 from openapi_server import util
 
@@ -35,7 +36,7 @@ async def command_get(request: web.Request, robot_id) -> web.Response:
     :type robot_id: str
 
     """
-    return web.Response(status=200)
+    return handle_command_get(robot_id)
 
 
 async def command_listen_keyword_post(request: web.Request, body) -> web.Response:
@@ -48,7 +49,7 @@ async def command_listen_keyword_post(request: web.Request, body) -> web.Respons
 
     """
     body = CommandListenKeywordPostRequest.from_dict(body)
-    return web.Response(status=200)
+    return handle_command_listen_keyword_post(body)
 
 
 async def command_listen_silence_post(request: web.Request, body) -> web.Response:
@@ -61,7 +62,7 @@ async def command_listen_silence_post(request: web.Request, body) -> web.Respons
 
     """
     body = CommandListenSilencePostRequest.from_dict(body)
-    return web.Response(status=200)
+    return handle_command_listen_silence_post(body)
 
 
 async def command_speak_post(request: web.Request, body) -> web.Response:
@@ -74,7 +75,7 @@ async def command_speak_post(request: web.Request, body) -> web.Response:
 
     """
     body = CommandSpeakPostRequest.from_dict(body)
-    return web.Response(status=200)
+    return handle_command_speak_post(body)
 
 
 async def pair_post(request: web.Request, body) -> web.Response:
@@ -87,7 +88,7 @@ async def pair_post(request: web.Request, body) -> web.Response:
 
     """
     body = PairPostRequest.from_dict(body)
-    return web.Response(status=200)
+    return handle_pair_post(body)
 
 
 async def robot_register_post(request: web.Request, body) -> web.Response:
@@ -99,11 +100,11 @@ async def robot_register_post(request: web.Request, body) -> web.Response:
     :type body: dict | bytes
 
     """
-    body = PairPostRequest.from_dict(body)
-    return web.Response(status=200)
+    body = RobotRegisterPostRequest.from_dict(body)
+    return handle_register_post(body)
 
 
-async def status_get(request: web.Request) -> web.Response:
+async def status_get(request: web.Request, ) -> web.Response:
     """Get server status
 
     

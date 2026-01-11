@@ -17,6 +17,7 @@ export const PairingService = {
       console.log('Successfully paired with robot:', robot_id);
       const data = await response.json();
       sessionStorage.setItem('pairingToken', data.pairing_token);
+      sessionStorage.setItem('robotId', robot_id);
     }
   }
 }
