@@ -1,26 +1,25 @@
+from __future__ import annotations
 import asyncio
 import random
 import time
-from typing import Any, Dict
+from typing import Any, Dict, TYPE_CHECKING
 
 from generated.openapi_server.models.behavior import Behavior
+from generated.openapi_server.models.style import Style
+from services.robot.behaviors.primary.base import PrimaryBehavior
+
+if TYPE_CHECKING:
+  from services.robot.Robot import Robot
 
 """
 RobotAction represents a single primary action of generated behaviors. It manages multiple sub-behaviors (like nodding, gazing)
 that run concurrently while a primary behavior (like TTS playback or listening) is active.
 """
 class RobotAction:
-  def __init__(self, action_id: str, config: Dict[str, Any]):
-    """
-    config example:
-    {
-      "nod": {"enabled": True, "freq": 0.5},  # nods per second (avg)
-      "gaze": {"enabled": True, "freq": 0.2},
-      "duration": 5.0  # seconds for primary behavior
-    }
-    """
-    self.action_id = action_id
-    self.config = config
+  def __init__(self, primary_behavior: PrimaryBehavior, robot: "Robot", style: Style):
+    self.primary_behavior: PrimaryBehavior = primary_behavior
+    self.robot: Robot = robot
+    self.style: Style = style
     self._stop_event = asyncio.Event()
     self._tasks: list[asyncio.Task] = []
 
@@ -29,17 +28,23 @@ class RobotAction:
     Run this action and its behaviors: spawn sub-behaviors, run primary, then stop subs cleanly.
     """
     # spawn sub-behaviors
-    if self.config.get("nod", {}).get("enabled"):
-      t = asyncio.create_task(self._nodder(output_queue))
-      self._tasks.append(t)
-    if self.config.get("gaze", {}).get("enabled"):
-      t = asyncio.create_task(self._gazer(output_queue))
-      self._tasks.append(t)
-    # audio/tss or listening primary
-    primary_task = asyncio.create_task(self._primary_behavior(output_queue))
+    if self.style:
+      if self.style.nodding.enabled:
+        t = asyncio.create_task(self._nodder(output_queue))
+        self._tasks.append(t)
+      if self.style.gaze.enabled:
+        t = asyncio.create_task(self._gazer(output_queue))
+        self._tasks.append(t)
+      if self.style.utterances.enabled:
+        t = asyncio.create_task(self._utterances(output_queue))
+        self._tasks.append(t)
 
     try:
-      await primary_task
+      await self.primary_behavior.run(
+        robot=self.robot,
+        output_queue=output_queue,
+        stop_event=self._stop_event,
+      )
     finally:
       # signal sub-behaviors to stop and let them finish
       self._stop_event.set()
@@ -99,13 +104,9 @@ class RobotAction:
     For TTS: emit a 'speech_start' then produce audio; on completion, return.
     Here we simulate the primary lasting `duration` seconds.
     """
-    duration = float(self.config.get("duration", 3.0))
-    # announce start
+    duration = float(5.0)
     await out_queue.put({
       "type": "speech_start",
-      "action_id": self.action_id,
-      "timestamp": time.time(),
-      "payload": {"text": self.config.get("text", "Hello")}
     })
     # Simulate doing TTS generation / playback (could be replaced with real TTS)
     try:
@@ -113,7 +114,4 @@ class RobotAction:
     finally:
       await out_queue.put({
         "type": "speech_end",
-        "action_id": self.action_id,
-        "timestamp": time.time(),
-        "payload": {}
-     })
+      })

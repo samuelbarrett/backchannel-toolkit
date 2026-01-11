@@ -23,6 +23,9 @@ from generated.openapi_server.models.robot_register_post_request import RobotReg
 from generated.openapi_server.models.status_get200_response import StatusGet200Response  # noqa: E501
 from generated.openapi_server import util
 
+from generated.openapi_server.models.style import Style
+from services.robot.behaviors.primary.base import PrimaryBehavior, PrimaryFactory
+from services.robot.behaviors.RobotAction import RobotAction
 import services.robot.registry as registry
 from services.robot.Robot import Robot
 
@@ -41,7 +44,7 @@ async def handle_command_get(command_get_request):
   robot: Robot = registry.find_by_id(int(command_get_request))
   if robot is not None:
     behavior: Behavior = await robot.get_next_behavior()
-  return CommandGet200Response(behavior=behavior)
+    return CommandGet200Response(behavior=behavior)
 
 
 def handle_command_listen_keyword_post(request_model: CommandListenKeywordPostRequest):
@@ -49,13 +52,38 @@ def handle_command_listen_keyword_post(request_model: CommandListenKeywordPostRe
   return {"status": "ok", "action": "listen_keyword"}
 
 
-def handle_command_listen_silence_post(request_model: CommandListenSilencePostRequest):
-  print("handle_command_listen_silence_post: %s", request_model)
-  return {"status": "ok", "action": "listen_silence"}
+async def handle_command_listen_silence_post(request_model: CommandListenSilencePostRequest):
+  """Generate a listen until silence action for the robot."""
+  print("handle_command_listen_silence_post:", request_model)
+  style: Style = request_model.style
+  robot: Robot = registry.find_by_id(int(request_model.robot_id))
+  listen_behavior: PrimaryBehavior = PrimaryFactory.build(
+    kind="listen_until_silence"
+  )
+  action: RobotAction = RobotAction(
+    primary_behavior=listen_behavior,
+    robot=robot,
+    style=style,
+  )
+  # enqueue the action to the robot's controller
+  await robot.enqueue_action(action)
+  return CommandListenSilencePost200Response(status="ok", action="listen_until_silence")
 
 
-def handle_command_speak_post(request_model: CommandSpeakPostRequest):
+async def handle_command_speak_post(request_model: CommandSpeakPostRequest):
+  """Generate a speaking action for the robot."""
   print("handle_command_speak_post: %s", request_model)
+  robot: Robot = registry.find_by_id(int(request_model.robot_id))
+  speak_behavior: PrimaryBehavior = PrimaryFactory.build(
+    kind="speak",
+    text=request_model.text,
+  )
+  action: RobotAction = RobotAction(
+    primary_behavior=speak_behavior,
+    robot=robot,
+    style=request_model.style,
+  )
+  await robot.enqueue_action(action)
   return {"status": "ok", "action": "speak"}
 
 
