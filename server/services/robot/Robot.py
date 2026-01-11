@@ -16,7 +16,8 @@ class Robot:
     self.output_queue: asyncio.Queue = asyncio.Queue()
     self._controller = ActionController(self.output_queue)
 
-    self._controller.start()
+  async def initialize(self):
+    await self._controller.start()
 
   def get_id(self) -> int:
     return self.id
