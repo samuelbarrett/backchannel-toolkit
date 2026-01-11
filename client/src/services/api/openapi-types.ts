@@ -230,6 +230,8 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
+                        /** @description The unique identifier for the robot */
+                        robot_id?: string;
                         /** @description This is what I, the robot, will say. */
                         text?: string;
                         style?: components["schemas"]["Style"];
@@ -279,6 +281,8 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
+                        /** @description The unique identifier for the robot */
+                        robot_id?: string;
                         style?: components["schemas"]["Style"];
                     } & {
                         [key: string]: unknown;
@@ -326,6 +330,8 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
+                        /** @description The unique identifier for the robot */
+                        robot_id?: string;
                         /** @description The keyword to listen for */
                         keyword?: string;
                         style?: components["schemas"]["Style"];

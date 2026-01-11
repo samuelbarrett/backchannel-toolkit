@@ -65,10 +65,10 @@ def handle_pair_post(request_model: PairPostRequest):
   robot: Robot = registry.find_by_id(robot_id)
   if robot is None:
     print(f"Pairing failed: Robot id {robot_id} not found.")
-    return PairPost409Response(message=f"Robot with id {robot_id} not found.")
+    return PairPost409Response(error=f"Robot with id {robot_id} not found.")
   elif robot.get_client() is not None:
     print(f"Pairing failed: Robot id {robot_id} already paired.")
-    return PairPost409Response(message=f"Robot with id {robot_id} already paired.")
+    return PairPost409Response(error=f"Robot with id {robot_id} already paired.")
   else:
     pairing_token: str = _generate_token()
     robot.set_client(pairing_token)
@@ -81,15 +81,21 @@ def handle_status_get():
   return StatusGet200Response(status="ok")
 
 
-def handle_register_post(request_model: RobotRegisterPostRequest):
+async def handle_register_post(request_model: RobotRegisterPostRequest):
   print("handle_register_post: %s", request_model)
   robot_id: int = int(request_model.robot_id)
-  if registry.add(robot_id, request_model.ip, request_model.voice_port, request_model.microphone_port):
+  added: bool = await registry.add(
+    robot_id,
+    request_model.ip,
+    request_model.voice_port,
+    request_model.microphone_port
+  )
+  if added:
     print(f"Robot with id {robot_id} registered successfully.")
     return {"status": "ok", "action": "register"}
   else:
     print(f"Robot with id {robot_id} registration failed: already exists.")
-    return RobotRegisterPost409Response(message=f"Robot with id {robot_id} already registered.")
+    return RobotRegisterPost409Response(error=f"Robot with id {robot_id} already registered.")
   
 def _generate_token() -> str:
   """Generate a random token string."""

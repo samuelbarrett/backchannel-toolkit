@@ -16,35 +16,38 @@ export const BlockCodeService = {
   },
   say: async (speech: string, style: StyleSchema) => {
     console.log('BlockCodeService.say called with message:', speech, 'and style:', style);
+    const robotId = sessionStorage.getItem('robotId') || '';
     const response = await fetch('http://localhost:3000/command/speak', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
         'X-Pairing-Token': sessionStorage.getItem('pairingToken') || ''
       },
-      body: JSON.stringify({ speech: speech, style: style })
+      body: JSON.stringify({ robot_id: robotId, speech: speech, style: style })
     });
   },
   listenForKeyword: async (keyword: string, style: StyleSchema) => {
     console.log('BlockCodeService.listenForKeyword called with keyword:', keyword);
+    const robotId = sessionStorage.getItem('robotId') || '';
     const response = await fetch('http://localhost:3000/command/listenKeyword', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
         'X-Pairing-Token': sessionStorage.getItem('pairingToken') || ''
       },
-      body: JSON.stringify({ keyword: keyword, style: style })
+      body: JSON.stringify({ robot_id: robotId, keyword: keyword, style: style })
     });
   },
   listenUntilSilence: async (style: StyleSchema) => {
     console.log('BlockCodeService.listenUntilSilence called');
+    const robotId = sessionStorage.getItem('robotId') || '';
     const response = await fetch('http://localhost:3000/command/listenSilence', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
         'X-Pairing-Token': sessionStorage.getItem('pairingToken') || ''
       },
-      body: JSON.stringify({ style: style })
+      body: JSON.stringify({ robot_id: robotId, style: style })
     });
   }
 };
