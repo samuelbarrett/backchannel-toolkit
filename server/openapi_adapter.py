@@ -5,8 +5,11 @@
 # we need additional (handcrafted) routes for robot <-> server communication.
 
 import os
+import json
 import connexion
 from generated.openapi_server import encoder
+from connexion.jsonifier import Jsonifier
+from connexion.apis.aiohttp_api import AioHttpApi
 
 def create_connexion_app():
 	app = connexion.AioHttpApp(
@@ -18,6 +21,6 @@ def create_connexion_app():
 			"openapi"
 		),
 	)
-	app.json = encoder.JSONEncoder
+	AioHttpApi.jsonifier = Jsonifier(json, cls=encoder.ModelJSONEncoder)
 	app.add_api("openapi.yaml", base_path='/api', pythonic_params=True, pass_context_arg_name="request")
 	return app
