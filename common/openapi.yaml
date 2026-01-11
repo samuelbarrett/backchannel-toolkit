@@ -211,6 +211,9 @@ paths:
             schema:
               type: object
               properties:
+                robot_id:
+                  type: string
+                  description: The unique identifier for the robot
                 text:
                   type: string
                   description: This is what I, the robot, will say.
@@ -240,6 +243,9 @@ paths:
             schema:
               type: object
               properties:
+                robot_id:
+                  type: string
+                  description: The unique identifier for the robot
                 style:
                   $ref: '#/components/schemas/Style'
               additionalProperties: true
@@ -266,6 +272,9 @@ paths:
             schema:
               type: object
               properties:
+                robot_id:
+                  type: string
+                  description: The unique identifier for the robot
                 keyword:
                   type: string
                   description: The keyword to listen for

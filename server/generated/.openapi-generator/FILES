@@ -3,7 +3,6 @@ README.md
 openapi_server/__init__.py
 openapi_server/__main__.py
 openapi_server/controllers/__init__.py
-openapi_server/controllers/default_controller.py
 openapi_server/controllers/security_controller.py
 openapi_server/models/__init__.py
 openapi_server/models/base_model.py

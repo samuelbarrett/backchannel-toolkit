@@ -47,7 +47,6 @@ public class SotaDialog {
     // handle incoming audio from the server
     UDPReceiver audioReceiver = new UDPReceiver(AUDIO_PLAYBACK_PORT, UDP_RECEIVER_BUFFER_SIZE);
     AudioPlayback audioPlayback = new AudioPlayback();
-    audioPlayback.playTestTone("../resources/utterances/test_hmm.wav");
     audioReceiver.addListener(audioPlayback);
 
     // HTTP client that polls for commands and outputs state updates to its listeners
