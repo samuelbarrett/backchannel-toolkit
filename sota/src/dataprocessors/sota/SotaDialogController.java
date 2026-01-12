@@ -110,6 +110,8 @@ public class SotaDialogController extends DataProcessor {
             playNod((NodBackchannelEvent) backchannel);
         } else if (backchannel.getType() == BackchannelEvent.BEHAVIOR_TYPE.UTTERANCE) {
             playVerbalBackchannel((UtteranceBackchannelEvent) backchannel);
+        } else if (backchannel.getType() == BackchannelEvent.BEHAVIOR_TYPE.LOOK) {
+            System.out.println("Look backchannel received.");
         }
     }
     
