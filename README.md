@@ -28,6 +28,8 @@ Run the following in separate terminals, and the Sota jar on the Sota robot.
 | Python backend | `python3 -m server` | Runs Python backend server |
 | Sota client | `java -jar <nameofjar>.jar` | Runs Sota-side thin client |
 
+**Ports**: audio is streamed from the robot to the server over UDP. The robot's outgoing port (for sending audio input data to the server) is unique to other robots based on its given ID, e.g., 7000 + robotId.
+
 ### Development
 
 #### API
