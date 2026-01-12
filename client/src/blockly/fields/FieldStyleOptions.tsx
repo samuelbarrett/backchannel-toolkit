@@ -1,5 +1,7 @@
 import * as Blockly from 'blockly';
-import { Style } from '../../models/style.ts';
+
+import { StyleSchema } from '../../models/style.ts';
+
 import { createRoot } from 'react-dom/client';
 import StyleOptionsPane from '../../components/StyleOptionsPane.tsx';
 
@@ -7,7 +9,7 @@ import StyleOptionsPane from '../../components/StyleOptionsPane.tsx';
  * Custom Blockly field for storing and editing the Style block's options
  */
 export class FieldStyleOptions extends Blockly.FieldImage {
-  private style: Style | null = null;
+  private style: StyleSchema | null = null;
 
   constructor(src: string | typeof Blockly.Field.SKIP_SETUP, width: string | number, height: string | number, alt?: string, onClick?: (p1: Blockly.FieldImage) => void, flipRtl?: boolean, config?: Blockly.FieldImageConfig) {
     super(src, width, height, alt, onClick, flipRtl, config);
@@ -16,11 +18,11 @@ export class FieldStyleOptions extends Blockly.FieldImage {
     this.setTooltip("Click to modify this style");
   }
 
-  public setStyle(style: Style) {
+  public setStyle(style: StyleSchema) {
     this.style = style;
   }
 
-  public getStyle(): Style | null {
+  public getStyle(): StyleSchema | null {
     return this.style;
   }
 
@@ -49,11 +51,11 @@ export class FieldStyleOptions extends Blockly.FieldImage {
     const editorDiv = document.createElement('editor-div');
     const editorRoot = createRoot(editorDiv);
 
-    const render = (style: Style) => {
+    const render = (style: StyleSchema) => {
       editorRoot.render(
         <StyleOptionsPane 
           robotStyle={style} 
-          onChange={(newStyle: Style) => {
+          onChange={(newStyle: StyleSchema) => {
             this.setStyle(newStyle);
             render(newStyle);
           }}
@@ -65,11 +67,26 @@ export class FieldStyleOptions extends Blockly.FieldImage {
       render(this.style);
     } else {
       // fallback to a default placeholder if none is set
-      render(new Style(
-        false, 50, 50, false, false,
-        false, 50, 50,
-        [], false, 50, 50
-      ));
+      const placeholderStyle: StyleSchema = {
+        nodding: {
+          enabled: false,
+          frequency: 50,
+          intensity: 50,
+          direction: "up_down"
+        },
+        utterances: {
+          enabled: false,
+          utterance_frequency: 50,
+          utterance_volume: 50,
+          utterance_list: []
+        },
+        gaze: {
+          enabled: false,
+          eye_contact: 50,
+          shift_gaze: 50
+        }
+      }
+      render(placeholderStyle);
     }
 
     return editorDiv;
