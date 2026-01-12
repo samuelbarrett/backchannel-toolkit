@@ -276,8 +276,10 @@ paths:
                   type: string
                   description: The unique identifier for the robot
                 keyword:
-                  type: string
-                  description: The keyword to listen for
+                  type: array 
+                  description: Array of keywords to listen for
+                  items:
+                    type: string
                 style:
                   $ref: '#/components/schemas/Style'
               additionalProperties: true

@@ -338,8 +338,8 @@ export interface paths {
                     "application/json": {
                         /** @description The unique identifier for the robot */
                         robot_id?: string;
-                        /** @description The keyword to listen for */
-                        keyword?: string;
+                        /** @description Array of keywords to listen for */
+                        keyword?: string[];
                         style?: components["schemas"]["Style"];
                     } & {
                         [key: string]: unknown;

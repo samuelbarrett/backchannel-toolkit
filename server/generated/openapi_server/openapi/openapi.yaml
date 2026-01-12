@@ -343,8 +343,10 @@ components:
           description: The unique identifier for the robot
           type: string
         keyword:
-          description: The keyword to listen for
-          type: string
+          description: Array of keywords to listen for
+          items:
+            type: string
+          type: array
         style:
           $ref: "#/components/schemas/Style"
       title: _command_listenKeyword_post_request
