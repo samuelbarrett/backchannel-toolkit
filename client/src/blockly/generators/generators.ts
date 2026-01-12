@@ -29,9 +29,10 @@ forBlock['listen_keyword_block'] = function(
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {
-  const keyword = block.getFieldValue('keyword');
+  const raw_keywords = block.getFieldValue('keywords');
+  const keywordsArray = getAlphaWordsFiltered(raw_keywords);
   const styleCode = getStyleCodeFromBlock(block, generator);
-  return `BlockCodeService.listenForKeyword(${JSON.stringify(keyword)}, ${styleCode});\n`;
+  return `BlockCodeService.listenForKeywords(${JSON.stringify(keywordsArray)}, ${styleCode});\n`;
 }
 
 forBlock['listen_block'] = function(
@@ -102,4 +103,10 @@ function styleBlockGenerator(block: Blockly.Block) {
   const field = block.getField('styleOptions') as any;
   const styleObj = field && typeof field.getStyle === 'function' ? field.getStyle() : {};
   return JSON.stringify(styleObj);
+}
+
+function getAlphaWordsFiltered(inputString: String): string[] {
+  return inputString.split(/\s+/) // Split by any whitespace
+    .map(word => word.replace(/[^a-zA-Z]/g, '')) // Remove non-alpha chars from each word
+    .filter(word => word.length > 0); // Remove empty strings
 }

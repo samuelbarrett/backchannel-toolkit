@@ -49,14 +49,14 @@ app.post('/command/listenSilence', async (req, res) => {
   }
 });
 
-app.post('/command/listenKeyword', async (req, res) => {
+app.post('/command/listenKeywords', async (req, res) => {
   try {
-    console.log('Received /command/listenKeyword request');
+    console.log('Received /command/listenKeywords request');
     let token = req.headers['x-pairing-token'] as string;
-    const result = await backendService.listenKeyword(token, req.body.robot_id, req.body.keyword, req.body.style);
+    const result = await backendService.listenKeyword(token, req.body.robot_id, req.body.keywords, req.body.style);
     res.json(result);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to send listenKeyword command' });
+    res.status(500).json({ error: 'Failed to send listenKeywords command' });
   }
 });
 

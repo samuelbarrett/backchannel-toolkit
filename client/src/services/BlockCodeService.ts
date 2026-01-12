@@ -26,16 +26,16 @@ export const BlockCodeService = {
       body: JSON.stringify({ robot_id: robotId, speech: speech, style: style })
     });
   },
-  listenForKeyword: async (keyword: string, style: StyleSchema) => {
-    console.log('BlockCodeService.listenForKeyword called with keyword:', keyword);
+  listenForKeywords: async (keywords: string[], style: StyleSchema) => {
+    console.log('BlockCodeService.listenForKeywords called with keywords:', keywords);
     const robotId = sessionStorage.getItem('robotId') || '';
-    const response = await fetch('http://localhost:3000/command/listenKeyword', {
+    const response = await fetch('http://localhost:3000/command/listenKeywords', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
         'X-Pairing-Token': sessionStorage.getItem('pairingToken') || ''
       },
-      body: JSON.stringify({ robot_id: robotId, keyword: keyword, style: style })
+      body: JSON.stringify({ robot_id: robotId, keywords: keywords, style: style })
     });
   },
   listenUntilSilence: async (style: StyleSchema) => {
