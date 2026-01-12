@@ -8,6 +8,7 @@ FRAME_MS = 30
 WINDOW_SIZE = 13
 WINDOW_MS = FRAME_MS * WINDOW_SIZE
 FRAME_BYTES = int(SAMPLE_RATE * (FRAME_MS / 1000) * 2)
+MAX_TIMEOUT = 15
 
 SPEECH_THRESHOLD = 0.8
 SILENCE_THRESHOLD = 0.2
@@ -17,24 +18,26 @@ class ListenUntilSilencePrimary(PrimaryBehavior):
 
   def __init__(self, start_delay_ms=5000, cfg: dict = {}):
     self.start_delay_ms = start_delay_ms
-    self.vad = webrtcvad.Vad(2)
+    self.vad = webrtcvad.Vad(3)
     self.speech_votes = deque(maxlen=WINDOW_SIZE)
     self.input_buffer = bytearray()
     self.is_speaking = False
+    self.has_spoken = False
 
   async def run(self, robot: Robot, output_queue: asyncio.Queue, stop_event: asyncio.Event):
+    self._stop_event = stop_event
     transport, protocol = await robot.open_mic_stream(
       local_ip="0.0.0.0",
       receive_callback=self.process_audio
     )
     loop = asyncio.get_running_loop()
-    min_runtime = loop.time() + self.start_delay_ms / 1000.0
+    min_runtime = loop.time() + MAX_TIMEOUT
     try:
-      while loop.time() < min_runtime:
+      while not self._stop_event.is_set() and loop.time() < min_runtime:
         await asyncio.sleep(FRAME_MS / 1000.0)
     finally:
+      print("End listening")
       transport.close()
-    stop_event.set()
 
   def process_audio(self, input_data, addr=None):
     self.input_buffer.extend(input_data)
@@ -53,7 +56,9 @@ class ListenUntilSilencePrimary(PrimaryBehavior):
       speech_ratio = sum(self.speech_votes) / len(self.speech_votes)
       if not self.is_speaking and speech_ratio > SPEECH_THRESHOLD:
         self.is_speaking = True
-        print(">>> Speech started")
+        self.has_spoken = True
       elif self.is_speaking and speech_ratio < SILENCE_THRESHOLD:
         self.is_speaking = False
-        print(">>> Speech ended")
+        if self.has_spoken:
+          if self._stop_event and not self._stop_event.is_set():
+            self._stop_event.set()

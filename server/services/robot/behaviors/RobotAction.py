@@ -116,21 +116,3 @@ class RobotAction:
         utterance=utterance,
       )
       await out_queue.put(event)
-
-  async def _primary_behavior(self, out_queue: asyncio.Queue):
-    """
-    Placeholder: primary behavior could be TTS generation + playback or listening.
-    For TTS: emit a 'speech_start' then produce audio; on completion, return.
-    Here we simulate the primary lasting `duration` seconds.
-    """
-    duration = float(5.0)
-    await out_queue.put({
-      "type": "speech_start",
-    })
-    # Simulate doing TTS generation / playback (could be replaced with real TTS)
-    try:
-      await asyncio.sleep(duration)
-    finally:
-      await out_queue.put({
-        "type": "speech_end",
-      })

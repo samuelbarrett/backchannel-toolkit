@@ -40,7 +40,6 @@ async def handle_command_get(command_get_request):
   Returns:
     A serializable response (model instance, dict, tuple).
   """
-  print("handle_command_get called with id:", command_get_request)
   robot: Robot = registry.find_by_id(int(command_get_request))
   if robot is not None:
     behavior: Behavior = await robot.get_next_behavior()
