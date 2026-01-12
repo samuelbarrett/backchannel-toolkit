@@ -1,7 +1,13 @@
-node_modules
-dist/
+**/node_modules
+**/dist/
 build/
 .DS_Store
 .npm
 *.log*
 .vscode/*
+.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/.env
+**/*.jar
+**/.vosk/

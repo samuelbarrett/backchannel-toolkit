@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
+    "esModuleInterop": true,
+    "target": "ES2020",
+    "strict": true,
+    "sourceMap": true,
+    "noUncheckedIndexedAccess": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "react": [ "./node_modules/@types/react" ],
+    },
+    "allowSyntheticDefaultImports": true
+  }
+}

@@ -1,0 +1,433 @@
+openapi: 3.0.3
+info:
+  description: API for communication between Node.js client and Python backend
+  title: Backchannel Toolkit API
+  version: 1.0.0
+servers:
+- url: http://localhost:5000
+paths:
+  /command:
+    get:
+      operationId: command_get
+      parameters:
+      - description: The unique identifier for the robot
+        explode: true
+        in: query
+        name: robot_id
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_command_get_200_response"
+          description: Next command
+      summary: get next command from server
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+  /command/listenKeyword:
+    post:
+      operationId: command_listen_keyword_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_command_listenKeyword_post_request"
+        required: true
+        x-body-name: body
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_command_listenKeyword_post_200_response"
+          description: Command received
+      security:
+      - PairingToken: []
+      summary: Send a command for the robot to listen until it detects a keyword
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+      x-codegen-request-body-name: body
+  /command/listenSilence:
+    post:
+      operationId: command_listen_silence_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_command_listenSilence_post_request"
+        required: true
+        x-body-name: body
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_command_listenSilence_post_200_response"
+          description: Command received
+      security:
+      - PairingToken: []
+      summary: Send a command for the robot to listen until it detects silence
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+      x-codegen-request-body-name: body
+  /command/speak:
+    post:
+      operationId: command_speak_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_command_speak_post_request"
+        required: true
+        x-body-name: body
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_command_speak_post_200_response"
+          description: Command received
+      security:
+      - PairingToken: []
+      summary: Send a speak command to the server
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+      x-codegen-request-body-name: body
+  /pair:
+    post:
+      operationId: pair_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_pair_post_request"
+        required: true
+        x-body-name: body
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_pair_post_200_response"
+          description: Paired successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_pair_post_400_response"
+          description: Invalid robot ID
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_pair_post_409_response"
+          description: Robot already paired
+      security: []
+      summary: Pair with the server using a pairing token
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+      x-codegen-request-body-name: body
+  /robot/register:
+    post:
+      operationId: robot_register_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_robot_register_post_request"
+        required: true
+        x-body-name: body
+      responses:
+        "200":
+          description: Registered successfully
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_robot_register_post_409_response"
+          description: Robot already registered
+      security: []
+      summary: Register a new robot with the server
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+      x-codegen-request-body-name: body
+  /status:
+    get:
+      operationId: status_get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/_status_get_200_response"
+          description: Server status
+      summary: Get server status
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+components:
+  schemas:
+    Behavior:
+      additionalProperties: false
+      example:
+        amplitude: 0.8008281904610115
+        type: type
+        speed: 6.027456183070403
+        utterance: utterance
+      properties:
+        type:
+          description: "Type of behavior (e.g., nod, utterance, gaze)"
+          title: type
+          type: string
+        amplitude:
+          description: Amplitude of the behavior (for nodding behavior)
+          title: amplitude
+          type: number
+        speed:
+          description: Speed of the behavior (for nodding behavior)
+          title: speed
+          type: number
+        utterance:
+          description: Utterance text (for utterance behavior)
+          title: utterance
+          type: string
+      required:
+      - type
+      title: Behavior
+      type: object
+    Style:
+      additionalProperties: false
+      properties:
+        nodding:
+          $ref: "#/components/schemas/Style_nodding"
+        utterances:
+          $ref: "#/components/schemas/Style_utterances"
+        gaze:
+          $ref: "#/components/schemas/Style_gaze"
+      title: Style
+      type: object
+    _pair_post_request:
+      properties:
+        robot_id:
+          description: The unique identifier for the robot
+          title: robot_id
+          type: string
+      title: _pair_post_request
+      type: object
+    _pair_post_200_response:
+      example:
+        pairing_token: xj2bjzx8b1njk2n
+      properties:
+        pairing_token:
+          description: The token to be used for authenticated requests
+          example: xj2bjzx8b1njk2n
+          title: pairing_token
+          type: string
+      title: _pair_post_200_response
+      type: object
+    _pair_post_400_response:
+      example:
+        error: Invalid robot ID
+      properties:
+        error:
+          example: Invalid robot ID
+          title: error
+          type: string
+      title: _pair_post_400_response
+      type: object
+    _pair_post_409_response:
+      example:
+        error: Robot already paired
+      properties:
+        error:
+          example: Robot already paired
+          title: error
+          type: string
+      title: _pair_post_409_response
+      type: object
+    _robot_register_post_request:
+      properties:
+        robot_id:
+          description: The unique identifier for the robot
+          title: robot_id
+          type: string
+        ip:
+          description: The IP address of the robot
+          title: ip
+          type: string
+        voice_port:
+          description: The port number the robot is listening on for audio playback
+          title: voice_port
+          type: integer
+        microphone_port:
+          description: The port number the robot's microphone is listening on
+          title: microphone_port
+          type: integer
+      title: _robot_register_post_request
+      type: object
+    _robot_register_post_409_response:
+      example:
+        error: Robot already registered
+      properties:
+        error:
+          example: Robot already registered
+          title: error
+          type: string
+      title: _robot_register_post_409_response
+      type: object
+    _status_get_200_response:
+      example:
+        status: Server is running
+      properties:
+        status:
+          example: Server is running
+          title: status
+          type: string
+      title: _status_get_200_response
+      type: object
+    _command_get_200_response:
+      example:
+        Behavior:
+          amplitude: 0.8008281904610115
+          type: type
+          speed: 6.027456183070403
+          utterance: utterance
+      properties:
+        Behavior:
+          $ref: "#/components/schemas/Behavior"
+      title: _command_get_200_response
+      type: object
+    _command_speak_post_request:
+      additionalProperties: true
+      properties:
+        robot_id:
+          description: The unique identifier for the robot
+          type: string
+        text:
+          description: "This is what I, the robot, will say."
+          type: string
+        style:
+          $ref: "#/components/schemas/Style"
+      title: _command_speak_post_request
+      type: object
+    _command_speak_post_200_response:
+      example:
+        received_command: Speak command received
+      properties:
+        received_command:
+          example: Speak command received
+          title: received_command
+          type: string
+      title: _command_speak_post_200_response
+      type: object
+    _command_listenSilence_post_request:
+      additionalProperties: true
+      properties:
+        robot_id:
+          description: The unique identifier for the robot
+          type: string
+        style:
+          $ref: "#/components/schemas/Style"
+      title: _command_listenSilence_post_request
+      type: object
+    _command_listenSilence_post_200_response:
+      example:
+        received_command: ListenUntilSilence command received
+      properties:
+        received_command:
+          example: ListenUntilSilence command received
+          title: received_command
+          type: string
+      title: _command_listenSilence_post_200_response
+      type: object
+    _command_listenKeyword_post_request:
+      additionalProperties: true
+      properties:
+        robot_id:
+          description: The unique identifier for the robot
+          type: string
+        keyword:
+          description: Array of keywords to listen for
+          items:
+            type: string
+          type: array
+        style:
+          $ref: "#/components/schemas/Style"
+      title: _command_listenKeyword_post_request
+      type: object
+    _command_listenKeyword_post_200_response:
+      example:
+        received_command: ListenUntilKeyword command received
+      properties:
+        received_command:
+          example: ListenUntilKeyword command received
+          title: received_command
+          type: string
+      title: _command_listenKeyword_post_200_response
+      type: object
+    Style_nodding:
+      additionalProperties: false
+      properties:
+        enabled:
+          description: Whether to nod while speaking
+          title: enabled
+          type: boolean
+        frequency:
+          description: Frequency of nodding (nodding per second)
+          title: frequency
+          type: number
+        intensity:
+          description: Intensity of nodding
+          title: intensity
+          type: number
+        direction:
+          description: Direction of nodding
+          enum:
+          - up_down
+          - left_right
+          title: direction
+          type: string
+      title: Style_nodding
+      type: object
+    Style_utterances:
+      additionalProperties: false
+      properties:
+        enabled:
+          description: Whether to use verbal utterances
+          title: enabled
+          type: boolean
+        utterance_frequency:
+          description: Frequency of utterances
+          title: utterance_frequency
+          type: number
+        utterance_volume:
+          description: Volume of utterances
+          title: utterance_volume
+          type: number
+        utterance_list:
+          description: List of utterances to use
+          items:
+            type: string
+          title: utterance_list
+          type: array
+      title: Style_utterances
+      type: object
+    Style_gaze:
+      additionalProperties: false
+      properties:
+        enabled:
+          description: Whether to use gaze behavior
+          title: enabled
+          type: boolean
+        eye_contact:
+          description: Frequency of eye contact
+          title: eye_contact
+          type: number
+        shift_gaze:
+          description: Frequency of gaze shifts
+          title: shift_gaze
+          type: number
+      title: Style_gaze
+      type: object
+  securitySchemes:
+    PairingToken:
+      in: header
+      name: X-Pairing-Token
+      type: apiKey
+      x-apikeyInfoFunc: openapi_server.controllers.security_controller.info_from_PairingToken
