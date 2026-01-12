@@ -38,7 +38,19 @@ export const initWorkspace = () => {
     throw new Error(`div with id 'blocklyDiv' not found`);
   }
   console.log('Injecting Blockly workspace...');
-  workspace = Blockly.inject(blocklyDiv, {toolbox});
+  workspace = Blockly.inject(blocklyDiv, {
+    toolbox: toolbox,
+    trashcan: true,
+    zoom: {
+      controls: true,
+      wheel: true,
+    },
+    move: {
+      scrollbars: true,
+      drag: true,
+      wheel: false,
+    }
+  });
 
   if (workspace) {
     // Load the initial state from storage and run the code.
