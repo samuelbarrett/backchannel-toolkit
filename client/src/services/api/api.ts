@@ -1,6 +1,10 @@
 import express from 'express';
 import 'dotenv/config';
 import { backendService } from './BackendService.ts';
+import fs from 'node:fs';
+import path from 'path';
+
+const __dirname = import.meta.dirname;
 
 const app = express();
 
@@ -57,6 +61,27 @@ app.post('/command/listenKeywords', async (req, res) => {
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: 'Failed to send listenKeywords command' });
+  }
+});
+
+app.post('/save', async (req, res) => {
+  
+  try {
+    console.log('saving workspace for robot:', req.body.robotId);
+    const workspaceData = req.body.workspace;
+    const savePath = path.join(__dirname, '../../../savedWorkspaces/', `${req.body.robotId}_workspace.json`)
+    const now = new Date();
+    fs.appendFile(savePath, `\n${now.toLocaleString()} `, (err) => {})
+    fs.appendFile(savePath, workspaceData, (err) => {
+      if (err) {
+        console.error('Error saving workspace:', err);
+        res.status(500).json({ error: 'Failed to save program' });
+      } else {
+        res.status(200).json({ message: 'Workspace saved successfully' });
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to save program' });
   }
 });
 
