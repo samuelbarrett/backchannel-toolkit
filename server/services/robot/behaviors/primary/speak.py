@@ -1,5 +1,4 @@
 import asyncio, io
-from typing import Any
 from gtts import gTTS
 from pydub import AudioSegment
 

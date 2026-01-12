@@ -6,6 +6,7 @@ from typing import Any, Dict, TYPE_CHECKING
 
 from generated.openapi_server.models.behavior import Behavior
 from generated.openapi_server.models.style import Style
+from services.robot.behaviors.backchanneling.utterances import emit_utterances
 from services.robot.behaviors.primary.base import PrimaryBehavior
 
 if TYPE_CHECKING:
@@ -36,7 +37,11 @@ class RobotAction:
         t = asyncio.create_task(self._gazer(output_queue))
         self._tasks.append(t)
       if self.style.utterances.enabled:
-        t = asyncio.create_task(self._utterances(output_queue))
+        t = asyncio.create_task(emit_utterances(
+          robot=self.robot,
+          style=self.style,
+          stop_event=self._stop_event,
+        ))
         self._tasks.append(t)
 
     try:

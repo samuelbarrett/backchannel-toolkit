@@ -1,10 +1,12 @@
 import asyncio, vosk
+from typing import TYPE_CHECKING
 from pathlib import Path
 from functools import lru_cache
 import json
-
-from services.robot import Robot
 from services.robot.behaviors.primary.base import PrimaryBehavior
+
+if TYPE_CHECKING:
+  from services.robot import Robot
 
 SAMPLE_RATE = 16000
 BYTES_PER_SAMPLE = 2  # 16-bit audio
@@ -36,7 +38,7 @@ class ListenKeywordPrimary(PrimaryBehavior):
     self.keywords = [k.lower() for k in keywords]
     self.buffer = bytearray()
 
-  async def run(self, robot: Robot, output_queue: asyncio.Queue, stop_event: asyncio.Event):
+  async def run(self, robot: "Robot", output_queue: asyncio.Queue, stop_event: asyncio.Event):
     self._stop_event = stop_event
     transport, protocol = await robot.open_mic_stream(
       local_ip="0.0.0.0",

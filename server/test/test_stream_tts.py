@@ -1,4 +1,5 @@
 import asyncio, io
+import sys
 from gtts import gTTS
 from pydub import AudioSegment
 from pydub.playback import play
@@ -59,7 +60,8 @@ async def output_to_speakers(wav_bytes: bytes):
 async def main():
   text = "Hello, this is a test of the text to speech streaming system."
   wav_bytes = await synthesize_wav_bytes(text)
-  await stream_to_robot("10.0.0.178", 8888, wav_bytes, chunk_size=4096)
+  ip = str(sys.argv[1])
+  await stream_to_robot(ip, 8888, wav_bytes, chunk_size=4096)
   # await output_to_speakers(wav_bytes)
 
 asyncio.run(main())
