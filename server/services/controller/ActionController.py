@@ -23,6 +23,15 @@ class ActionController:
         await self._runner_task
       except asyncio.CancelledError:
         pass
+  
+  async def empty_queue(self, queue: asyncio.Queue):
+    while not queue.empty():
+      try:
+        queue.get_nowait()
+        queue.task_done()
+      except asyncio.QueueEmpty:
+        pass
+
 
   async def enqueue(self, session: RobotAction):
     await self._action_queue.put(session)
@@ -38,4 +47,5 @@ class ActionController:
         print(f"[Controller] Session {action} error: {e}")
       finally:
         self._action_queue.task_done()
+        await self.empty_queue(self._output_queue)
 

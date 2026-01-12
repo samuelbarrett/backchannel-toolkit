@@ -64,7 +64,7 @@ export const backendService = {
   listenKeyword: async (
     token: string,
     robot_id: string,
-    keyword: string,
+    keyword: string[],
     options?: StyleSchema
   ): Promise<listenKeywordResponse> => {
     const body: listenKeywordRequestBody = { robot_id, keyword, style: options };

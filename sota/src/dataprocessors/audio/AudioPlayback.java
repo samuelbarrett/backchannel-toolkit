@@ -178,9 +178,13 @@ public class AudioPlayback extends DataProcessor {
         }
     }
 
+    // open a SourceDataLine to the correct audio device
     private SourceDataLine openLine(AudioFormat format) {
         try {
-            // first iterate through the mixers to get the one we know actually works (after much investigation)
+            // we need to iterate through mixers to get the correct one
+            // that represents Sota's speaker, which can be ascertained 
+            // for Sota via the terminal command:
+            // pactl info | grep "Default Sink"
             Mixer.Info[] mixerInfos = AudioSystem.getMixerInfo();
             for (Mixer.Info mixerInfo : mixerInfos) {
                 if (mixerInfo.getName().contains("hw:2,0")) {

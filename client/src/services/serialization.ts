@@ -12,9 +12,18 @@ const storageKey = 'mainWorkspace';
  * Saves the state of the workspace to browser's local storage.
  * @param workspace Blockly workspace to save.
  */
-export const save = function (workspace: Blockly.Workspace) {
+export const save = async function (workspace: Blockly.Workspace) {
   const data = Blockly.serialization.workspaces.save(workspace);
   window.localStorage?.setItem(storageKey, JSON.stringify(data));
+
+  // save workspace to file
+  const response = await fetch('http://localhost:3000/save', {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ robotId: sessionStorage.getItem('robotId') || '', workspace: JSON.stringify(data) })
+  });
 };
 
 /**

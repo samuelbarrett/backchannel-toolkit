@@ -77,8 +77,8 @@
                         <param name="jar.name" value="TestSotaDialogController.jar" />
                 </antcall>
                 <antcall target="__make_jar">
-                        <param name="jar.class" value="test.TestAudioStreamPlayback" />
-                        <param name="jar.name" value="TestAudioStreamPlayback.jar" />
+                        <param name="jar.class" value="test.TestAudioStream" />
+                        <param name="jar.name" value="TestAudioStream.jar" />
                 </antcall>
         </target>
 

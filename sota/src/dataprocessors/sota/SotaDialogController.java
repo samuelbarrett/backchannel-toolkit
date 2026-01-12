@@ -110,6 +110,8 @@ public class SotaDialogController extends DataProcessor {
             playNod((NodBackchannelEvent) backchannel);
         } else if (backchannel.getType() == BackchannelEvent.BEHAVIOR_TYPE.UTTERANCE) {
             playVerbalBackchannel((UtteranceBackchannelEvent) backchannel);
+        } else if (backchannel.getType() == BackchannelEvent.BEHAVIOR_TYPE.LOOK) {
+            System.out.println("Look backchannel received.");
         }
     }
     
@@ -126,14 +128,49 @@ public class SotaDialogController extends DataProcessor {
         long playTime = 1000;
         long currentTimeMs = System.currentTimeMillis();
         this.backchannelFinishTimeMs = currentTimeMs + playTime + MIN_BACKCHANNEL_INTERVAL_MS;
-        
-        this.motion.play(nodDown, 275);
+
+        int speed = NodBackchannelEvent.SPEED_MIN_MS + (NodBackchannelEvent.SPEED_MAX_MS - NodBackchannelEvent.SPEED_MIN_MS) / nodEvent.getSpeed();
+        int amplitude = nodEvent.getAmplitude();
+
+        if (amplitude <= 33) {
+            // small nod
+            this.smallNod(speed);
+        } else if (amplitude <= 66) {
+            // medium nod
+            this.mediumNod(speed);
+        } else {
+            // intense nod
+            this.intenseNod(speed);
+        }
+    }
+
+    private void mediumNod(int speed) {
+        this.motion.play(nodDown, speed);
+        this.motion.waitEndinterpAll();
+
+        this.motion.play(nodUp, speed*2);
         this.motion.waitEndinterpAll();
         
-        // this.motion.play(nodUp, 400);
-        // this.motion.waitEndinterpAll();
+        this.motion.play(nodNeutral, speed);
+        this.motion.waitEndinterpAll();
+    }
+
+    private void smallNod(int speed) {
+        this.motion.play(nodDown, speed);
+        this.motion.waitEndinterpAll();
         
-        this.motion.play(nodNeutral, 400);
+        this.motion.play(nodNeutral, speed);
+        this.motion.waitEndinterpAll();
+    }
+
+    private void intenseNod(int speed) {
+        this.motion.play(nodUp, speed*2);
+        this.motion.waitEndinterpAll();
+        
+        this.motion.play(nodDown, speed);
+        this.motion.waitEndinterpAll();
+        
+        this.motion.play(nodNeutral, speed);
         this.motion.waitEndinterpAll();
     }
     

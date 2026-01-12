@@ -6,6 +6,7 @@ from typing import Any, Dict, TYPE_CHECKING
 
 from generated.openapi_server.models.behavior import Behavior
 from generated.openapi_server.models.style import Style
+from services.robot.behaviors.backchanneling.utterances import emit_utterances
 from services.robot.behaviors.primary.base import PrimaryBehavior
 
 if TYPE_CHECKING:
@@ -36,7 +37,11 @@ class RobotAction:
         t = asyncio.create_task(self._gazer(output_queue))
         self._tasks.append(t)
       if self.style.utterances.enabled:
-        t = asyncio.create_task(self._utterances(output_queue))
+        t = asyncio.create_task(emit_utterances(
+          robot=self.robot,
+          style=self.style,
+          stop_event=self._stop_event,
+        ))
         self._tasks.append(t)
 
     try:
@@ -62,8 +67,8 @@ class RobotAction:
       await asyncio.gather(*pending, return_exceptions=True)
 
   async def _nodder(self, out_queue: asyncio.Queue):
-    """Emit head-nod events with some human-like jitter until stop."""
-    freq = float(self.config.get("nod", {}).get("freq", 0.5))  # nods per sec
+    """Emit head-nod events."""
+    freq = float(self.style.nodding.frequency)  # nods per sec
     if freq <= 0:
       return
     base_interval = 1.0 / freq
@@ -82,7 +87,7 @@ class RobotAction:
 
   async def _gazer(self, out_queue: asyncio.Queue):
     """Emit gaze shift events."""
-    freq = float(self.config.get("gaze", {}).get("freq", 0.2))
+    freq = float(self.style.gaze.shift_gaze)
     if freq <= 0:
       return
     base_interval = 1.0 / freq
@@ -97,21 +102,22 @@ class RobotAction:
         speed=0,      # not used for gaze
       )
       await out_queue.put(event)
-
-  async def _primary_behavior(self, out_queue: asyncio.Queue):
-    """
-    Placeholder: primary behavior could be TTS generation + playback or listening.
-    For TTS: emit a 'speech_start' then produce audio; on completion, return.
-    Here we simulate the primary lasting `duration` seconds.
-    """
-    duration = float(5.0)
-    await out_queue.put({
-      "type": "speech_start",
-    })
-    # Simulate doing TTS generation / playback (could be replaced with real TTS)
-    try:
-      await asyncio.sleep(duration)
-    finally:
-      await out_queue.put({
-        "type": "speech_end",
-      })
+  
+  async def _utterances(self, out_queue: asyncio.Queue):
+    """Emit small utterance events (e.g., 'uh-huh', 'mm-hmm')."""
+    freq = float(self.style.utterances.utterance_frequency)
+    if freq <= 0:
+      return
+    base_interval = 1.0 / freq
+    utterances: list[str] = ["uh-huh", "mm-hmm", "yeah", "right", "I see"]
+    while not self._stop_event.is_set():
+      interval = max(0.05, random.gauss(base_interval, base_interval * 0.4))
+      await asyncio.sleep(interval)
+      if self._stop_event.is_set():
+        break
+      utterance: str = random.choice(utterances)
+      event: Behavior = Behavior(
+        type="utterance",
+        utterance=utterance,
+      )
+      await out_queue.put(event)

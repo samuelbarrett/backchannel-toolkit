@@ -40,15 +40,28 @@ async def handle_command_get(command_get_request):
   Returns:
     A serializable response (model instance, dict, tuple).
   """
-  print("handle_command_get called with id:", command_get_request)
   robot: Robot = registry.find_by_id(int(command_get_request))
   if robot is not None:
     behavior: Behavior = await robot.get_next_behavior()
     return CommandGet200Response(behavior=behavior)
 
 
-def handle_command_listen_keyword_post(request_model: CommandListenKeywordPostRequest):
+async def handle_command_listen_keyword_post(request_model: CommandListenKeywordPostRequest):
+  """Genereate a listen for keyword action for the robot."""
   print("handle_command_listen_keyword_post: %s", request_model)
+  style: Style = request_model.style
+  robot: Robot = registry.find_by_id(int(request_model.robot_id))
+  listen_keywords_behavior: PrimaryBehavior = PrimaryFactory.build(
+    kind="listen_keyword",
+    keywords=request_model.keyword,
+  )
+  action: RobotAction = RobotAction(
+    primary_behavior=listen_keywords_behavior,
+    robot=robot,
+    style=style,
+  )
+  # enqueue the action to the robot's controller
+  await robot.enqueue_action(action)
   return {"status": "ok", "action": "listen_keyword"}
 
 
@@ -67,7 +80,7 @@ async def handle_command_listen_silence_post(request_model: CommandListenSilence
   )
   # enqueue the action to the robot's controller
   await robot.enqueue_action(action)
-  return CommandListenSilencePost200Response(status="ok", action="listen_until_silence")
+  return CommandListenSilencePost200Response(received_command="listenSilence command received successfully")
 
 
 async def handle_command_speak_post(request_model: CommandSpeakPostRequest):

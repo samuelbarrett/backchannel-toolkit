@@ -15,7 +15,7 @@ class CommandListenKeywordPostRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, robot_id: str=None, keyword: str=None, style: Style=None):
+    def __init__(self, robot_id: str=None, keyword: List[str]=None, style: Style=None):
         """CommandListenKeywordPostRequest - a model defined in OpenAPI
 
         :param robot_id: The robot_id of this CommandListenKeywordPostRequest.
@@ -24,7 +24,7 @@ class CommandListenKeywordPostRequest(Model):
         """
         self.openapi_types = {
             'robot_id': str,
-            'keyword': str,
+            'keyword': List[str],
             'style': Style
         }
 
@@ -74,10 +74,10 @@ class CommandListenKeywordPostRequest(Model):
     def keyword(self):
         """Gets the keyword of this CommandListenKeywordPostRequest.
 
-        The keyword to listen for
+        Array of keywords to listen for
 
         :return: The keyword of this CommandListenKeywordPostRequest.
-        :rtype: str
+        :rtype: List[str]
         """
         return self._keyword
 
@@ -85,10 +85,10 @@ class CommandListenKeywordPostRequest(Model):
     def keyword(self, keyword):
         """Sets the keyword of this CommandListenKeywordPostRequest.
 
-        The keyword to listen for
+        Array of keywords to listen for
 
         :param keyword: The keyword of this CommandListenKeywordPostRequest.
-        :type keyword: str
+        :type keyword: List[str]
         """
 
         self._keyword = keyword

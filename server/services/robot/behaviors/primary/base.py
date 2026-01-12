@@ -24,6 +24,6 @@ class PrimaryFactory:
             from .listen_vad import ListenUntilSilencePrimary
             return ListenUntilSilencePrimary(**kwargs)
         if kind == "listen_keyword":
-            from .listen_keyword import ListenKeywordPrimary
+            from .listen_keywords import ListenKeywordPrimary
             return ListenKeywordPrimary(**kwargs)
         raise ValueError(f"Unknown primary behavior {kind}")
