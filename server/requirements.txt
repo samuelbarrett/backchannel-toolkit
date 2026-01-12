@@ -31,7 +31,7 @@ jsonschema-specifications==2025.9.1
 MarkupSafe==3.0.3
 multidict==6.7.0
 numpy==2.4.0
--e git+ssh://git@github.com/samuelbarrett/backchannel-toolkit.git@b90dc8cbaf9ffef4755e3b1e50b50c72eacb7b17#egg=openapi_server&subdirectory=server/generated
+-e git+ssh://git@github.com/samuelbarrett/backchannel-toolkit.git@0f9f1813f7369966d74a4058b92aabdb2bb26f08#egg=openapi_server&subdirectory=server/generated
 packaging==25.0
 pluggy==1.6.0
 propcache==0.4.1
@@ -51,6 +51,8 @@ simpleaudio==1.0.4
 six==1.17.0
 sounddevice==0.5.3
 srt==3.5.3
+standard-aifc==3.13.0
+standard-chunk==3.13.0
 starlette==0.50.0
 swagger-ui-bundle==0.0.9
 tqdm==4.67.1
