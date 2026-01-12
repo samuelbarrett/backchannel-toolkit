@@ -193,7 +193,7 @@ public class HttpCommandProvider extends DataProvider {
       // read timeout reached - this is expected for long-polling with no command available
       System.out.println("HttpCommandProvider: poll timed out (no command available).");
     } catch (Exception e) {
-      e.printStackTrace();
+      System.err.println("HttpCommandProvider: poll failed: " + e.getMessage());
     } finally {
       if (conn != null) conn.disconnect();
     }
@@ -209,6 +209,7 @@ public class HttpCommandProvider extends DataProvider {
         }
       } catch (Exception e) {
         System.err.println("HttpCommandProvider: poll failed, retrying...: " + e.getMessage());
+      } finally {
         try {
           Thread.sleep(RETRY_DELAY_MS);
         } catch (InterruptedException ie) {
