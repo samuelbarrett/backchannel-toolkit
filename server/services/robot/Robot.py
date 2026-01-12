@@ -40,28 +40,33 @@ class Robot:
     """Open a UDP stream to the robot's voice port for sending audio data."""
     loop = asyncio.get_running_loop()
     transport, protocol = await loop.create_datagram_endpoint(
-        lambda: _UDPStreamProtocol(),
-        remote_addr=(self.ip_address, self.voice_port)
+      lambda: _UDPStreamProtocol(),
+      remote_addr=(self.ip_address, self.voice_port)
     )
     return transport, protocol
   
-  async def open_mic_stream(self) -> asyncio.StreamReader:
+  async def open_mic_stream(self, local_ip, receive_callback=None) -> asyncio.StreamReader:
     """Open a UDP stream to the robot's microphone port for receiving audio data."""
     loop = asyncio.get_running_loop()
     transport, protocol = await loop.create_datagram_endpoint(
-        lambda: _UDPStreamProtocol(),
-        remote_addr=(self.ip_address, self.microphone_port)
+      lambda: _UDPStreamProtocol(receive_callback),
+      local_addr=(local_ip, self.microphone_port)
     )
     return transport, protocol
 
 class _UDPStreamProtocol(asyncio.DatagramProtocol):
-    def __init__(self):
-        self.transport: asyncio.DatagramTransport | None = None
+  def __init__(self, receive_callback=None):
+    self.transport: asyncio.DatagramTransport | None = None
+    self.receive_callback = receive_callback
 
-    def connection_made(self, transport):
-        self.transport = transport
+  def connection_made(self, transport):
+    self.transport = transport
 
-    def close(self):
-        if self.transport:
-            self.transport.close()
-            self.transport = None
+  def datagram_received(self, data, addr):
+    if self.receive_callback:
+      self.receive_callback(data, addr)
+
+  def close(self):
+    if self.transport:
+      self.transport.close()
+      self.transport = None

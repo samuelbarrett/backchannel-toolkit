@@ -9,42 +9,56 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
 
-import org.eclipse.jetty.servlet.Source;
-
 import dataprocessors.audio.AudioPlayback;
+import dataprocessors.network.UDPSender;
+import dataproviders.audio.MicAudioProvider;
 import dataproviders.network.UDPReceiver;
 import eventsystem.EventDispatcher;
 
-public class TestAudioStreamPlayback {
+public class TestAudioStream {
 
   private static final int AUDIO_PLAYBACK_PORT = 8888;
+  private static final int MICROPHONE_PORT = 7777;
   private static final int UDP_RECEIVER_BUFFER_SIZE = 6000;
+  private static final int SAMPLE_RATE = 16000;
+  private static final int MICROPHONE_BUFFER_SIZE = 1024;
   public static void main(String[] args) {
+    if (args.length < 1) {
+      System.out.println("Please provide the server IP as a command line argument.");
+      return;
+    }
+    String serverIp = args[0];
     // simpleTest();
     EventDispatcher dispatcher = new EventDispatcher();
+    
+    MicAudioProvider micProvider = new MicAudioProvider(SAMPLE_RATE, MICROPHONE_BUFFER_SIZE);
+    UDPSender audioSender = new UDPSender(serverIp, MICROPHONE_PORT);
+    micProvider.addListener(audioSender);
+
+    micProvider.start();
 
     UDPReceiver audioReceiver = new UDPReceiver(AUDIO_PLAYBACK_PORT, UDP_RECEIVER_BUFFER_SIZE);
-
     AudioPlayback audioPlayback = new AudioPlayback();
     audioPlayback.playTestTone("../resources/utterances/test_hmm.wav");
     audioReceiver.addListener(audioPlayback);
 
     audioReceiver.start();
-
     dispatcher.run();
   }
 
-  public static void simpleTest() {
+  // A simple test that plays back a wav file to the default audio output device
+  public static void simplePlaybackTest() {
     try (AudioInputStream testStream = AudioSystem.getAudioInputStream(new File("../resources/utterances/test_hmm.wav"))) {
       AudioFormat format = testStream.getFormat();
-      //System.out.println("Mixer info: " + java.util.Arrays.toString(AudioSystem.getMixerInfo()));
+      // we need to get the right audio device since it won't default to the correct one
+      // the correct device for Sota can be found on commandline with the following: pactl info | grep "Default Sink"
       Mixer.Info[] mixerInfos = AudioSystem.getMixerInfo();
       for (Mixer.Info mixerInfo : mixerInfos) {
         System.out.println("Mixer: " + mixerInfo.getName() + " - " + mixerInfo.getDescription());
+        // check if we've got the right mixer
         if (mixerInfo.getName().contains("hw:2,0")) {
           Mixer mixer = AudioSystem.getMixer(mixerInfo);
           DataLine.Info lineInfo = new DataLine.Info(SourceDataLine.class, format);
-          System.out.println("boo yeah, this the one");
           if (mixer.isLineSupported(lineInfo)) {
             try (SourceDataLine sourceLine = (SourceDataLine) mixer.getLine(lineInfo)) {
               sourceLine.open(format);

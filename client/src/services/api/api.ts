@@ -42,7 +42,7 @@ app.post('/command/listenSilence', async (req, res) => {
   try {
     console.log('Received /command/listenSilence request');
     let token = req.headers['x-pairing-token'] as string;
-    const result = await backendService.listenSilence(token, req.body);
+    const result = await backendService.listenSilence(token, req.body.robot_id, req.body.style);
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: 'Failed to send listenSilence command' });

@@ -67,7 +67,7 @@ async def handle_command_listen_silence_post(request_model: CommandListenSilence
   )
   # enqueue the action to the robot's controller
   await robot.enqueue_action(action)
-  return CommandListenSilencePost200Response(status="ok", action="listen_until_silence")
+  return CommandListenSilencePost200Response(received_command="listenSilence command received successfully")
 
 
 async def handle_command_speak_post(request_model: CommandSpeakPostRequest):
