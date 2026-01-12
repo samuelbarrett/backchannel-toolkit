@@ -17,6 +17,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import dataproviders.DataProvider;
 import datatypes.behaviors.BackchannelEvent;
+import datatypes.behaviors.LookBackchannelEvent;
 import datatypes.behaviors.NodBackchannelEvent;
 import datatypes.behaviors.UtteranceBackchannelEvent;
 
@@ -28,6 +29,10 @@ import datatypes.behaviors.UtteranceBackchannelEvent;
  * robot dialog controller.
  */
 public class HttpCommandProvider extends DataProvider {
+
+  private static final int CONNECTION_TIMEOUT_MS = 10000;
+  private static final int READ_TIMEOUT_MS = 0;
+  private static final int RETRY_DELAY_MS = 5000;
 
   private final String serverBaseUrl;
   private final int pollIntervalMs;
@@ -107,34 +112,49 @@ public class HttpCommandProvider extends DataProvider {
    * @param robotId the robot's unique ID
    */
   public void initializeRobot(int robotId) {
-    try {
-      URL url = new URL(serverBaseUrl + "/robot/register");
-      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-      conn.setRequestMethod("POST");
-      conn.setDoOutput(true);
-      conn.setRequestProperty("Content-Type", "application/json");
-      conn.setRequestProperty("Accept", "application/json");
-
-      // build JSON params for robot initialization
-      JsonObject paramsJson = new JsonObject();
-      paramsJson.addProperty("robot_id", String.valueOf(this.robotId));
-      paramsJson.addProperty("ip", this.localIp);
-      paramsJson.addProperty("voice_port", this.audioPort);
-      paramsJson.addProperty("microphone_port", this.micPort);
-
-      OutputStream os = conn.getOutputStream();
-      os.write(paramsJson.toString().getBytes("UTF-8"));
-      os.flush();
-      os.close();
-      
-      int code = conn.getResponseCode();
-      if (code == 200) {
-        System.out.println("HttpCommandProvider: Robot initialized successfully.");
-      } else {
-        System.err.println("HttpCommandProvider: Robot initialization failed with code: " + code);
+    boolean initialized = false;
+    while (!initialized) {
+      try {
+        URL url = new URL(serverBaseUrl + "/robot/register");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setConnectTimeout(CONNECTION_TIMEOUT_MS);
+        conn.setReadTimeout(READ_TIMEOUT_MS);
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Accept", "application/json");
+  
+        // build JSON params for robot initialization
+        JsonObject paramsJson = new JsonObject();
+        paramsJson.addProperty("robot_id", String.valueOf(this.robotId));
+        paramsJson.addProperty("ip", this.localIp);
+        paramsJson.addProperty("voice_port", this.audioPort);
+        paramsJson.addProperty("microphone_port", this.micPort);
+  
+        OutputStream os = conn.getOutputStream();
+        os.write(paramsJson.toString().getBytes("UTF-8"));
+        os.flush();
+        os.close();
+        
+        int code = conn.getResponseCode();
+        if (code == 200) {
+          System.out.println("HttpCommandProvider: Robot initialized successfully.");
+          initialized = true;
+        } else {
+          System.err.println("HttpCommandProvider: Robot initialization failed, trying again...: " + code);
+        }
+      } catch (Exception e) {
+        System.err.println("HttpCommandProvider: Robot initialization failed, trying again...: " + e.getMessage());
+      } finally {
+        if (!initialized) {
+          try {
+            Thread.sleep(RETRY_DELAY_MS);
+          } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            return;
+          }
+        }
       }
-    } catch (Exception e) {
-      e.printStackTrace();
     }
   }
 
@@ -142,7 +162,8 @@ public class HttpCommandProvider extends DataProvider {
    * Perform a single HTTP GET to the server and notify listeners with the parsed StateData
    * This is used by both the main polling loop and external callers via requestOnce()
    */
-  private void singlePoll() {
+  private boolean singlePoll() {
+    boolean success = false;
     HttpURLConnection conn = null;
     try {
       URL url = new URL(getCommandUrl);
@@ -156,30 +177,52 @@ public class HttpCommandProvider extends DataProvider {
       if (code == 200) {
         String body = getResponseBody(conn);
         try {
-          ServerCommand cmd = gson.fromJson(body, ServerCommand.class);
+          JsonObject cmd = gson.fromJson(body, JsonObject.class);
           BackchannelEvent behavior = buildBackchannel(cmd);
           this.notifyListeners(behavior);
+          success = true;
         } catch (IllegalArgumentException e) {
           System.err.println("HttpCommandProvider: invalid command received: " + e.getMessage());
-          return;
         } catch (JsonSyntaxException e) {
           System.err.println("HttpCommandProvider: failed to parse JSON response: " + e.getMessage());
-          return;
         }
       } else {
         System.err.println("HttpCommandProvider: received non-200 response: " + code);
       }
+    } catch (java.net.SocketTimeoutException ste) {
+      // read timeout reached - this is expected for long-polling with no command available
+      System.out.println("HttpCommandProvider: poll timed out (no command available).");
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
       if (conn != null) conn.disconnect();
+    }
+    return success;
+  }
+
+  public void pollUntilSuccess() {
+    boolean success = false;
+    while (!success && running) {
+      try {
+        if (singlePoll()) {
+          success = true;
+        }
+      } catch (Exception e) {
+        System.err.println("HttpCommandProvider: poll failed, retrying...: " + e.getMessage());
+        try {
+          Thread.sleep(RETRY_DELAY_MS);
+        } catch (InterruptedException ie) {
+          Thread.currentThread().interrupt();
+          return;
+        }
+      }
     }
   }
 
   // Trigger a single non-blocking HTTP request and notify listeners with the result.
   public void requestOnce() {
     try {
-      requestExecutor.submit(this::singlePoll);
+      requestExecutor.submit(this::pollUntilSuccess);
     } catch (Exception e) {
       System.err.println("HttpCommandProvider: requestOnce rejected: " + e.getMessage());
     }
@@ -227,27 +270,21 @@ public class HttpCommandProvider extends DataProvider {
   }
 
   /**
-   * Internal class representing the expected JSON structure from the server
-   * @param type The type of command. Permissible values: "nod", "utterance"
-   */
-  private static class ServerCommand {
-    public String type;
-    public int amplitude;
-    public int speed;
-    public String utterance;
-  }
-
-  /**
    * Builds a Behavior object from the ServerCommand
    * @param cmd the command received from the server
    */
-  private static BackchannelEvent buildBackchannel(ServerCommand cmd) {
-    if (cmd.type.equals("nod")) {
-      return new NodBackchannelEvent(cmd.amplitude, cmd.speed);
-    } else if (cmd.type.equals("utterance")) {
-      return new UtteranceBackchannelEvent(cmd.utterance);
+  private static BackchannelEvent buildBackchannel(JsonObject data) {
+    JsonObject payload = data.has("Behavior") ? data.getAsJsonObject("Behavior") : null;
+    if (payload == null) {
+      throw new IllegalArgumentException("No Behavior field in command");
+    } else if (payload.get("type").getAsString().equals("nod")) {
+      return new NodBackchannelEvent(payload.get("amplitude").getAsInt(), payload.get("speed").getAsInt());
+    } else if (payload.get("type").getAsString().equals("utterance")) {
+      return new UtteranceBackchannelEvent(payload.get("utterance").getAsString());
+    } else if (payload.get("type").getAsString().equals("look")) {
+      return new LookBackchannelEvent(payload.get("amplitude").getAsInt(), payload.get("speed").getAsInt());
     } else {
-      throw new IllegalArgumentException("Unknown command type: " + cmd.type);
+      throw new IllegalArgumentException("Unknown command type: " + payload.get("type").getAsString());
     }
   }
 }
