@@ -3,8 +3,9 @@ import 'dotenv/config';
 import { backendService } from './BackendService.ts';
 import fs from 'node:fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const __dirname = import.meta.dirname;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
