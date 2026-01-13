@@ -53,7 +53,7 @@ public class SotaDialog {
     audioReceiver.addListener(audioPlayback);
 
     // HTTP client that polls for commands and outputs state updates to its listeners
-    final HttpCommandProvider commandProvider = new HttpCommandProvider("http://" + serverIp + ":12000/api", 1000, robotId, localIp, microphone_port, AUDIO_PLAYBACK_PORT);
+    final HttpCommandProvider commandProvider = new HttpCommandProvider("http://" + serverIp + "/api", 1000, robotId, localIp, microphone_port, AUDIO_PLAYBACK_PORT);
 
     SotaDialogController controller = new SotaDialogController();
     commandProvider.addListener(controller);

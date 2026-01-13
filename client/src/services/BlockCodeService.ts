@@ -9,7 +9,7 @@ import { StyleSchema } from "../models/style.ts";
 export const BlockCodeService = {
   robotDialog: async () => {
     console.log('BlockCodeService.robotDialog called');
-    const response = await fetch('http://localhost:3000/status', {
+    const response = await fetch('/status', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     });
@@ -17,7 +17,7 @@ export const BlockCodeService = {
   say: async (speech: string, style: StyleSchema) => {
     console.log('BlockCodeService.say called with message:', speech, 'and style:', style);
     const robotId = sessionStorage.getItem('robotId') || '';
-    const response = await fetch('http://localhost:3000/command/speak', {
+    const response = await fetch('/command/speak', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ export const BlockCodeService = {
   listenForKeywords: async (keywords: string[], style: StyleSchema) => {
     console.log('BlockCodeService.listenForKeywords called with keywords:', keywords);
     const robotId = sessionStorage.getItem('robotId') || '';
-    const response = await fetch('http://localhost:3000/command/listenKeywords', {
+    const response = await fetch('/command/listenKeywords', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export const BlockCodeService = {
   listenUntilSilence: async (style: StyleSchema) => {
     console.log('BlockCodeService.listenUntilSilence called');
     const robotId = sessionStorage.getItem('robotId') || '';
-    const response = await fetch('http://localhost:3000/command/listenSilence', {
+    const response = await fetch('/command/listenSilence', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
