@@ -11,3 +11,4 @@ build/
 **/.env
 **/*.jar
 **/.vosk/
+**/savedWorkspaces/*.json
