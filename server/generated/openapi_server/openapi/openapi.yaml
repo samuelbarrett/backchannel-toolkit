@@ -251,13 +251,9 @@ components:
           description: The IP address of the robot
           title: ip
           type: string
-        voice_port:
-          description: The port number the robot is listening on for audio playback
-          title: voice_port
-          type: integer
-        microphone_port:
-          description: The port number the robot's microphone is listening on
-          title: microphone_port
+        audio_port:
+          description: The port number the robot is listening on for audio communication
+          title: audio_port
           type: integer
       title: _robot_register_post_request
       type: object

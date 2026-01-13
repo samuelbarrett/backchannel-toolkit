@@ -7,11 +7,10 @@ from services.robot.behaviors.RobotAction import RobotAction
 from services.controller.ActionController import ActionController
 
 class Robot:
-  def __init__(self, id: int, ip_address: str, voice_port: int, microphone_port: int):
+  def __init__(self, id: int, ip_address: str, audio_port: int):
     self.id = id
     self.ip_address = ip_address
-    self.voice_port = voice_port
-    self.microphone_port = microphone_port
+    self.audio_port = audio_port
     self.client = None
     self.output_queue: asyncio.Queue = asyncio.Queue()
     self._controller = ActionController(self.output_queue)
@@ -41,7 +40,7 @@ class Robot:
     loop = asyncio.get_running_loop()
     transport, protocol = await loop.create_datagram_endpoint(
       lambda: _UDPStreamProtocol(),
-      remote_addr=(self.ip_address, self.voice_port)
+      remote_addr=(self.ip_address, self.audio_port)
     )
     return transport, protocol
   
@@ -50,7 +49,7 @@ class Robot:
     loop = asyncio.get_running_loop()
     transport, protocol = await loop.create_datagram_endpoint(
       lambda: _UDPStreamProtocol(receive_callback),
-      local_addr=(local_ip, self.microphone_port)
+      local_addr=(local_ip, self.audio_port)
     )
     return transport, protocol
 

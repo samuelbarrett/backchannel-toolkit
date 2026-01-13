@@ -42,7 +42,6 @@ public class HttpCommandProvider extends DataProvider {
   private final Gson gson = new Gson();
   private int robotId;
   private String localIp;
-  private int micPort;
   private int audioPort;
   String getCommandUrl;
 
@@ -56,13 +55,12 @@ public class HttpCommandProvider extends DataProvider {
     new ThreadPoolExecutor.DiscardPolicy()
   );
 
-  public HttpCommandProvider(String serverBaseUrl, int pollIntervalMs, int robotId, String localIp, int micPort, int audioPort) {
+  public HttpCommandProvider(String serverBaseUrl, int pollIntervalMs, int robotId, String localIp, int port) {
     this.serverBaseUrl = serverBaseUrl;
     this.pollIntervalMs = pollIntervalMs;
     this.robotId = robotId;
     this.localIp = localIp;
-    this.micPort = micPort;
-    this.audioPort = audioPort;
+    this.audioPort = port;
     // build URL containing robot ID parameter
     this.getCommandUrl = buildGetCommandUrl(this.robotId);
   }
@@ -128,8 +126,7 @@ public class HttpCommandProvider extends DataProvider {
         JsonObject paramsJson = new JsonObject();
         paramsJson.addProperty("robot_id", String.valueOf(this.robotId));
         paramsJson.addProperty("ip", this.localIp);
-        paramsJson.addProperty("voice_port", this.audioPort);
-        paramsJson.addProperty("microphone_port", this.micPort);
+        paramsJson.addProperty("audio_port", this.audioPort);
   
         OutputStream os = conn.getOutputStream();
         os.write(paramsJson.toString().getBytes("UTF-8"));
