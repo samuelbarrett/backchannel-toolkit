@@ -55,6 +55,9 @@ export const initWorkspace = () => {
   if (workspace) {
     // Load the initial state from storage and run the code.
     load(workspace);
+    if (workspace.getToolbox() && workspace.getToolbox()?.getFlyout()) {
+      workspace.getToolbox().getFlyout().autoClose = false;
+    }
     addEventListeners();
   } else {
     throw new Error('Failed to initialize Blockly workspace');
