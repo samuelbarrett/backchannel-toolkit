@@ -3,6 +3,7 @@
 import asyncio
 import socket
 
+from services.connections.SharedAudioSocket import SharedAudioSocket, StreamSubscription
 from services.robot.behaviors.RobotAction import RobotAction
 from services.controller.ActionController import ActionController
 
@@ -35,37 +36,20 @@ class Robot:
   def set_client(self, client: str):
     self.client = client
 
-  async def open_voice_stream(self) -> tuple[asyncio.StreamReader, asyncio.StreamWriter]:
-    """Open a UDP stream to the robot's voice port for sending audio data."""
-    loop = asyncio.get_running_loop()
-    transport, protocol = await loop.create_datagram_endpoint(
-      lambda: _UDPStreamProtocol(),
-      remote_addr=(self.ip_address, self.audio_port)
+  async def open_audio_stream(
+    self,
+    local_ip: str,
+    callback = None,
+  ) -> StreamSubscription:
+    """Open a UDP audio stream to the robot's microphone port for receiving audio data."""
+    demux = await SharedAudioSocket.get_or_create(
+      ip=local_ip,
+      port=self.audio_port
     )
-    return transport, protocol
-  
-  async def open_mic_stream(self, local_ip, receive_callback=None) -> asyncio.StreamReader:
-    """Open a UDP stream to the robot's microphone port for receiving audio data."""
-    loop = asyncio.get_running_loop()
-    transport, protocol = await loop.create_datagram_endpoint(
-      lambda: _UDPStreamProtocol(receive_callback),
-      local_addr=(local_ip, self.audio_port)
+    subscription = demux.register(
+      robot_id=self.id,
+      source_ip=self.ip_address,
+      playback_port=50002,
+      callback=callback
     )
-    return transport, protocol
-
-class _UDPStreamProtocol(asyncio.DatagramProtocol):
-  def __init__(self, receive_callback=None):
-    self.transport: asyncio.DatagramTransport | None = None
-    self.receive_callback = receive_callback
-
-  def connection_made(self, transport):
-    self.transport = transport
-
-  def datagram_received(self, data, addr):
-    if self.receive_callback:
-      self.receive_callback(data, addr)
-
-  def close(self):
-    if self.transport:
-      self.transport.close()
-      self.transport = None
+    return subscription

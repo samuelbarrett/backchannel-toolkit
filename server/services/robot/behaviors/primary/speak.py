@@ -2,7 +2,7 @@ import asyncio, io
 from gtts import gTTS
 from pydub import AudioSegment
 
-from services.robot.Robot import _UDPStreamProtocol, Robot
+from services.robot.Robot import Robot
 from .base import PrimaryBehavior
 
 CHUNK_SIZE = 4096
@@ -19,27 +19,25 @@ class SpeakPrimary(PrimaryBehavior):
   async def run(self, robot: Robot, output_queue: asyncio.Queue, stop_event: asyncio.Event):
     wav_bytes = await self.synthesize_wav_bytes()
     await self.stream_to_robot(
-      robot.ip_address,
-      robot.voice_port,
+      robot,
       wav_bytes,
       chunk_size=CHUNK_SIZE
     )
     stop_event.set()
   
   # stream given bytes to the robot over UDP
-  async def stream_to_robot(self, host: str, port: int, wav_bytes: bytes, chunk_size: int = 4096):
-    loop = asyncio.get_running_loop()
-    transport, protocol = await loop.create_datagram_endpoint(
-      lambda: _UDPStreamProtocol(),
-      remote_addr=(host, port)
+  async def stream_to_robot(self, robot: Robot, wav_bytes: bytes, chunk_size: int = 4096):
+    subscription = await robot.open_audio_stream(
+      local_ip="0.0.0.0",
+      callback=None
     )
     try:
       for i in range(0, len(wav_bytes), chunk_size):
         chunk = wav_bytes[i: i + chunk_size]
-        transport.sendto(chunk)
+        subscription.send(chunk)
         await asyncio.sleep(0.0)
     finally:
-      transport.close()
+      subscription.close()
   
   # fetch generated TTS wav bytes
   async def synthesize_wav_bytes(self) -> bytes:
