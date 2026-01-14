@@ -20,8 +20,8 @@ import eventsystem.EventDispatcher;
  */
 public class SotaDialog {
 
-  private static int microphone_port;
-  private static final int AUDIO_PLAYBACK_PORT = 8888;
+  private static final int AUDIO_SEND_PORT = 50001;
+  private static final int AUDIO_RECEIVE_PORT = 50002;
   private static final int UDP_RECEIVER_BUFFER_SIZE = 6000;
   private static final int SAMPLE_RATE = 16000;
   private static final int MICROPHONE_BUFFER_SIZE = 1024;
@@ -32,7 +32,6 @@ public class SotaDialog {
     }
     int robotId = Integer.parseInt(args[0]);
     String serverIp = args[1];
-    microphone_port = 7000 + robotId;
     run(robotId, serverIp);
   }
 
@@ -44,16 +43,16 @@ public class SotaDialog {
 
     // send microphone data to the server
     DataProvider mic = new MicAudioProvider(SAMPLE_RATE, MICROPHONE_BUFFER_SIZE);
-    UDPSender audioSender = new UDPSender(serverIp, microphone_port);
+    UDPSender audioSender = new UDPSender(serverIp, AUDIO_SEND_PORT);
     mic.addListener(audioSender);
 
     // handle incoming audio from the server
-    UDPReceiver audioReceiver = new UDPReceiver(AUDIO_PLAYBACK_PORT, UDP_RECEIVER_BUFFER_SIZE);
+    UDPReceiver audioReceiver = new UDPReceiver(AUDIO_RECEIVE_PORT, UDP_RECEIVER_BUFFER_SIZE);
     AudioPlayback audioPlayback = new AudioPlayback();
     audioReceiver.addListener(audioPlayback);
 
     // HTTP client that polls for commands and outputs state updates to its listeners
-    final HttpCommandProvider commandProvider = new HttpCommandProvider("http://" + serverIp + "/api", 1000, robotId, localIp, microphone_port, AUDIO_PLAYBACK_PORT);
+    final HttpCommandProvider commandProvider = new HttpCommandProvider("http://" + serverIp + "/api", 1000, robotId, localIp, AUDIO_SEND_PORT);
 
     SotaDialogController controller = new SotaDialogController();
     commandProvider.addListener(controller);

@@ -101,10 +101,8 @@ export interface paths {
                         robot_id?: string;
                         /** @description The IP address of the robot */
                         ip?: string;
-                        /** @description The port number the robot is listening on for audio playback */
-                        voice_port?: number;
-                        /** @description The port number the robot's microphone is listening on */
-                        microphone_port?: number;
+                        /** @description The port number the robot is listening on for audio communication */
+                        audio_port?: number;
                     };
                 };
             };

@@ -146,12 +146,9 @@ paths:
                 ip:
                   type: string
                   description: The IP address of the robot
-                voice_port:
+                audio_port:
                   type: integer
-                  description: The port number the robot is listening on for audio playback
-                microphone_port:
-                  type: integer
-                  description: The port number the robot's microphone is listening on
+                  description: The port number the robot is listening on for audio communication
       responses:
         '200':
           description: Registered successfully

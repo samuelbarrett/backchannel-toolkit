@@ -40,9 +40,9 @@ class ListenKeywordPrimary(PrimaryBehavior):
 
   async def run(self, robot: "Robot", output_queue: asyncio.Queue, stop_event: asyncio.Event):
     self._stop_event = stop_event
-    transport, protocol = await robot.open_mic_stream(
+    subscription = await robot.open_audio_stream(
       local_ip="0.0.0.0",
-      receive_callback=self.process_keywords
+      callback=self.process_keywords
     )
     loop = asyncio.get_running_loop()
     min_runtime = loop.time() + MAX_TIMEOUT
@@ -50,7 +50,7 @@ class ListenKeywordPrimary(PrimaryBehavior):
       while not self._stop_event.is_set() and loop.time() < min_runtime:
         await asyncio.sleep(FRAME_MS / 1000.0)
     finally:
-      transport.close()
+      subscription.close()
 
   def process_keywords(self, data: bytes, addr=None):
     self.buffer.extend(data)
@@ -61,6 +61,7 @@ class ListenKeywordPrimary(PrimaryBehavior):
       if self.recognizer.AcceptWaveform(frame):
         result = json.loads(self.recognizer.Result())
         transcript = result.get("text", "").strip().lower()
+        # print(f"Transcript: {transcript}")
         if any(k in transcript.split() for k in self.keywords):
           if self._stop_event and not self._stop_event.is_set():
             self._stop_event.set()

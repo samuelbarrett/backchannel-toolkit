@@ -128,8 +128,7 @@ async def handle_register_post(request_model: RobotRegisterPostRequest):
   added: bool = await registry.add(
     robot_id,
     request_model.ip,
-    request_model.voice_port,
-    request_model.microphone_port
+    request_model.audio_port,
   )
   if added:
     print(f"Robot with id {robot_id} registered successfully.")
