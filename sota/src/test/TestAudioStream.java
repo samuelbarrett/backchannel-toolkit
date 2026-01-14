@@ -17,8 +17,8 @@ import eventsystem.EventDispatcher;
 
 public class TestAudioStream {
 
-  private static final int AUDIO_PLAYBACK_PORT = 8888;
-  private static final int MICROPHONE_PORT = 7777;
+  private static final int AUDIO_SEND_PORT = 50001;
+  private static final int AUDIO_RECEIVE_PORT = 50002;
   private static final int UDP_RECEIVER_BUFFER_SIZE = 6000;
   private static final int SAMPLE_RATE = 16000;
   private static final int MICROPHONE_BUFFER_SIZE = 1024;
@@ -32,12 +32,12 @@ public class TestAudioStream {
     EventDispatcher dispatcher = new EventDispatcher();
     
     MicAudioProvider micProvider = new MicAudioProvider(SAMPLE_RATE, MICROPHONE_BUFFER_SIZE);
-    UDPSender audioSender = new UDPSender(serverIp, MICROPHONE_PORT);
+    UDPSender audioSender = new UDPSender(serverIp, AUDIO_SEND_PORT);
     micProvider.addListener(audioSender);
 
     micProvider.start();
 
-    UDPReceiver audioReceiver = new UDPReceiver(AUDIO_PLAYBACK_PORT, UDP_RECEIVER_BUFFER_SIZE);
+    UDPReceiver audioReceiver = new UDPReceiver(AUDIO_RECEIVE_PORT, UDP_RECEIVER_BUFFER_SIZE);
     AudioPlayback audioPlayback = new AudioPlayback();
     audioPlayback.playTestTone("../resources/utterances/test_hmm.wav");
     audioReceiver.addListener(audioPlayback);
