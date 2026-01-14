@@ -30,13 +30,16 @@ class RobotAction:
     """
     # spawn sub-behaviors
     if self.style:
-      if self.style.nodding.enabled:
+      nodding = getattr(self.style, 'nodding', None)
+      gaze = getattr(self.style, 'gaze', None)
+      utterances = getattr(self.style, 'utterances', None)
+      if nodding and getattr(nodding, 'enabled', False):
         t = asyncio.create_task(self._nodder(output_queue))
         self._tasks.append(t)
-      if self.style.gaze.enabled:
+      if gaze and getattr(gaze, 'enabled', False):
         t = asyncio.create_task(self._gazer(output_queue))
         self._tasks.append(t)
-      if self.style.utterances.enabled:
+      if utterances and getattr(utterances, 'enabled', False):
         t = asyncio.create_task(emit_utterances(
           robot=self.robot,
           style=self.style,
@@ -68,56 +71,63 @@ class RobotAction:
 
   async def _nodder(self, out_queue: asyncio.Queue):
     """Emit head-nod events."""
-    freq = float(self.style.nodding.frequency)  # nods per sec
-    if freq <= 0:
-      return
-    base_interval = 1.0 / freq
-    while not self._stop_event.is_set():
-      # add jitter
-      interval = max(0.05, random.gauss(base_interval, base_interval * 0.2))
-      await asyncio.sleep(interval)
-      if self._stop_event.is_set():
-        break
-      event: Behavior = Behavior(
-        type="nod",
-        amplitude=random.randint(1, 10),
-        speed=random.randint(1, 5),
-      )
-      await out_queue.put(event)
+    nodding = getattr(self.style, 'nodding', None)
+    if nodding:
+      freq = float(getattr(nodding, 'frequency', 0))  # nods per sec
+      if freq <= 0:
+        return
+      base_interval = 1.0 / freq
+      while not self._stop_event.is_set():
+        # add jitter
+        interval = max(0.05, random.gauss(base_interval, base_interval * 0.2))
+        await asyncio.sleep(interval)
+        if self._stop_event.is_set():
+          break
+        event: Behavior = Behavior(
+          type="nod",
+          amplitude=random.randint(1, 10),
+          speed=random.randint(1, 5),
+        )
+        await out_queue.put(event)
 
   async def _gazer(self, out_queue: asyncio.Queue):
     """Emit gaze shift events."""
-    freq = float(self.style.gaze.shift_gaze)
-    if freq <= 0:
-      return
-    base_interval = 1.0 / freq
-    while not self._stop_event.is_set():
-      interval = max(0.05, random.gauss(base_interval, base_interval * 0.3))
-      await asyncio.sleep(interval)
-      if self._stop_event.is_set():
-        break
-      event: Behavior = Behavior(
-        type="look",
-        amplitude=0,  # not used for gaze
-        speed=0,      # not used for gaze
-      )
-      await out_queue.put(event)
+    gaze = getattr(self.style, 'gaze', None)
+    if gaze:
+      freq = float(getattr(gaze, 'shift_gaze', 0))
+      if freq <= 0:
+        return
+      base_interval = 1.0 / freq
+      while not self._stop_event.is_set():
+        interval = max(0.05, random.gauss(base_interval, base_interval * 0.3))
+        await asyncio.sleep(interval)
+        if self._stop_event.is_set():
+          break
+        event: Behavior = Behavior(
+          type="look",
+          amplitude=0,  # not used for gaze
+          speed=0,      # not used for gaze
+        )
+        await out_queue.put(event)
   
   async def _utterances(self, out_queue: asyncio.Queue):
     """Emit small utterance events (e.g., 'uh-huh', 'mm-hmm')."""
-    freq = float(self.style.utterances.utterance_frequency)
-    if freq <= 0:
-      return
-    base_interval = 1.0 / freq
-    utterances: list[str] = ["uh-huh", "mm-hmm", "yeah", "right", "I see"]
-    while not self._stop_event.is_set():
-      interval = max(0.05, random.gauss(base_interval, base_interval * 0.4))
-      await asyncio.sleep(interval)
-      if self._stop_event.is_set():
-        break
-      utterance: str = random.choice(utterances)
-      event: Behavior = Behavior(
-        type="utterance",
-        utterance=utterance,
-      )
-      await out_queue.put(event)
+    
+    utterances = getattr(self.style, 'utterances', None)
+    if utterances:
+      freq = float(getattr(utterances, 'utterance_frequency', 0))
+      if freq <= 0:
+        return
+      base_interval = 1.0 / freq
+      utterances_list: list[str] = ["uh-huh", "mm-hmm", "yeah", "right", "I see"]
+      while not self._stop_event.is_set():
+        interval = max(0.05, random.gauss(base_interval, base_interval * 0.4))
+        await asyncio.sleep(interval)
+        if self._stop_event.is_set():
+          break
+        utterance: str = random.choice(utterances)
+        event: Behavior = Behavior(
+          type="utterance",
+          utterance=utterance,
+        )
+        await out_queue.put(event)
