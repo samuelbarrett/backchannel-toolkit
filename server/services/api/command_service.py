@@ -21,6 +21,7 @@ from generated.openapi_server.models.pair_post_request import PairPostRequest  #
 from generated.openapi_server.models.robot_register_post409_response import RobotRegisterPost409Response  # noqa: E501
 from generated.openapi_server.models.robot_register_post_request import RobotRegisterPostRequest  # noqa: E501
 from generated.openapi_server.models.status_get200_response import StatusGet200Response  # noqa: E501
+from generated.openapi_server.models.dialog_request import DialogRequest  # noqa: E501
 from generated.openapi_server import util
 
 from generated.openapi_server.models.style import Style
@@ -45,6 +46,32 @@ async def handle_command_get(command_get_request):
     behavior: Behavior = await robot.get_next_behavior()
     return CommandGet200Response(behavior=behavior)
 
+async def handle_run_dialog_post(request_model: DialogRequest):
+  """Enqueue a series of dialog actions for the robot."""
+  print("handle_run_dialog_post: %s", request_model)
+  robot: Robot = registry.find_by_id(int(request_model.robot_id))
+  cmds = request_model.dialog
+  for cmd in cmds:
+    kind = cmd.type
+    style: Style = cmd.style
+    if kind == "say":
+      action = PrimaryFactory.build(kind="speak", text=cmd.speech)
+    elif kind == "listen_keyword":
+      action = PrimaryFactory.build(kind="listen_keyword", keywords=cmd.keywords)
+    elif kind == "listen_until_silence":
+      action = PrimaryFactory.build(kind="listen_until_silence")
+    else:
+      print(f"Unknown dialog command type: {kind}")
+      break
+    robot_action: RobotAction = RobotAction(
+      primary_behavior=action,
+      robot=robot,
+      style=style,
+    )
+    await robot.enqueue_action(robot_action)
+  return {"status": "queued"}
+
+  
 
 async def handle_command_listen_keyword_post(request_model: CommandListenKeywordPostRequest):
   """Genereate a listen for keyword action for the robot."""
