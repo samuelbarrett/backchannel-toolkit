@@ -114,10 +114,6 @@
                 <scp todir="${scp.edison.user}:${scp.edison.pass}@${scp.server}:${sota.basedir}/${resources.dir}" trust="yes" sftp="true" verbose="true" >       
                         <fileset dir="${resources.dir}"/>
                 </scp>
-   
-                <scp todir="${scp.edison.user}:${scp.edison.pass}@${scp.server}:${remotelib.dir}" trust="yes" sftp="true" verbose="true" >       
-                        <fileset dir="${lib.dir}"/>
-                </scp>
         </target>
 
         <target name="upload_resources_utterances">
