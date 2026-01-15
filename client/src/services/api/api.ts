@@ -32,6 +32,17 @@ app.post('/pair', async (req, res): Promise<void> => {
   }
 });
 
+app.post('/command/runDialog', async (req, res) => {
+  try {
+    console.log('Received /command/runDialog request');
+    let token: string = req.headers['x-pairing-token'] as string;
+    const result = await backendService.runDialog(token, req.body.robot_id, req.body.dialog);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to run dialog' });
+  }
+});
+
 app.post('/command/speak', async (req, res) => {
   try {
     console.log('Received /command/speak request');

@@ -1,6 +1,7 @@
 import asyncio, io
 from gtts import gTTS
 from pydub import AudioSegment
+import time
 
 from services.robot.Robot import Robot
 from .base import PrimaryBehavior
@@ -17,25 +18,31 @@ class SpeakPrimary(PrimaryBehavior):
 
   # run the behavior
   async def run(self, robot: Robot, output_queue: asyncio.Queue, stop_event: asyncio.Event):
-    wav_bytes = await self.synthesize_wav_bytes()
+    wav_bytes, play_time = await self.synthesize_wav_bytes()
     await self.stream_to_robot(
       robot,
       wav_bytes,
+      play_time,
       chunk_size=CHUNK_SIZE
     )
     stop_event.set()
   
   # stream given bytes to the robot over UDP
-  async def stream_to_robot(self, robot: Robot, wav_bytes: bytes, chunk_size: int = 4096):
+  async def stream_to_robot(self, robot: Robot, wav_bytes: bytes, play_time: float, chunk_size: int = 4096):
     subscription = await robot.open_audio_stream(
       local_ip="0.0.0.0",
       callback=None
     )
+    time_start = time.time()
     try:
       for i in range(0, len(wav_bytes), chunk_size):
         chunk = wav_bytes[i: i + chunk_size]
         subscription.send(chunk)
         await asyncio.sleep(0.0)
+      time_elapsed = time.time() - time_start
+      time_remaining = play_time - time_elapsed
+      if time_remaining > 0:
+        await asyncio.sleep(time_remaining)
     finally:
       subscription.close()
   
@@ -54,5 +61,6 @@ class SpeakPrimary(PrimaryBehavior):
       # convert to wav bytes
       wav_buf = io.BytesIO()
       audio_16k_mono.export(wav_buf, format="wav")
-      return wav_buf.read()
+      play_time = len(audio_16k_mono) / 1000  # in seconds
+      return wav_buf.read(), play_time
     return await asyncio.to_thread(_blocking)

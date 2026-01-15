@@ -214,6 +214,49 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/command/runDialog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send a dialog command to the server */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["DialogRequest"];
+                };
+            };
+            responses: {
+                /** @description Dialog received */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example Dialog command received */
+                            status?: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/command/speak": {
         parameters: {
             query?: never;
@@ -378,6 +421,20 @@ export interface components {
             speed?: number;
             /** @description Utterance text (for utterance behavior) */
             utterance?: string;
+        };
+        DialogCommand: {
+            /** @enum {string} */
+            type: "say" | "listen_until_silence" | "listen_keyword";
+            /** @description required when type is "say" */
+            speech?: string;
+            /** @description required when type is "listen_keyword" */
+            keywords?: string[];
+            style?: components["schemas"]["Style"];
+        };
+        DialogRequest: {
+            /** @description The unique identifier for the robot */
+            robot_id: string;
+            dialog: components["schemas"]["DialogCommand"][];
         };
         Style: {
             nodding?: {

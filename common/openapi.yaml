@@ -30,6 +30,36 @@ components:
         utterance:
           type: string
           description: Utterance text (for utterance behavior)
+    DialogCommand:
+      type: object
+      required: [type]
+      properties:
+        type:
+          type: string
+          enum: [say, listen_until_silence, listen_keyword]
+        speech:
+          type: string
+          description: required when type is "say"
+        keywords:
+          type: array
+          items:
+            type: string
+          description: required when type is "listen_keyword"
+        style:
+          $ref: '#/components/schemas/Style'
+      additionalProperties: false
+    DialogRequest:
+      type: object
+      required: [robot_id, dialog]
+      properties:
+        robot_id:
+          type: string
+          description: The unique identifier for the robot
+        dialog:
+          type: array
+          items:
+            $ref: '#/components/schemas/DialogCommand'
+      additionalProperties: false
     Style:
       type: object
       additionalProperties: false
@@ -196,6 +226,28 @@ paths:
                 properties:
                   Behavior:
                     $ref: '#/components/schemas/Behavior'
+  /command/runDialog:
+    post:
+      summary: Send a dialog command to the server
+      security:
+        - PairingToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DialogRequest'
+      responses:
+        '200':
+          description: Dialog received
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Dialog command received
   /command/speak:
     post:
       summary: Send a speak command to the server
