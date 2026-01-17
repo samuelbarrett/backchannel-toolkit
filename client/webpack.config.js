@@ -2,6 +2,7 @@ import webpack from 'webpack';
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import dotenv from 'dotenv';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 const env = dotenv.config.parsed || {};
 const __dirname = import.meta.dirname;
@@ -26,9 +27,10 @@ const config = {
     host: '0.0.0.0',
     port: 8080,
     allowedHosts: 'all',
-    static: {
-      directory: path.join(__dirname, 'dist'),
-    },
+    static: [
+      { directory: path.join(__dirname, 'dist') },
+      { directory: path.join(__dirname, 'savedWorkspacesPruned'), publicPath: '/savedWorkspacesPruned' },
+    ],
     devMiddleware: {
       publicPath: '/',
     },
@@ -78,6 +80,13 @@ const config = {
     new HtmlWebpackPlugin({
       template: 'src/index.html',
       favicon: './public/favicon.ico',
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: path.resolve(__dirname, 'public'), to: '.' },
+        { from: path.resolve(__dirname, 'savedWorkspacesConverted'), to: 'savedWorkspacesConverted' },
+        { from: path.resolve(__dirname, 'savedWorkspacesPruned'), to: 'savedWorkspacesPruned' },
+      ],
     }),
     new webpack.DefinePlugin(envKeys),
   ],
