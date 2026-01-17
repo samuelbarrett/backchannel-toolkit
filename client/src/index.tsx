@@ -11,8 +11,9 @@ import { useEffect } from 'react';
 import Header from './components/Header.tsx';
 import { runCode } from './blockly/workspace.ts';
 import DialogProvider from './components/DialogProvider.tsx';
+import WorkspaceViewer from './components/WorkspaceViewer.tsx';
 
-function App() {
+function BlocklyApp() {
   useEffect(() => {
     // initialize Blockly and provide the BlockCodeService for generated Blockly code to call
     (window as any).BlockCodeService = BlockCodeService;
@@ -27,6 +28,17 @@ function App() {
       </DialogProvider>
     </div>
   );
+}
+
+function App() {
+  const searchParams = new URLSearchParams(window.location.search);
+  const showViewer = searchParams.get('viewer') === '1' || searchParams.get('workspaceViewer') === '1';
+
+  if (showViewer) {
+    return <WorkspaceViewer />;
+  }
+
+  return <BlocklyApp />;
 }
 
 const rootElement = document.getElementById('root');

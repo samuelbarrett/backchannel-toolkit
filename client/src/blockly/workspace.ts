@@ -24,21 +24,21 @@ import { log } from '../services/debug-log.ts';
 import { FieldStyleOptions } from './fields/FieldStyleOptions.tsx';
 
 let workspace: Blockly.WorkspaceSvg;
+let bootstrapComplete = false;
 
-export const initWorkspace = () => {
-  // Register the blocks, fields, and generator with Blockly
+const bootstrapBlockly = () => {
+  if (bootstrapComplete) return;
+
   Blockly.common.defineBlocks(blocks);
   Blockly.fieldRegistry.register('field_style_options', FieldStyleOptions);
   Object.assign(javascriptGenerator.forBlock, forBlock);
+  bootstrapComplete = true;
+};
 
-  // Set up UI elements and inject Blockly
-  const blocklyDiv = document.getElementById('blocklyDiv');
+export const createWorkspace = (container: HTMLElement, options: Partial<Blockly.BlocklyOptions> = {}) => {
+  bootstrapBlockly();
 
-  if (!blocklyDiv) {
-    throw new Error(`div with id 'blocklyDiv' not found`);
-  }
-  console.log('Injecting Blockly workspace...');
-  workspace = Blockly.inject(blocklyDiv, {
+  const workspaceOptions: Blockly.BlocklyOptions = {
     toolbox: toolbox,
     trashcan: true,
     zoom: {
@@ -49,8 +49,34 @@ export const initWorkspace = () => {
       scrollbars: true,
       drag: true,
       wheel: false,
-    }
-  });
+    },
+    ...options,
+  };
+
+  return Blockly.inject(container, workspaceOptions);
+};
+
+export const loadWorkspaceState = (targetWorkspace: Blockly.Workspace, state: unknown) => {
+  Blockly.Events.disable();
+  targetWorkspace.clear();
+  if (state) {
+    Blockly.serialization.workspaces.load(state as Blockly.serialization.blocks.State, targetWorkspace, undefined);
+  }
+  Blockly.Events.enable();
+};
+
+export const initWorkspace = () => {
+  // Register the blocks, fields, and generator with Blockly
+  bootstrapBlockly();
+
+  // Set up UI elements and inject Blockly
+  const blocklyDiv = document.getElementById('blocklyDiv');
+
+  if (!blocklyDiv) {
+    throw new Error(`div with id 'blocklyDiv' not found`);
+  }
+  console.log('Injecting Blockly workspace...');
+  workspace = createWorkspace(blocklyDiv);
 
   if (workspace) {
     // Load the initial state from storage and run the code.

@@ -11,6 +11,8 @@
     "build": "webpack --mode production",
     "start": "webpack serve --open --mode development --env DEBUG=app:log",
     "server": "npx tsx src/services/api/api.ts",
+    "convert:workspaces": "tsx scripts/convert-workspaces.ts",
+    "prune:workspaces": "tsx scripts/prune-workspaces.ts",
     "generate-types": "openapi-typescript ../common/openapi.yaml -o src/services/api/openapi-types.ts",
     "docs": "npx serve ../common/openapi-docs"
   },
@@ -24,6 +26,7 @@
     "@types/jest": "^30.0.0",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "copy-webpack-plugin": "^12.0.2",
     "css-loader": "^6.7.1",
     "html-webpack-plugin": "^5.5.0",
     "identity-obj-proxy": "^3.0.0",
