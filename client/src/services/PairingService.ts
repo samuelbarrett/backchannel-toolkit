@@ -6,7 +6,7 @@ sessionStorage.setItem('pairingToken', '');
 export const PairingService = {
   pair: async (robot_id: string) => {
     console.log('PairingService.pair called with robot_id:', robot_id);
-    const response = await fetch('http://localhost:3000/pair', {
+    const response = await fetch('/pair', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ robot_id: robot_id })

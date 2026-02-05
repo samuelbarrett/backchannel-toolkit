@@ -55,6 +55,9 @@ export const initWorkspace = () => {
   if (workspace) {
     // Load the initial state from storage and run the code.
     load(workspace);
+    if (workspace.getToolbox() && workspace.getToolbox()?.getFlyout()) {
+      workspace.getToolbox().getFlyout().autoClose = false;
+    }
     addEventListeners();
   } else {
     throw new Error('Failed to initialize Blockly workspace');
@@ -78,10 +81,15 @@ const addEventListeners = () => {
 export const runCode = () => {
   const blocks: Blockly.Block[] = workspace.getAllBlocks(true).filter((block) => block.type === 'robot_dialog_block');
   if (blocks.length > 0) {
-    const code = javascriptGenerator.workspaceToCode(workspace);
-    log('Generated code:\n' + code);
-    // eslint-disable-next-line no-eval
-    eval(code);
+    for (const block of blocks) {
+      const generatedCode = javascriptGenerator.blockToCode(block);
+      const code = Array.isArray(generatedCode) ? generatedCode[0] : generatedCode;
+      if (typeof code === 'string') {
+        log('Generated code:\n' + code);
+        // eslint-disable-next-line no-eval
+        eval(code);
+      }
+    }
   } else {
     log('No robot dialog block found in workspace.');
   }

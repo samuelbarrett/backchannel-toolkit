@@ -26,9 +26,9 @@ class ListenUntilSilencePrimary(PrimaryBehavior):
 
   async def run(self, robot: Robot, output_queue: asyncio.Queue, stop_event: asyncio.Event):
     self._stop_event = stop_event
-    transport, protocol = await robot.open_mic_stream(
+    subscription = await robot.open_audio_stream(
       local_ip="0.0.0.0",
-      receive_callback=self.process_audio
+      callback=self.process_audio
     )
     loop = asyncio.get_running_loop()
     min_runtime = loop.time() + MAX_TIMEOUT
@@ -37,7 +37,7 @@ class ListenUntilSilencePrimary(PrimaryBehavior):
         await asyncio.sleep(FRAME_MS / 1000.0)
     finally:
       print("End listening")
-      transport.close()
+      subscription.close()
 
   def process_audio(self, input_data, addr=None):
     self.input_buffer.extend(input_data)

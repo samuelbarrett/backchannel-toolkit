@@ -30,6 +30,36 @@ components:
         utterance:
           type: string
           description: Utterance text (for utterance behavior)
+    DialogCommand:
+      type: object
+      required: [type]
+      properties:
+        type:
+          type: string
+          enum: [say, listen_until_silence, listen_keyword]
+        speech:
+          type: string
+          description: required when type is "say"
+        keywords:
+          type: array
+          items:
+            type: string
+          description: required when type is "listen_keyword"
+        style:
+          $ref: '#/components/schemas/Style'
+      additionalProperties: false
+    DialogRequest:
+      type: object
+      required: [robot_id, dialog]
+      properties:
+        robot_id:
+          type: string
+          description: The unique identifier for the robot
+        dialog:
+          type: array
+          items:
+            $ref: '#/components/schemas/DialogCommand'
+      additionalProperties: false
     Style:
       type: object
       additionalProperties: false
@@ -146,12 +176,9 @@ paths:
                 ip:
                   type: string
                   description: The IP address of the robot
-                voice_port:
+                audio_port:
                   type: integer
-                  description: The port number the robot is listening on for audio playback
-                microphone_port:
-                  type: integer
-                  description: The port number the robot's microphone is listening on
+                  description: The port number the robot is listening on for audio communication
       responses:
         '200':
           description: Registered successfully
@@ -199,9 +226,9 @@ paths:
                 properties:
                   Behavior:
                     $ref: '#/components/schemas/Behavior'
-  /command/speak:
+  /command/runDialog:
     post:
-      summary: Send a speak command to the server
+      summary: Send a dialog command to the server
       security:
         - PairingToken: []
       requestBody:
@@ -209,88 +236,15 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                robot_id:
-                  type: string
-                  description: The unique identifier for the robot
-                text:
-                  type: string
-                  description: This is what I, the robot, will say.
-                style:
-                  $ref: '#/components/schemas/Style'
-              additionalProperties: true
+              $ref: '#/components/schemas/DialogRequest'
       responses:
         '200':
-          description: Command received
+          description: Dialog received
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  received_command:
+                  status:
                     type: string
-                    example: Speak command received
-  /command/listenSilence:
-    post:
-      summary: Send a command for the robot to listen until it detects silence
-      security:
-        - PairingToken: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                robot_id:
-                  type: string
-                  description: The unique identifier for the robot
-                style:
-                  $ref: '#/components/schemas/Style'
-              additionalProperties: true
-      responses:
-        '200':
-          description: Command received
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  received_command:
-                    type: string
-                    example: ListenUntilSilence command received
-  /command/listenKeyword:
-    post:
-      summary: Send a command for the robot to listen until it detects a keyword
-      security:
-        - PairingToken: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                robot_id:
-                  type: string
-                  description: The unique identifier for the robot
-                keyword:
-                  type: array 
-                  description: Array of keywords to listen for
-                  items:
-                    type: string
-                style:
-                  $ref: '#/components/schemas/Style'
-              additionalProperties: true
-      responses:
-        '200':
-          description: Command received
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  received_command:
-                    type: string
-                    example: ListenUntilKeyword command received
+                    example: Dialog command received

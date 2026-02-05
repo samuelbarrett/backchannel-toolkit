@@ -17,7 +17,7 @@ export const save = async function (workspace: Blockly.Workspace) {
   window.localStorage?.setItem(storageKey, JSON.stringify(data));
 
   // save workspace to file
-  const response = await fetch('http://localhost:3000/save', {
+  const response = await fetch('/save', {
     method: 'POST',
     headers: { 
       'Content-Type': 'application/json',

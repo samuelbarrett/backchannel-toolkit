@@ -6,7 +6,7 @@ from gtts import gTTS
 from pydub import AudioSegment
 
 if TYPE_CHECKING:
-  from services.robot.Robot import _UDPStreamProtocol, Robot
+  from services.robot.Robot import Robot
 
 CHUNK_SIZE = 4096
 SAMPLE_RATE = 16000
@@ -19,20 +19,23 @@ async def emit_utterances(robot: "Robot", style: Style, stop_event: asyncio.Even
   utterances = style.utterances.utterance_list if style.utterances.utterance_list else ["hmm", "mhm", "uh-huh", "yeah", "right", "oh"]
   
   loop = asyncio.get_running_loop()
-  transport, protocol = await robot.open_voice_stream()
+  subscription = await robot.open_audio_stream(
+    local_ip="0.0.0.0",
+    callback=None
+  )
   try:
     while not stop_event.is_set():
       utterance = random.choice(utterances)
       wav_bytes = await synthesize_wav_bytes(utterance)
       for i in range(0, len(wav_bytes), CHUNK_SIZE):
         chunk = wav_bytes[i: i + CHUNK_SIZE]
-        transport.sendto(chunk)
+        subscription.send(chunk)
         await asyncio.sleep(0.0)
       # wait before next utterance based on style settings
       wait_time = await _next_wait_time(style.utterances.utterance_frequency)
       await asyncio.sleep(wait_time)
   finally:
-    transport.close()
+    subscription.close()
 
 # fetch generated TTS wav bytes
 async def synthesize_wav_bytes(utterance) -> bytes:

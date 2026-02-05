@@ -17,12 +17,13 @@ export const forBlock = Object.create(null);
 
 forBlock['robot_dialog_block'] = function(
   block: Blockly.Block,
-  generator: Blockly.CodeGenerator, 
+  generator: Blockly.CodeGenerator,
 ) {
-  const header: string = `BlockCodeService.robotDialog();\n`; 
+  const header: string = `const __dialog = [];\n`;
   const body = generator.statementToCode(block, 'actions'); // generate code for each nested statement block
+  const footer: string = `BlockCodeService.runDialog(__dialog);\n`;
   console.log('robot_dialog_block generated code:', header + body);
-  return header + body;
+  return header + body + footer;
 }
 
 forBlock['listen_keyword_block'] = function(
@@ -32,7 +33,7 @@ forBlock['listen_keyword_block'] = function(
   const raw_keywords = block.getFieldValue('keywords');
   const keywordsArray = getAlphaWordsFiltered(raw_keywords);
   const styleCode = getStyleCodeFromBlock(block, generator);
-  return `BlockCodeService.listenForKeywords(${JSON.stringify(keywordsArray)}, ${styleCode});\n`;
+  return `__dialog.push({type: 'listen_keyword', keywords: ${JSON.stringify(keywordsArray)}, style: ${styleCode}});\n`;
 }
 
 forBlock['listen_block'] = function(
@@ -40,7 +41,7 @@ forBlock['listen_block'] = function(
   generator: Blockly.CodeGenerator,
 ) {
   const styleCode = getStyleCodeFromBlock(block, generator);
-  return `BlockCodeService.listenUntilSilence(${styleCode});\n`;
+  return `__dialog.push({type: 'listen_until_silence', style: ${styleCode}});\n`;
 }
 
 forBlock['say_block'] = function(
@@ -49,7 +50,7 @@ forBlock['say_block'] = function(
 ) {
   const speech = block.getFieldValue('content');
   const styleCode = getStyleCodeFromBlock(block, generator);
-  const code = `BlockCodeService.say(${JSON.stringify(speech)}, ${styleCode});\n`;
+  const code = `__dialog.push({type: 'say', speech: ${JSON.stringify(speech)}, style: ${styleCode}});\n`;
   return code;
 }
 

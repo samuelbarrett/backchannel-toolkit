@@ -27,14 +27,14 @@ paths:
           description: Next command
       summary: get next command from server
       x-openapi-router-controller: openapi_server.controllers.default_controller
-  /command/listenKeyword:
+  /command/runDialog:
     post:
-      operationId: command_listen_keyword_post
+      operationId: command_run_dialog_post
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/_command_listenKeyword_post_request"
+              $ref: "#/components/schemas/DialogRequest"
         required: true
         x-body-name: body
       responses:
@@ -42,55 +42,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/_command_listenKeyword_post_200_response"
-          description: Command received
+                $ref: "#/components/schemas/_command_runDialog_post_200_response"
+          description: Dialog received
       security:
       - PairingToken: []
-      summary: Send a command for the robot to listen until it detects a keyword
-      x-openapi-router-controller: openapi_server.controllers.default_controller
-      x-codegen-request-body-name: body
-  /command/listenSilence:
-    post:
-      operationId: command_listen_silence_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/_command_listenSilence_post_request"
-        required: true
-        x-body-name: body
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/_command_listenSilence_post_200_response"
-          description: Command received
-      security:
-      - PairingToken: []
-      summary: Send a command for the robot to listen until it detects silence
-      x-openapi-router-controller: openapi_server.controllers.default_controller
-      x-codegen-request-body-name: body
-  /command/speak:
-    post:
-      operationId: command_speak_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/_command_speak_post_request"
-        required: true
-        x-body-name: body
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/_command_speak_post_200_response"
-          description: Command received
-      security:
-      - PairingToken: []
-      summary: Send a speak command to the server
+      summary: Send a dialog command to the server
       x-openapi-router-controller: openapi_server.controllers.default_controller
       x-codegen-request-body-name: body
   /pair:
@@ -191,8 +147,138 @@ components:
       - type
       title: Behavior
       type: object
+    DialogCommand:
+      additionalProperties: false
+      example:
+        keywords:
+        - keywords
+        - keywords
+        speech: speech
+        style:
+          utterances:
+            utterance_frequency: 1.4658129805029452
+            utterance_list:
+            - utterance_list
+            - utterance_list
+            utterance_volume: 5.962133916683182
+            enabled: true
+          gaze:
+            eye_contact: 5.637376656633329
+            shift_gaze: 2.3021358869347655
+            enabled: true
+          nodding:
+            intensity: 6.027456183070403
+            enabled: true
+            frequency: 0.8008281904610115
+            direction: up_down
+        type: say
+      properties:
+        type:
+          enum:
+          - say
+          - listen_until_silence
+          - listen_keyword
+          title: type
+          type: string
+        speech:
+          description: required when type is "say"
+          title: speech
+          type: string
+        keywords:
+          description: required when type is "listen_keyword"
+          items:
+            type: string
+          title: keywords
+          type: array
+        style:
+          $ref: "#/components/schemas/Style"
+      required:
+      - type
+      title: DialogCommand
+      type: object
+    DialogRequest:
+      additionalProperties: false
+      example:
+        dialog:
+        - keywords:
+          - keywords
+          - keywords
+          speech: speech
+          style:
+            utterances:
+              utterance_frequency: 1.4658129805029452
+              utterance_list:
+              - utterance_list
+              - utterance_list
+              utterance_volume: 5.962133916683182
+              enabled: true
+            gaze:
+              eye_contact: 5.637376656633329
+              shift_gaze: 2.3021358869347655
+              enabled: true
+            nodding:
+              intensity: 6.027456183070403
+              enabled: true
+              frequency: 0.8008281904610115
+              direction: up_down
+          type: say
+        - keywords:
+          - keywords
+          - keywords
+          speech: speech
+          style:
+            utterances:
+              utterance_frequency: 1.4658129805029452
+              utterance_list:
+              - utterance_list
+              - utterance_list
+              utterance_volume: 5.962133916683182
+              enabled: true
+            gaze:
+              eye_contact: 5.637376656633329
+              shift_gaze: 2.3021358869347655
+              enabled: true
+            nodding:
+              intensity: 6.027456183070403
+              enabled: true
+              frequency: 0.8008281904610115
+              direction: up_down
+          type: say
+        robot_id: robot_id
+      properties:
+        robot_id:
+          description: The unique identifier for the robot
+          title: robot_id
+          type: string
+        dialog:
+          items:
+            $ref: "#/components/schemas/DialogCommand"
+          title: dialog
+          type: array
+      required:
+      - dialog
+      - robot_id
+      title: DialogRequest
+      type: object
     Style:
       additionalProperties: false
+      example:
+        utterances:
+          utterance_frequency: 1.4658129805029452
+          utterance_list:
+          - utterance_list
+          - utterance_list
+          utterance_volume: 5.962133916683182
+          enabled: true
+        gaze:
+          eye_contact: 5.637376656633329
+          shift_gaze: 2.3021358869347655
+          enabled: true
+        nodding:
+          intensity: 6.027456183070403
+          enabled: true
+          frequency: 0.8008281904610115
+          direction: up_down
       properties:
         nodding:
           $ref: "#/components/schemas/Style_nodding"
@@ -251,13 +337,9 @@ components:
           description: The IP address of the robot
           title: ip
           type: string
-        voice_port:
-          description: The port number the robot is listening on for audio playback
-          title: voice_port
-          type: integer
-        microphone_port:
-          description: The port number the robot's microphone is listening on
-          title: microphone_port
+        audio_port:
+          description: The port number the robot is listening on for audio communication
+          title: audio_port
           type: integer
       title: _robot_register_post_request
       type: object
@@ -293,76 +375,23 @@ components:
           $ref: "#/components/schemas/Behavior"
       title: _command_get_200_response
       type: object
-    _command_speak_post_request:
-      additionalProperties: true
-      properties:
-        robot_id:
-          description: The unique identifier for the robot
-          type: string
-        text:
-          description: "This is what I, the robot, will say."
-          type: string
-        style:
-          $ref: "#/components/schemas/Style"
-      title: _command_speak_post_request
-      type: object
-    _command_speak_post_200_response:
+    _command_runDialog_post_200_response:
       example:
-        received_command: Speak command received
+        status: Dialog command received
       properties:
-        received_command:
-          example: Speak command received
-          title: received_command
+        status:
+          example: Dialog command received
+          title: status
           type: string
-      title: _command_speak_post_200_response
-      type: object
-    _command_listenSilence_post_request:
-      additionalProperties: true
-      properties:
-        robot_id:
-          description: The unique identifier for the robot
-          type: string
-        style:
-          $ref: "#/components/schemas/Style"
-      title: _command_listenSilence_post_request
-      type: object
-    _command_listenSilence_post_200_response:
-      example:
-        received_command: ListenUntilSilence command received
-      properties:
-        received_command:
-          example: ListenUntilSilence command received
-          title: received_command
-          type: string
-      title: _command_listenSilence_post_200_response
-      type: object
-    _command_listenKeyword_post_request:
-      additionalProperties: true
-      properties:
-        robot_id:
-          description: The unique identifier for the robot
-          type: string
-        keyword:
-          description: Array of keywords to listen for
-          items:
-            type: string
-          type: array
-        style:
-          $ref: "#/components/schemas/Style"
-      title: _command_listenKeyword_post_request
-      type: object
-    _command_listenKeyword_post_200_response:
-      example:
-        received_command: ListenUntilKeyword command received
-      properties:
-        received_command:
-          example: ListenUntilKeyword command received
-          title: received_command
-          type: string
-      title: _command_listenKeyword_post_200_response
+      title: _command_runDialog_post_200_response
       type: object
     Style_nodding:
       additionalProperties: false
+      example:
+        intensity: 6.027456183070403
+        enabled: true
+        frequency: 0.8008281904610115
+        direction: up_down
       properties:
         enabled:
           description: Whether to nod while speaking
@@ -387,6 +416,13 @@ components:
       type: object
     Style_utterances:
       additionalProperties: false
+      example:
+        utterance_frequency: 1.4658129805029452
+        utterance_list:
+        - utterance_list
+        - utterance_list
+        utterance_volume: 5.962133916683182
+        enabled: true
       properties:
         enabled:
           description: Whether to use verbal utterances
@@ -410,6 +446,10 @@ components:
       type: object
     Style_gaze:
       additionalProperties: false
+      example:
+        eye_contact: 5.637376656633329
+        shift_gaze: 2.3021358869347655
+        enabled: true
       properties:
         enabled:
           description: Whether to use gaze behavior

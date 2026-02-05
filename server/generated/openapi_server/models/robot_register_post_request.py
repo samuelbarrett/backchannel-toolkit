@@ -14,32 +14,28 @@ class RobotRegisterPostRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, robot_id: str=None, ip: str=None, voice_port: int=None, microphone_port: int=None):
+    def __init__(self, robot_id: str=None, ip: str=None, audio_port: int=None):
         """RobotRegisterPostRequest - a model defined in OpenAPI
 
         :param robot_id: The robot_id of this RobotRegisterPostRequest.
         :param ip: The ip of this RobotRegisterPostRequest.
-        :param voice_port: The voice_port of this RobotRegisterPostRequest.
-        :param microphone_port: The microphone_port of this RobotRegisterPostRequest.
+        :param audio_port: The audio_port of this RobotRegisterPostRequest.
         """
         self.openapi_types = {
             'robot_id': str,
             'ip': str,
-            'voice_port': int,
-            'microphone_port': int
+            'audio_port': int
         }
 
         self.attribute_map = {
             'robot_id': 'robot_id',
             'ip': 'ip',
-            'voice_port': 'voice_port',
-            'microphone_port': 'microphone_port'
+            'audio_port': 'audio_port'
         }
 
         self._robot_id = robot_id
         self._ip = ip
-        self._voice_port = voice_port
-        self._microphone_port = microphone_port
+        self._audio_port = audio_port
 
     @classmethod
     def from_dict(cls, dikt: dict) -> 'RobotRegisterPostRequest':
@@ -97,47 +93,24 @@ class RobotRegisterPostRequest(Model):
         self._ip = ip
 
     @property
-    def voice_port(self):
-        """Gets the voice_port of this RobotRegisterPostRequest.
+    def audio_port(self):
+        """Gets the audio_port of this RobotRegisterPostRequest.
 
-        The port number the robot is listening on for audio playback
+        The port number the robot is listening on for audio communication
 
-        :return: The voice_port of this RobotRegisterPostRequest.
+        :return: The audio_port of this RobotRegisterPostRequest.
         :rtype: int
         """
-        return self._voice_port
+        return self._audio_port
 
-    @voice_port.setter
-    def voice_port(self, voice_port):
-        """Sets the voice_port of this RobotRegisterPostRequest.
+    @audio_port.setter
+    def audio_port(self, audio_port):
+        """Sets the audio_port of this RobotRegisterPostRequest.
 
-        The port number the robot is listening on for audio playback
+        The port number the robot is listening on for audio communication
 
-        :param voice_port: The voice_port of this RobotRegisterPostRequest.
-        :type voice_port: int
+        :param audio_port: The audio_port of this RobotRegisterPostRequest.
+        :type audio_port: int
         """
 
-        self._voice_port = voice_port
-
-    @property
-    def microphone_port(self):
-        """Gets the microphone_port of this RobotRegisterPostRequest.
-
-        The port number the robot's microphone is listening on
-
-        :return: The microphone_port of this RobotRegisterPostRequest.
-        :rtype: int
-        """
-        return self._microphone_port
-
-    @microphone_port.setter
-    def microphone_port(self, microphone_port):
-        """Sets the microphone_port of this RobotRegisterPostRequest.
-
-        The port number the robot's microphone is listening on
-
-        :param microphone_port: The microphone_port of this RobotRegisterPostRequest.
-        :type microphone_port: int
-        """
-
-        self._microphone_port = microphone_port
+        self._audio_port = audio_port

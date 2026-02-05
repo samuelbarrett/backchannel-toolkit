@@ -9,14 +9,14 @@ from .Robot import Robot
 _lock = threading.RLock()
 _robots: List[Robot] = []
 
-async def add(id: int, ip: str, voice_port: int, microphone_port: int) -> bool:
+async def add(id: int, ip: str, audio_port: int) -> bool:
   """Add a Robot instance to the registry."""
   with _lock:
     if find_by_id(id) is not None:
       print(f"Robot with id {id} already exists in registry.")
       return False  # already exists
     else:
-      robot: Robot = Robot(id, ip, voice_port, microphone_port)
+      robot: Robot = Robot(id, ip, audio_port)
       await robot.initialize()
       _robots.append(robot)
       print(f"Added Robot with id {id} to registry.")

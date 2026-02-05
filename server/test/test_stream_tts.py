@@ -4,7 +4,22 @@ from gtts import gTTS
 from pydub import AudioSegment
 from pydub.playback import play
 
-from services.robot.Robot import _UDPStreamProtocol
+class _UDPStreamProtocol(asyncio.DatagramProtocol):
+  def __init__(self, receive_callback=None):
+    self.transport: asyncio.DatagramTransport | None = None
+    self.receive_callback = receive_callback
+
+  def connection_made(self, transport):
+    self.transport = transport
+
+  def datagram_received(self, data, addr):
+    if self.receive_callback:
+      self.receive_callback(data, addr)
+
+  def close(self):
+    if self.transport:
+      self.transport.close()
+      self.transport = None
 
 async def synthesize_wav_bytes(text: str) -> bytes:
   def _blocking():
@@ -61,7 +76,7 @@ async def main():
   text = "Hello, this is a test of the text to speech streaming system."
   wav_bytes = await synthesize_wav_bytes(text)
   ip = str(sys.argv[1])
-  await stream_to_robot(ip, 8888, wav_bytes, chunk_size=4096)
+  await stream_to_robot(ip, 50002, wav_bytes, chunk_size=4096)
   # await output_to_speakers(wav_bytes)
 
 asyncio.run(main())

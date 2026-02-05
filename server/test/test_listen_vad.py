@@ -1,7 +1,7 @@
 import asyncio
 from collections import deque
 from services.robot.behaviors.primary.listen_vad import ListenUntilSilencePrimary
-from services.robot.Robot import _UDPStreamProtocol, Robot
+from services.robot.Robot import Robot
 import sounddevice as sd
 
 import webrtcvad
@@ -28,7 +28,7 @@ def process_audio(input_data, addr=None):
     del input_buffer[:FRAME_BYTES]
     try:
       is_speech = vad.is_speech(frame, SAMPLE_RATE)
-      # print("Speech detected" if is_speech else "Silence")
+      print("Speech detected" if is_speech else "Silence")
     except Exception as e:
       print(f"Error processing frame: {e}")
       break
@@ -56,16 +56,14 @@ def test_local_input():
 async def test_robot_udp_stream_input():
   robot: Robot = Robot(
     id=1,
-    ip_address="10.0.0.178",
-    voice_port=8888,
-    microphone_port=7777
+    ip_address="10.151.63.72",
+    audio_port=50001 
   )
-  transport, protocol = await robot.open_mic_stream("0.0.0.0", receive_callback=process_audio)
+  subscription = await robot.open_audio_stream("0.0.0.0", callback=process_audio)
   try:
     await asyncio.sleep(1000)
   finally:
-    transport.close()
-
+    subscription.close()
 async def main():
   # test_local_input()
   await test_robot_udp_stream_input()

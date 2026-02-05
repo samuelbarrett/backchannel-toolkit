@@ -8,19 +8,13 @@ objects).
 
 from generated.openapi_server.models.command_get200_response import CommandGet200Response  # noqa: E501
 from generated.openapi_server.models.behavior import Behavior  # noqa: E501
-from generated.openapi_server.models.command_listen_keyword_post200_response import CommandListenKeywordPost200Response  # noqa: E501
-from generated.openapi_server.models.command_listen_keyword_post_request import CommandListenKeywordPostRequest  # noqa: E501
-from generated.openapi_server.models.command_listen_silence_post200_response import CommandListenSilencePost200Response  # noqa: E501
-from generated.openapi_server.models.command_listen_silence_post_request import CommandListenSilencePostRequest  # noqa: E501
-from generated.openapi_server.models.command_speak_post200_response import CommandSpeakPost200Response  # noqa: E501
-from generated.openapi_server.models.command_speak_post_request import CommandSpeakPostRequest  # noqa: E501
 from generated.openapi_server.models.pair_post200_response import PairPost200Response  # noqa: E501
-from generated.openapi_server.models.pair_post400_response import PairPost400Response  # noqa: E501
 from generated.openapi_server.models.pair_post409_response import PairPost409Response  # noqa: E501
 from generated.openapi_server.models.pair_post_request import PairPostRequest  # noqa: E501
 from generated.openapi_server.models.robot_register_post409_response import RobotRegisterPost409Response  # noqa: E501
 from generated.openapi_server.models.robot_register_post_request import RobotRegisterPostRequest  # noqa: E501
 from generated.openapi_server.models.status_get200_response import StatusGet200Response  # noqa: E501
+from generated.openapi_server.models.dialog_request import DialogRequest  # noqa: E501
 from generated.openapi_server import util
 
 from generated.openapi_server.models.style import Style
@@ -46,58 +40,30 @@ async def handle_command_get(command_get_request):
     return CommandGet200Response(behavior=behavior)
 
 
-async def handle_command_listen_keyword_post(request_model: CommandListenKeywordPostRequest):
-  """Genereate a listen for keyword action for the robot."""
-  print("handle_command_listen_keyword_post: %s", request_model)
-  style: Style = request_model.style
+async def handle_run_dialog_post(request_model: DialogRequest):
+  """Enqueue a series of dialog actions for the robot."""
+  print("handle_run_dialog_post: %s", request_model)
   robot: Robot = registry.find_by_id(int(request_model.robot_id))
-  listen_keywords_behavior: PrimaryBehavior = PrimaryFactory.build(
-    kind="listen_keyword",
-    keywords=request_model.keyword,
-  )
-  action: RobotAction = RobotAction(
-    primary_behavior=listen_keywords_behavior,
-    robot=robot,
-    style=style,
-  )
-  # enqueue the action to the robot's controller
-  await robot.enqueue_action(action)
-  return {"status": "ok", "action": "listen_keyword"}
-
-
-async def handle_command_listen_silence_post(request_model: CommandListenSilencePostRequest):
-  """Generate a listen until silence action for the robot."""
-  print("handle_command_listen_silence_post:", request_model)
-  style: Style = request_model.style
-  robot: Robot = registry.find_by_id(int(request_model.robot_id))
-  listen_behavior: PrimaryBehavior = PrimaryFactory.build(
-    kind="listen_until_silence"
-  )
-  action: RobotAction = RobotAction(
-    primary_behavior=listen_behavior,
-    robot=robot,
-    style=style,
-  )
-  # enqueue the action to the robot's controller
-  await robot.enqueue_action(action)
-  return CommandListenSilencePost200Response(received_command="listenSilence command received successfully")
-
-
-async def handle_command_speak_post(request_model: CommandSpeakPostRequest):
-  """Generate a speaking action for the robot."""
-  print("handle_command_speak_post: %s", request_model)
-  robot: Robot = registry.find_by_id(int(request_model.robot_id))
-  speak_behavior: PrimaryBehavior = PrimaryFactory.build(
-    kind="speak",
-    text=request_model.text,
-  )
-  action: RobotAction = RobotAction(
-    primary_behavior=speak_behavior,
-    robot=robot,
-    style=request_model.style,
-  )
-  await robot.enqueue_action(action)
-  return {"status": "ok", "action": "speak"}
+  cmds = request_model.dialog
+  for cmd in cmds:
+    kind = cmd.type
+    style: Style = cmd.style
+    if kind == "say":
+      action = PrimaryFactory.build(kind="speak", text=cmd.speech)
+    elif kind == "listen_keyword":
+      action = PrimaryFactory.build(kind="listen_keyword", keywords=cmd.keywords)
+    elif kind == "listen_until_silence":
+      action = PrimaryFactory.build(kind="listen_until_silence")
+    else:
+      print(f"Unknown dialog command type: {kind}")
+      break
+    robot_action: RobotAction = RobotAction(
+      primary_behavior=action,
+      robot=robot,
+      style=style,
+    )
+    await robot.enqueue_action(robot_action)
+  return {"status": "queued"}
 
 
 def handle_pair_post(request_model: PairPostRequest):
@@ -128,8 +94,7 @@ async def handle_register_post(request_model: RobotRegisterPostRequest):
   added: bool = await registry.add(
     robot_id,
     request_model.ip,
-    request_model.voice_port,
-    request_model.microphone_port
+    request_model.audio_port,
   )
   if added:
     print(f"Robot with id {robot_id} registered successfully.")
@@ -137,7 +102,8 @@ async def handle_register_post(request_model: RobotRegisterPostRequest):
   else:
     print(f"Robot with id {robot_id} registration failed: already exists.")
     return RobotRegisterPost409Response(error=f"Robot with id {robot_id} already registered.")
-  
+
+
 def _generate_token() -> str:
   """Generate a random token string."""
   return secrets.token_hex(8)
