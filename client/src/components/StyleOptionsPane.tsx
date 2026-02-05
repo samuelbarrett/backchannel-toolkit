@@ -64,8 +64,8 @@ export default function StyleOptionsPane({robotStyle, onChange}: Props) {
   };
 
   return (
-    <Box sx={{ padding: 2, width: 350 }}>
-      <Stack spacing={1}>
+    <Box sx={{ padding: 2, width: '100%', boxSizing: 'border-box', height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Stack spacing={1} sx={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
         <Typography variant="h5">Style Options</Typography>
         <Divider />
         <FormControlLabel

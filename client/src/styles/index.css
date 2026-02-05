@@ -46,3 +46,15 @@ code {
   font-size: 1rem;
   padding: 6px 16px;
 }
+
+.blocklyDropDownContent.style-options-drop-down {
+  overflow: auto;
+}
+
+.style-options-root {
+  --style-pane-width: 500px;
+  width: var(--style-pane-width);
+  max-width: 90vw;
+  height: 100%;
+  box-sizing: border-box;
+}
