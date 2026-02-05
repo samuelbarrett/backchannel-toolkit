@@ -26,47 +26,4 @@ export const BlockCodeService = {
       body: JSON.stringify({ robot_id: robotId, dialog: commands })
     });
   },
-  robotDialog: async () => {
-    console.log('BlockCodeService.robotDialog called');
-    const response = await fetch('/status', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    });
-  },
-  say: async (speech: string, style: StyleSchema) => {
-    console.log('BlockCodeService.say called with message:', speech, 'and style:', style);
-    const robotId = sessionStorage.getItem('robotId') || '';
-    const response = await fetch('/command/speak', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'X-Pairing-Token': sessionStorage.getItem('pairingToken') || ''
-      },
-      body: JSON.stringify({ robot_id: robotId, speech: speech, style: style })
-    });
-  },
-  listenForKeywords: async (keywords: string[], style: StyleSchema) => {
-    console.log('BlockCodeService.listenForKeywords called with keywords:', keywords);
-    const robotId = sessionStorage.getItem('robotId') || '';
-    const response = await fetch('/command/listenKeywords', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'X-Pairing-Token': sessionStorage.getItem('pairingToken') || ''
-      },
-      body: JSON.stringify({ robot_id: robotId, keywords: keywords, style: style })
-    });
-  },
-  listenUntilSilence: async (style: StyleSchema) => {
-    console.log('BlockCodeService.listenUntilSilence called');
-    const robotId = sessionStorage.getItem('robotId') || '';
-    const response = await fetch('/command/listenSilence', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'X-Pairing-Token': sessionStorage.getItem('pairingToken') || ''
-      },
-      body: JSON.stringify({ robot_id: robotId, style: style })
-    });
-  }
 };
