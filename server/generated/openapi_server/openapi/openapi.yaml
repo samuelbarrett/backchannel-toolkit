@@ -27,50 +27,6 @@ paths:
           description: Next command
       summary: get next command from server
       x-openapi-router-controller: openapi_server.controllers.default_controller
-  /command/listenKeyword:
-    post:
-      operationId: command_listen_keyword_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/_command_listenKeyword_post_request"
-        required: true
-        x-body-name: body
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/_command_listenKeyword_post_200_response"
-          description: Command received
-      security:
-      - PairingToken: []
-      summary: Send a command for the robot to listen until it detects a keyword
-      x-openapi-router-controller: openapi_server.controllers.default_controller
-      x-codegen-request-body-name: body
-  /command/listenSilence:
-    post:
-      operationId: command_listen_silence_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/_command_listenSilence_post_request"
-        required: true
-        x-body-name: body
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/_command_listenSilence_post_200_response"
-          description: Command received
-      security:
-      - PairingToken: []
-      summary: Send a command for the robot to listen until it detects silence
-      x-openapi-router-controller: openapi_server.controllers.default_controller
-      x-codegen-request-body-name: body
   /command/runDialog:
     post:
       operationId: command_run_dialog_post
@@ -91,28 +47,6 @@ paths:
       security:
       - PairingToken: []
       summary: Send a dialog command to the server
-      x-openapi-router-controller: openapi_server.controllers.default_controller
-      x-codegen-request-body-name: body
-  /command/speak:
-    post:
-      operationId: command_speak_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/_command_speak_post_request"
-        required: true
-        x-body-name: body
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/_command_speak_post_200_response"
-          description: Command received
-      security:
-      - PairingToken: []
-      summary: Send a speak command to the server
       x-openapi-router-controller: openapi_server.controllers.default_controller
       x-codegen-request-body-name: body
   /pair:
@@ -450,74 +384,6 @@ components:
           title: status
           type: string
       title: _command_runDialog_post_200_response
-      type: object
-    _command_speak_post_request:
-      additionalProperties: true
-      properties:
-        robot_id:
-          description: The unique identifier for the robot
-          type: string
-        text:
-          description: "This is what I, the robot, will say."
-          type: string
-        style:
-          $ref: "#/components/schemas/Style"
-      title: _command_speak_post_request
-      type: object
-    _command_speak_post_200_response:
-      example:
-        received_command: Speak command received
-      properties:
-        received_command:
-          example: Speak command received
-          title: received_command
-          type: string
-      title: _command_speak_post_200_response
-      type: object
-    _command_listenSilence_post_request:
-      additionalProperties: true
-      properties:
-        robot_id:
-          description: The unique identifier for the robot
-          type: string
-        style:
-          $ref: "#/components/schemas/Style"
-      title: _command_listenSilence_post_request
-      type: object
-    _command_listenSilence_post_200_response:
-      example:
-        received_command: ListenUntilSilence command received
-      properties:
-        received_command:
-          example: ListenUntilSilence command received
-          title: received_command
-          type: string
-      title: _command_listenSilence_post_200_response
-      type: object
-    _command_listenKeyword_post_request:
-      additionalProperties: true
-      properties:
-        robot_id:
-          description: The unique identifier for the robot
-          type: string
-        keyword:
-          description: Array of keywords to listen for
-          items:
-            type: string
-          type: array
-        style:
-          $ref: "#/components/schemas/Style"
-      title: _command_listenKeyword_post_request
-      type: object
-    _command_listenKeyword_post_200_response:
-      example:
-        received_command: ListenUntilKeyword command received
-      properties:
-        received_command:
-          example: ListenUntilKeyword command received
-          title: received_command
-          type: string
-      title: _command_listenKeyword_post_200_response
       type: object
     Style_nodding:
       additionalProperties: false

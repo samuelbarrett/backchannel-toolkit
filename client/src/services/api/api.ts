@@ -43,39 +43,6 @@ app.post('/command/runDialog', async (req, res) => {
   }
 });
 
-app.post('/command/speak', async (req, res) => {
-  try {
-    console.log('Received /command/speak request');
-    let token: string = req.headers['x-pairing-token'] as string;
-    const result = await backendService.speak(token, req.body.robot_id, req.body.speech, req.body.style);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to send speak command' });
-  }
-});
-
-app.post('/command/listenSilence', async (req, res) => {
-  try {
-    console.log('Received /command/listenSilence request');
-    let token = req.headers['x-pairing-token'] as string;
-    const result = await backendService.listenSilence(token, req.body.robot_id, req.body.style);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to send listenSilence command' });
-  }
-});
-
-app.post('/command/listenKeywords', async (req, res) => {
-  try {
-    console.log('Received /command/listenKeywords request');
-    let token = req.headers['x-pairing-token'] as string;
-    const result = await backendService.listenKeyword(token, req.body.robot_id, req.body.keywords, req.body.style);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to send listenKeywords command' });
-  }
-});
-
 app.post('/save', async (req, res) => {
   
   try {
